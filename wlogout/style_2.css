@@ -1,0 +1,86 @@
+* {
+    background-image: none;
+    font-size: ${fntSize}px;
+}
+
+@import "$HOME/.config/waybar/theme.css";
+
+window {
+    background-color: transparent;
+}
+
+button {
+    color: white;
+    background-color: @main-bg;
+    outline-style: none;
+    border: none;
+    border-width: 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10%;
+    border-radius: 0px;
+    box-shadow: none;
+    text-shadow: none;
+    animation: gradient_f 20s ease-in infinite;
+}
+
+button:focus {
+    background-color: @wb-act-bg;
+    background-size: 20%;
+}
+
+button:hover {
+    background-color: @wb-hvr-bg;
+    background-size: 25%;
+    border-radius: ${active_rad}px;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.3s cubic-bezier(.55,0.0,.28,1.682);
+}
+
+button:hover#lock {
+    background-image: image(url("$HOME/.config/wlogout/icons/lock_black.png"));
+    border-radius: ${active_rad}px ${active_rad}px 0px ${active_rad}px;
+    margin : ${y_hvr}px 0px 0px ${x_hvr}px;
+}
+
+button:hover#logout {
+    background-image: image(url("$HOME/.config/wlogout/icons/logout_black.png"));
+    border-radius: ${active_rad}px 0px ${active_rad}px ${active_rad}px;
+    margin : 0px 0px ${y_hvr}px ${x_hvr}px;
+}
+
+button:hover#shutdown {
+    background-image: image(url("$HOME/.config/wlogout/icons/shutdown_black.png"));
+    border-radius: ${active_rad}px ${active_rad}px ${active_rad}px 0px;
+    margin : ${y_hvr}px ${x_hvr}px 0px 0px;
+}
+
+button:hover#reboot {
+    background-image: image(url("$HOME/.config/wlogout/icons/reboot_black.png"));
+    border-radius: 0px ${active_rad}px ${active_rad}px ${active_rad}px;
+    margin : 0px ${x_hvr}px ${y_hvr}px 0px;
+}
+
+#lock {
+    background-image: image(url("$HOME/.config/wlogout/icons/lock_white.png"));
+    border-radius: ${button_rad}px 0px 0px 0px;
+    margin : ${y_mgn}px 0px 0px ${x_mgn}px;
+}
+
+#logout {
+    background-image: image(url("$HOME/.config/wlogout/icons/logout_white.png"));
+    border-radius: 0px 0px 0px ${button_rad}px;
+    margin : 0px 0px ${y_mgn}px ${x_mgn}px;
+}
+
+#shutdown {
+    background-image: image(url("$HOME/.config/wlogout/icons/shutdown_white.png"));
+    border-radius: 0px ${button_rad}px 0px 0px;
+    margin : ${y_mgn}px ${x_mgn}px 0px 0px;
+}
+
+#reboot {
+    background-image: image(url("$HOME/.config/wlogout/icons/reboot_white.png"));
+    border-radius: 0px 0px ${button_rad}px 0px;
+    margin : 0px ${x_mgn}px ${y_mgn}px 0px;
+}

@@ -1,0 +1,282 @@
+{
+    "layer": "top",
+    "position": "top",
+    "mod": "dock",
+    "height": 16,
+    "exclusive": true,
+    "passthrough": false,
+    "gtk-layer-shell": true,
+    "reload_style_on_change": true,
+    "modules-left": [
+        "custom/padd",
+        "custom/l_end",
+        "hyprland/workspaces",
+        "hyprland/window",
+        "custom/r_end",
+        "custom/padd"
+    ],
+    "modules-center": [
+        "custom/padd",
+        "custom/l_end",
+        "clock",
+        "custom/r_end",
+        "custom/padd"
+    ],
+    "modules-right": [
+        "custom/padd",
+        "custom/l_end",
+        "custom/warp",
+        "custom/r_end",
+        "custom/l_end",
+        "backlight",
+        "pulseaudio",
+        "pulseaudio#microphone",
+        "custom/r_end",
+        "custom/l_end",
+        "cpu",
+        "memory",
+        "battery",
+        "custom/r_end",
+        "custom/l_end",
+        "network",
+        "tray",
+        "custom/power",
+        "custom/r_end",
+        "custom/padd"
+    ],
+    "hyprland/workspaces": {
+        // "disable-scroll": true,
+        "rotate": 0,
+        "all-outputs": true,
+        "active-only": false,
+        "on-click": "activate",
+        "disable-scroll": false,
+        "on-scroll-up": "hyprctl dispatch workspace -1",
+        "on-scroll-down": "hyprctl dispatch workspace +1",
+        "persistent-workspaces": {}
+    },
+    "hyprland/window": {
+        "format": "  {}",
+        "rotate": 0,
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "$1 󰈹",
+            "(.*)Mozilla Firefox": "Firefox 󰈹",
+            "(.*) - Visual Studio Code": "$1 󰨞",
+            "(.*)Visual Studio Code": "Code 󰨞",
+            "(.*) - Thunar": "$1 󰉋",
+            "(.*)Spotify": "Spotify 󰓇",
+            "(.*)Steam": "Steam 󰓓"
+        },
+        "max-length": 1000
+    },
+    "clock": {
+        "format": "{:%R, %d %B %Y}",
+        "rotate": 0,
+        "format-alt": "{:%I:%M %p}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "year",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#ffead3'><b>{}</b></span>",
+                "days": "<span color='#ecc6d9'><b>{}</b></span>",
+                "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+                "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-click-forward": "tz_up",
+            "on-click-backward": "tz_down",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+    "cpu": {
+        "interval": 10,
+        "format": "󰍛 {usage}% ",
+        "rotate": 0,
+        "format-alt": "{icon0}{icon1}{icon2}{icon3}",
+        "format-icons": [
+            "▁",
+            "▂",
+            "▃",
+            "▄",
+            "▅",
+            "▆",
+            "▇",
+            "█"
+        ]
+    },
+    "memory": {
+        "states": {
+            "c": 90, // critical
+            "h": 60, // high
+            "m": 30, // medium
+        },
+        "interval": 30,
+        "format": "󰾆 {percentage}% ",
+        "rotate": 0,
+        "format-m": "󰾅 {percentage}% ",
+        "format-h": "󰓅 {percentage}% ",
+        "format-c": " {percentage}% ",
+        "format-alt": "󰾆 {used}GB ",
+        "max-length": 10,
+        "tooltip": true,
+        "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB "
+    },
+    "backlight": {
+        "device": "intel_backlight",
+        "rotate": 0,
+        "format": "{icon} {percent}% ",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "on-scroll-up": "brightnessctl set 1%+",
+        "on-scroll-down": "brightnessctl set 1%-",
+        "min-length": 6
+    },
+    "network": {
+        "tooltip": true,
+        "format-wifi": "  ",
+        "rotate": 0,
+        "format-ethernet": "󰈀  ",
+        "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+        "format-linked": "󰈀 {ifname} (No IP) ",
+        "format-disconnected": "󰖪  ",
+        "tooltip-format-disconnected": "Disconnected",
+        "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span> ",
+        "interval": 5
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume} ",
+        "rotate": 0,
+        "format-muted": "婢 ",
+        "on-click": "pavucontrol -t 3",
+        "on-click-middle": "volumecontrol.sh -o m",
+        "on-scroll-up": "volumecontrol.sh -o i",
+        "on-scroll-down": "volumecontrol.sh -o d",
+        "tooltip-format": "{icon} {desc} // {volume}%",
+        "scroll-step": 5,
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        }
+    },
+    "pulseaudio#microphone": {
+        "format": "{format_source}",
+        "rotate": 0,
+        "format-source": "",
+        "format-source-muted": "",
+        "on-click": "pavucontrol -t 4",
+        "on-click-middle": "volumecontrol.sh -i m",
+        "on-scroll-up": "volumecontrol.sh -i i",
+        "on-scroll-down": "volumecontrol.sh -i d",
+        "tooltip-format": "{format_source} {source_desc} // {source_volume}%",
+        "scroll-step": 5
+    },
+    "tray": {
+        "icon-size": 14,
+        "rotate": 0,
+        "spacing": 10
+    },
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon} {capacity}%",
+        "rotate": 0,
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-alt": "{time} {icon}",
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ]
+    },
+    "custom/power": {
+        "format": "  {}",
+        "rotate": 0,
+        "exec": "echo ; echo  logout",
+        "on-click": "logoutlaunch.sh 2",
+        "on-click-right": "logoutlaunch.sh 1",
+        "interval": 86400, // once every day
+        "tooltip": true
+    },
+    "custom/warp": {
+        "format": "VPN: {} ",
+        // "exec": "warp-cli status",
+        "exec": "status=$(warp-cli status | grep Status | awk '{print $3}' | sed 's/\\.//g'); if [ \"$status\" = \"Connected\" ]; then echo 󰅠; else if [ \"$status\" = \"Disconnected\" ]; then echo ; else if [ \"$status\" = \"Connecting\" ]; then echo 󱋖; else echo ?; fi; fi; fi;",
+        "on-click": "warp-cli connect",
+        "on-click-right": "warp-cli disconnect",
+        "interval": 5,
+        "tooltip": false
+    },
+    // modules for padding //
+    "custom/l_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/r_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/sl_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/sr_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/rl_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/rr_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/padd": {
+        "format": "  ",
+        "interval": "once",
+        "tooltip": false
+    }
+}
