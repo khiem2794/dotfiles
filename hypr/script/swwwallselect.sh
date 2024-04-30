@@ -20,7 +20,7 @@ case "${opt}" in
             # --transition-type=random \
             --transition-duration=1
         exit 0 ;;
-    2)  w2=$(ls "${wallpapers_dir}" | rofi -dmenu)
+    2)  w2=$(ls "${wallpapers_dir}" | rofi -dmenu -p "Select Wallpaper" )
         swww img "${wallpapers_dir}/${w2}" \
             # --transition-type=random \
             --transition-duration=1
