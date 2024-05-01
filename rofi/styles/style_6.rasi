@@ -1,3 +1,5 @@
+@theme "~/.config/rofi/theme.rasi"
+
 // Config //
 configuration {
     modi:                        "drun,filebrowser,window,run";
@@ -11,9 +13,6 @@ configuration {
     font:                        "JetBrainsMono Nerd Font 10";
     icon-theme:                  "Tela-circle-dracula";
 }
-
-@theme "~/.config/rofi/theme.rasi"
-
 
 // Main //
 window {
@@ -66,8 +65,8 @@ button {
 }
 button selected {
     border-radius:               3em;
-    background-color:            @main-fg;
-    text-color:                  @main-bg;
+    background-color:            @select-bg;
+    text-color:                  @select-fg;
 }
 
 

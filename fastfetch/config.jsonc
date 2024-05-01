@@ -1,24 +1,12 @@
 {
     "logo": {
         "source": "$(find \"${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/pngs/\" -name \"*.png\" | sort -R | head -1)",
-        "height": 10,
-        "padding": {
-            "top": 5
-        }
+        "height": 5,
+        "padding": { "top": 5, "left": 5 }
     },
-    "display": {
-        "separator": " : "
-    },
+    "display": { "separator": " : " },
     "modules": [
         "break",
-        // {
-        //     "type": "custom",
-        //     "format": "\u001b[36m    コンピューター"
-        // },
-        {
-            "type": "custom",
-            "format": "┌──────────────────────────────────────────┐"
-        },
         {
             "type": "os",
             "key": "   OS",
@@ -50,17 +38,13 @@
             "keyColor": "yellow"
         },
         {
-            "type": "custom",
-            "format": "└──────────────────────────────────────────┘"
-        },
-        "break",
-        {
-            "type": "title",
-            "key": "  "
+            "type": "uptime",
+            "key": "  󰥔 UpTime",
+            "keyColor": "yellow"
         },
         {
             "type": "custom",
-            "format": "┌──────────────────────────────────────────┐"
+            "format": "      ────────────────────────────────      "
         },
         {
             "type": "cpu",
@@ -85,15 +69,16 @@
             "keyColor": "magenta"
         },
         {
-            "type": "custom",
-            "format": "└──────────────────────────────────────────┘"
+            "type": "disk",
+            "format": "{1} / {2} ({3})",
+            "key": "   Disk",
+            "keyColor": "red"
         },
         "break",
         {
             "type": "colors",
-            "paddingLeft": 2,
+            "paddingLeft": 15,
             "symbol": "circle"
-        },
-        "break"
+        }
     ]
 }

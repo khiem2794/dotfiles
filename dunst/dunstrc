@@ -211,13 +211,13 @@
     # Scale small icons up to this size, set to 0 to disable. Helpful
     # for e.g. small files or high-dpi screens. In case of conflict,
     # max_icon_size takes precedence over this.
-    min_icon_size = 32
+    min_icon_size = 30
 
     # Scale larger icons down to this size, set to 0 to disable
-    max_icon_size = 128
+    max_icon_size = 60
 
     # Paths to default icons (only neccesary when not using recursive icon lookup)
-    icon_path = /home/khiem2794/.icons/Tela-circle-dracula/16/actions:/home/khiem2794/.icons/Tela-circle-dracula/16/apps:/home/khiem2794/.icons/Tela-circle-dracula/16/devices:/home/khiem2794/.icons/Tela-circle-dracula/16/mimetypes:/home/khiem2794/.icons/Tela-circle-dracula/16/panel:/home/khiem2794/.icons/Tela-circle-dracula/16/places:/home/khiem2794/.icons/Tela-circle-dracula/16/status
+    icon_path = /usr/share/icons/Tela-circle-dracula/16/actions:/usr/share/icons/Tela-circle-dracula/16/apps:/usr/share/icons/Tela-circle-dracula/16/devices:/usr/share/icons/Tela-circle-dracula/16/mimetypes:/usr/share/icons/Tela-circle-dracula/16/panel:/usr/share/icons/Tela-circle-dracula/16/places:/usr/share/icons/Tela-circle-dracula/16/status
 
     ### History ###
 
@@ -231,7 +231,7 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = /usr/bin/rofi -config "/home/khiem2794/.config/rofi/notification.rasi" -dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/xdg-open
@@ -442,22 +442,22 @@
     format = "<span size="250%">%s</span>\n%b"
 
 [urgency_critical]
-    background = "#f5e0dc"
-    foreground = "#1e1e2e"
-    frame_color = "#f38ba8"
-    icon = "/home/khiem2794/.config/dunst/icons/critical.svg"
-    timeout = 0
+    background = "#11111b"
+    foreground = "#cdd6f4"
+    frame_color = "#ff0000"
+    timeout = 5
+    icon = "/usr/share/icons/Tela-circle-dracula/16/status/package-broken.svg"
 
 [urgency_low]
-    background = "#A3659180"
-    foreground = "#FFCCF0E6"
-    frame_color = "#A3659103"
-    icon = "/home/khiem2794/.config/dunst/icons/arch.svg"
+    background = "#11111b"
+    foreground = "#cdd6f4"
+    frame_color = "#ffa500"
     timeout = 5
+    icon = "/usr/share/icons/Tela-circle-dracula/16/status/package-broken.svg"
 
 [urgency_normal]
-    background = "#5B3A6B80"
-    foreground = "#EFCCFFE6"
-    frame_color = "#5B3A6B03"
-    icon = "/home/khiem2794/.config/dunst/icons/arch.svg"
+    background = "#11111b"
+    foreground = "#cdd6f4"
+    frame_color = "#bb9af7"
     timeout = 5
+    icon = "/usr/share/icons/Tela-circle-dracula/16/status/package-broken.svg"

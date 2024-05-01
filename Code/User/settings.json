@@ -6,14 +6,13 @@
     "security.workspace.trust.untrustedFiles": "newWindow",
     "security.workspace.trust.startupPrompt": "never",
     "security.workspace.trust.enabled": false,
-    "editor.fontFamily": "'JetBrainsMono Nerd Font', 'monospace', monospace",
+    "editor.fontFamily": "JetBrainsMono Nerd Font",
     "extensions.autoUpdate": false,
-    "workbench.statusBar.visible": false,
     "terminal.external.linuxExec": "kitty",
     "terminal.explorerKind": "both",
     "terminal.sourceControlRepositoriesKind": "both",
     "telemetry.telemetryLevel": "off",
-    "workbench.colorTheme": "Tokyo Night Storm",
     "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false
+    "explorer.confirmDragAndDrop": false,
+    "workbench.startupEditor": "none"
 }

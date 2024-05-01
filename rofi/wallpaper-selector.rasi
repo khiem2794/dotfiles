@@ -1,82 +1,90 @@
+@theme "~/.config/rofi/theme.rasi"
+
 // Config //
 configuration {
     modi:                        "drun";
     show-icons:                  true;
     drun-display-format:         "{name}";
-    font:                        "JetBrainsMono Nerd Font 9";
+    font:                        "JetBrainsMono Nerd Font 10";
 }
-
-@theme "~/.config/rofi/theme.rasi"
-
 
 // Main //
 window {
     enabled:                     true;
     fullscreen:                  false;
-    width:                       40em;
-    height:                      20em;
     transparency:                "real";
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border:                      1em;
+    border:                      0em;
     border-radius:               0em;
-    border-color:                #00000003;
+    border-color:                transparent;
     background-color:            @main-bg;
-    background-image:            url("~/.config/rofi/assets/wallbash_mode.png", width);
 }
+
 mainbox {
     enabled:                     true;
-    orientation:                 vertical;
-    children:                    [ "dummy" , "listview" ];
+    orientation:                 horizontal;
+    children:                    [ "frame" ];
     background-color:            transparent;
 }
 
+frame {
+    children:                    [ "listview" ];
+    background-color:            transparent;
+    padding:                     0em;
+}
 
 // Lists //
 listview {
     enabled:                     true;
     spacing:                     1em;
-    padding:                     1em 2em 2.5em 2em;
-    columns:                     4;
-    lines:                       1;
+    padding:                     1em;
+    columns:                     5;
+    lines:                       2;
     dynamic:                     false;
     fixed-height:                false;
     fixed-columns:               true;
-    reverse:                     true;
+    reverse:                     false;
     cursor:                      "default";
     background-color:            transparent;
     text-color:                  @main-fg;
 }
+
 dummy {
-    padding:                     4em;
+    width:                       1em;
     expand:                      false;
     background-color:            transparent;
 }
 
-
 // Elements //
 element {
     enabled:                     true;
-    spacing:                     0em;
-    padding:                     1.5em;
     cursor:                      pointer;
-    background-color:            @main-bg;
+    background-color:            transparent;
     text-color:                  @main-fg;
-    border-radius:               0em;
+    padding:                     -3em;
 }
+
 element selected.normal {
     background-color:            @select-bg;
     text-color:                  @select-fg;
 }
+
 element-icon {
-    enabled:                     false;
+    cursor:                      inherit;
+    size:                        20em;
+    background-color:            transparent;
+    text-color:                  inherit;
+    expand:                      false;
+    padding:                     0em;
 }
+
 element-text {
     vertical-align:              0.5;
     horizontal-align:            0.5;
     cursor:                      inherit;
-    background-color:            transparent;
     text-color:                  inherit;
+    background-color:            transparent;
+    enabled:                     false;
 }
-
