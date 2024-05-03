@@ -14,5 +14,6 @@
     "telemetry.telemetryLevel": "off",
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "workbench.startupEditor": "none"
+    "workbench.startupEditor": "none",
+    "workbench.colorTheme": "Tokyo Night"
 }

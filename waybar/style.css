@@ -7,7 +7,7 @@
     min-height: 10px;
 }
 
-@import "theme.css";
+@import "_theme.css";
 
 window#waybar {
     background: @bar-bg;
@@ -64,7 +64,7 @@ tooltip {
     padding-left: 2px;
     padding-right: 2px;
     margin-right: 0px;
-    color: @wb-color;
+    color: @main-bg;
     animation: tb_normal 20s ease-in-out 1;
 }
 

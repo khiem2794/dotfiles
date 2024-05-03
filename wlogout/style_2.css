@@ -1,4 +1,4 @@
-@import "$HOME/.config/waybar/theme.css";
+@import "$HOME/.config/wlogout/_theme.css";
 
 * {
     background-image: none;
@@ -24,12 +24,12 @@ button {
 }
 
 button:focus {
-    background-color: @wb-act-bg;
+    background-color: @main-bg;
     background-size: 25%;
 }
 
 button:hover {
-    background-color: @wb-hvr-bg;
+    background-color: @main-fg;
     background-size: 30%;
     border-radius: ${active_rad}px;
 }

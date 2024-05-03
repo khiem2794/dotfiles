@@ -1,67 +1,90 @@
+@theme "~/.config/rofi/_theme.rasi"
+
 // Config //
 configuration {
     modi:                        "drun";
-    show-icons:                  true;
-    drun-display-format:         "{name}";
-    font:                        "JetBrainsMono Nerd Font 9";
+    show-icons:                  false;
 }
-
-@theme "~/.config/rofi/theme.rasi"
 
 
 // Main //
 window {
-    enabled:                     true;
-    fullscreen:                  false;
-    width:                       40em;
-    height:                      32.8em;
+    width:                       23em;
+    height:                      30em;
     transparency:                "real";
+    fullscreen:                  false;
+    enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border:                      0em;
-    border-radius:               0em;
-    border-color:                transparent;
-    background-color:            transparent;
-    background-image:            url("~/.config/rofi/assets/notification.png", width);
+    border-color:                @main-br;
+    background-color:            @main-bg;
 }
 mainbox {
     enabled:                     true;
+    spacing:                     0em;
+    padding:                     0.5em;
     orientation:                 vertical;
-    children:                    [ "dummy" , "frame" ];
+    children:                    [ "wallbox" , "listbox" ];
     background-color:            transparent;
 }
-dummy {
-    padding:                     6em;
+wallbox {
+    spacing:                     0em;
+    padding:                     0em;
     expand:                      false;
+    orientation:                 horizontal;
     background-color:            transparent;
+    background-image:            url("~/.cache/hyde/wall.blur", width);
+    children:                    [ "wallframe" , "inputbar" ];
 }
-frame {
+wallframe {
+    width:                       5em;
+    spacing:                     0em;
+    padding:                     0em;
+    expand:                      false;
+    background-color:            @main-bg;
+    background-image:            url("~/.cache/hyde/wall.quad", width);
+}
+
+
+// Inputs //
+inputbar {
     enabled:                     true;
-    orientation:                 vertical;
-    children:                    [ "dummy2" , "listview" , "dummy2" ];
+    padding:                     0em;
+    children:                    [ "entry" ];
+    background-color:            @main-bg;
+    expand:                      true;
+}
+entry {
+    enabled:                     true;
+    padding:                     1.8em;
+    text-color:                  @main-fg;
     background-color:            transparent;
 }
 
+
 // Lists //
-listview {
-    enabled:                     true;
+listbox {
     spacing:                     0em;
     padding:                     0em;
-    columns:                     1;
-    lines:                       5;
-    cycle:                       true;
-    dynamic:                     true;
-    scrollbar:                   false;
-    layout:                      vertical;
-    reverse:                     false;
-    expand:                      false;
-    fixed-height:                true;
-    fixed-columns:               true;
-    cursor:                      "default";
+    orientation:                 vertical;
+    children:                    [ "dummy" , "listview" , "dummy" ];
     background-color:            transparent;
 }
-dummy2 {
+listview {
+    enabled:                     true;
+    padding:                     0.5em;
+    columns:                     1;
+    lines:                       11; 
+    cycle:                       true;
+    fixed-height:                true;
+    fixed-columns:               false;
+    expand:                      false;
+    cursor:                      "default";
+    background-color:            transparent;
+    text-color:                  @main-fg;
+}
+dummy {
     spacing:                     0em;
     padding:                     0em;
     background-color:            transparent;
@@ -71,23 +94,18 @@ dummy2 {
 // Elements //
 element {
     enabled:                     true;
-    spacing:                     1em;
-    padding:                     1em;
+    padding:                     0.5em;
     cursor:                      pointer;
     background-color:            transparent;
     text-color:                  @main-fg;
-    border-radius:               0em;
 }
 element selected.normal {
     background-color:            @select-bg;
     text-color:                  @select-fg;
 }
-element-icon {
-    enabled:                     false;
-}
 element-text {
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
+    vertical-align:              0.0;
+    horizontal-align:            0.0;
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;

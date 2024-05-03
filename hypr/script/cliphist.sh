@@ -1,16 +1,11 @@
 #!/usr/bin/env sh
 
-
-#// set variables
-confDir="${XDG_CONFIG_HOME:-$HOME/.config}"
-roconf="${confDir}/rofi/clipboard.rasi"
-
+roconf="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/clipboard.rasi"
 hypr_border="$(hyprctl -j getoption decoration:rounding | jq '.int')"
 hypr_width="$(hyprctl -j getoption general:border_size | jq '.int')"
 
 
 #// set rofi scaling
-
 [[ "${rofiScale}" =~ ^[0-9]+$ ]] || rofiScale=10
 r_scale="configuration {font: \"JetBrainsMono Nerd Font ${rofiScale}\";}"
 wind_border=$((hypr_border * 3 / 2))
@@ -18,7 +13,6 @@ elem_border=$([ $hypr_border -eq 0 ] && echo "5" || echo $hypr_border)
 
 
 #// evaluate spawn position
-
 readarray -t curPos < <(hyprctl cursorpos -j | jq -r '.x,.y')
 readarray -t monRes < <(hyprctl -j monitors | jq '.[] | select(.focused==true) | .width,.height,.scale,.x,.y')
 readarray -t offRes < <(hyprctl -j monitors | jq -r '.[] | select(.focused==true).reserved | map(tostring) | join("\n")')
