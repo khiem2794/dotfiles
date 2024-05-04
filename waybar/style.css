@@ -36,8 +36,8 @@ tooltip {
 }
 
 #workspaces button.active {
-    background: @wb-act-bg;
-    color: @wb-act-fg;
+    background: @main-fg;
+    color: @wb-text-hvr;
     margin-left: 2px;
     padding-left: 9px;
     padding-right: 9px;
@@ -47,8 +47,8 @@ tooltip {
 }
 
 #workspaces button:hover {
-    background: @wb-hvr-bg;
-    color: @wb-hvr-fg;
+    background: @main-fg;
+    color: @wb-text-hvr;
     animation: ws_hover 20s ease-in-out 1;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
@@ -112,7 +112,7 @@ tooltip {
 #custom-rr_end {
     color: @main-fg;
     background: @main-bg;
-    opacity: 1;
+    opacity: 0.8;
     margin: 3px 0px 3px 0px;
     padding-left: 3px;
     padding-right: 3px;

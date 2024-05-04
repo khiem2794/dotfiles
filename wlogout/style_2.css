@@ -11,7 +11,7 @@ window {
 
 button {
     color: white;
-    background-color: transparent;
+    background-color: @main-inactive-bg;
     outline-style: none;
     border: none;
     border-width: 0px;

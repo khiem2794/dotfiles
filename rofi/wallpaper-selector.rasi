@@ -39,8 +39,8 @@ frame {
 // Lists //
 listview {
     enabled:                     true;
-    spacing:                     1em;
-    padding:                     1em;
+    spacing:                     2.5em;
+    padding:                     2.5em;
     columns:                     4;
     lines:                       3;
     dynamic:                     false;
@@ -52,42 +52,27 @@ listview {
     text-color:                  @main-fg;
 }
 
-dummy {
-    width:                       1em;
-    expand:                      false;
-    background-color:            transparent;
-}
-
 // Elements //
 element {
     enabled:                     true;
     cursor:                      pointer;
     background-color:            transparent;
-    text-color:                  @main-fg;
-    padding:                     -3em;
-    border-radius:               1em;
+    border-color:                transparent;
+    padding:                     -4.5em;
+    border:                      0em 0em 1em 0em;
+    border-radius:               1em 1em 0em 0em;
     orientation:                 vertical;
 }
 
-element selected.normal {
+element selected {
     background-color:            @select-bg;
-    text-color:                  @select-fg;
+    border-color:                @main-fg;
+    border-radius:               1em 1em 0em 0em;
 }
 
 element-icon {
     cursor:                      inherit;
-    size:                        20em;
+    size:                        15em;
     background-color:            transparent;
-    text-color:                  inherit;
     expand:                      false;
-    padding:                     0em;
-}
-
-element-text {
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
-    cursor:                      inherit;
-    text-color:                  inherit;
-    background-color:            transparent;
-    enabled:                     false;
 }
