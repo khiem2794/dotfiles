@@ -37,8 +37,8 @@ cd ~/Repos && git clone https://github.com/khiem2794/dotfiles
 ```
 sudo pacman -S hyprland hyprlock kitty xdg-desktop-portal-hyprland
 rm -rf ~/.config/hyprland
-cp ~/Repos/dotfiles/hyprland ~/.config/
-cp ~/Repos/dotfiles/kitty ~/.config/
+cp -r ~/Repos/dotfiles/hypr ~/.config/
+cp -r ~/Repos/dotfiles/kitty ~/.config/
 Hyprland #Super + R after to start kitty
 ```
 
