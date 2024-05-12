@@ -10,6 +10,12 @@
     "modules-left": [
         "custom/padd",
         "custom/l_end",
+        "custom/arch",
+        "custom/r_end",
+        "custom/padd",
+        
+        "custom/padd",
+        "custom/l_end",
         "hyprland/workspaces",
         "hyprland/window",
         "custom/r_end",
@@ -44,8 +50,12 @@
         "custom/r_end",
         "custom/padd"
     ],
+    "custom/arch": {
+        "format": " ",
+        "on-click": "toggle-theme.sh",
+        "tooltip": "Toggle night | light mode"
+    },
     "hyprland/workspaces": {
-        // "disable-scroll": true,
         "rotate": 0,
         "all-outputs": true,
         "active-only": false,
@@ -56,7 +66,7 @@
         "persistent-workspaces": {}
     },
     "hyprland/window": {
-        "format": "  {}",
+        "format": " | {}",
         "rotate": 0,
         "separate-outputs": true,
         "rewrite": {
@@ -156,7 +166,7 @@
         "format-linked": "󰈀 {ifname} (No IP) ",
         "format-disconnected": "󰖪  ",
         "tooltip-format-disconnected": "Disconnected",
-        "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span> ",
+        "format-alt": "<span> {bandwidthDownBytes}</span> <span> {bandwidthUpBytes}</span> ",
         "interval": 5
     },
     "pulseaudio": {
@@ -275,7 +285,7 @@
         "tooltip": false
     },
     "custom/padd": {
-        "format": "  ",
+        "format": "",
         "interval": "once",
         "tooltip": false
     }

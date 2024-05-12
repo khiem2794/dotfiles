@@ -1,4 +1,4 @@
-@import "$HOME/.config/wlogout/_theme.css";
+@import "$HOME/.config/wlogout/_theme_light.css";
 
 * {
     background-image: none;
@@ -10,7 +10,7 @@ window {
 }
 
 button {
-    color: white;
+    color: @main-fg;
     background-color: @main-inactive-bg;
     outline-style: none;
     border: none;
@@ -29,44 +29,40 @@ button:focus {
 }
 
 button:hover {
-    background-color: @main-fg;
+    background-color: @hover-bg;
     background-size: 30%;
     border-radius: ${active_rad}px;
+    color: @hover-fg;
 }
 
 button:hover#lock {
     background-image: image(url("$HOME/.config/wlogout/icons/lock_black.png"));
     border-radius: ${active_rad}px;
     margin : ${hvr}px 0px ${hvr}px ${mgn}px;
-    color: black;
 }
 
 button:hover#logout {
     background-image: image(url("$HOME/.config/wlogout/icons/logout_black.png"));
     border-radius: ${active_rad}px;
     margin : ${hvr}px 0px ${hvr}px 0px;
-    color: black;
 }
 
 button:hover#suspend {
     background-image: image(url("$HOME/.config/wlogout/icons/suspend_black.png"));
     border-radius: ${active_rad}px;
     margin : ${hvr}px 0px ${hvr}px 0px;
-    color: black;
 }
 
 button:hover#shutdown {
     background-image: image(url("$HOME/.config/wlogout/icons/shutdown_black.png"));
     border-radius: ${active_rad}px;
     margin : ${hvr}px 0px ${hvr}px 0px;
-    color: black;
 }
 
 button:hover#hibernate {
     background-image: image(url("$HOME/.config/wlogout/icons/hibernate_black.png"));
     border-radius: ${active_rad}px;
     margin : ${hvr}px 0px ${hvr}px 0px;
-    color: black;
 }
 
 button:hover#reboot {

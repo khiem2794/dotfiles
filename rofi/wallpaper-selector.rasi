@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_theme.rasi"
+@theme "~/.config/rofi/_theme_light.rasi"
 
 // Config //
 configuration {
@@ -67,6 +67,7 @@ element {
 element selected {
     background-color:            @select-bg;
     border-color:                @main-fg;
+    border:                      0 0 0.2em 0;
     border-radius:               1em 1em 0em 0em;
 }
 

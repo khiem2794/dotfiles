@@ -80,7 +80,7 @@ Hyprland #Super + R after to start kitty
   ```bash
     yay -S visual-studio-code-bin
     cp ~/Repos/dotfiles/Code ~/.config/
-    #install tokyonight theme
+    code --install-extension enkia.tokyo-night
   ```
 
 </details>

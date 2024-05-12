@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_theme.rasi"
+@theme "~/.config/rofi/_theme_light.rasi"
 
 // Config //
 configuration {
@@ -65,7 +65,7 @@ button {
 }
 button selected {
     border-radius:               3em;
-    background-color:            @select-bg;
+    background-color:            @select-fg;
     text-color:                  @text-select;
 }
 

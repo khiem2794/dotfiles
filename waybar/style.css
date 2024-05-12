@@ -1,3 +1,5 @@
+@import "_theme_light.css";
+
 * {
     border: none;
     border-radius: 0px;
@@ -6,8 +8,6 @@
     font-size: 13px;
     min-height: 10px;
 }
-
-@import "_theme.css";
 
 window#waybar {
     background: @bar-bg;
@@ -37,7 +37,7 @@ tooltip {
 
 #workspaces button.active {
     background: @main-fg;
-    color: @wb-text-hvr;
+    color: @main-bg;
     margin-left: 2px;
     padding-left: 9px;
     padding-right: 9px;
@@ -48,41 +48,8 @@ tooltip {
 
 #workspaces button:hover {
     background: @main-fg;
-    color: @wb-text-hvr;
-    animation: ws_hover 20s ease-in-out 1;
-    transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
-}
-
-#taskbar button {
-    box-shadow: none;
-	text-shadow: none;
-    padding: 0px;
-    border-radius: 7px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    margin-left: 0px;
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-right: 0px;
     color: @main-bg;
-    animation: tb_normal 20s ease-in-out 1;
-}
-
-#taskbar button.active {
-    background: @wb-act-bg;
-    color: @wb-act-color;
-    margin-left: 2px;
-    padding-left: 9px;
-    padding-right: 9px;
-    margin-right: 2px;
-    animation: tb_active 20s ease-in-out 1;
-    transition: all 0.4s cubic-bezier(.55,-0.68,.48,1.682);
-}
-
-#taskbar button:hover {
-    background: @wb-hvr-bg;
-    color: @wb-hvr-color;
-    animation: tb_hover 20s ease-in-out 1;
+    animation: ws_hover 20s ease-in-out 1;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
@@ -103,6 +70,7 @@ tooltip {
 #tray,
 #window,
 #workspaces,
+#custom-arch,
 #custom-warp,
 #custom-l_end,
 #custom-r_end,
@@ -116,11 +84,6 @@ tooltip {
     margin: 3px 0px 3px 0px;
     padding-left: 3px;
     padding-right: 3px;
-}
-
-#workspaces,
-#taskbar {
-    padding: 0px;
 }
 
 #custom-r_end {
@@ -157,4 +120,15 @@ tooltip {
     border-radius: 6px 0px 0px 6px;
     margin-left: 7px;
     padding-left: 0px;
+}
+
+#custom-arch {
+    padding-left: 5px;
+    /* padding-top: 1px;
+    padding-bottom: 1px; */
+}
+
+#custom-arch:hover {
+    background: @main-fg;
+    color: @main-bg;
 }
