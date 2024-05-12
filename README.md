@@ -1,7 +1,8 @@
-## Custom archlinux & hyprland rice install steps (Thinkpad T14s)
+# Custom archlinux & hyprland rice install steps (Thinkpad T14s)
 
-### 1. Archinstall (Extra packages: neovim sudo git)
-```
+## 1. Archinstall (Extra packages: neovim sudo git)
+
+```bash
 iwctl
 device list
 station [name] scan
@@ -9,32 +10,42 @@ station [name] connect Helicopter
 exit
 ```
 
-### 2. After rebooting, connect wifi + install some package
-```
+## 2. After rebooting, connect wifi + install some packages
+
+```bash
 nmtui
 sudo pacman -S wget unzip polkit-gnome pacman-contrib lazygit
 sudo pacman -S udiskie
 sudo pacman -S brightnessctl 
 sudo pacman -S pavucontrol pamixer
 sudo pacman -S network-manager-applet bluez bluez-utils blueman
-sudo pacman -S imv mpv #img viewer + media player
 ```
 
-### 3. Installing yay
-```
+## 3. Installing yay
+
+```bash
 mkdir Repos && cd Repos
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
 ```
 
-### 4. Clonning dotfiles
-```
+## 4. Clonning dotfiles
+
+```bash
 cd ~/Repos && git clone https://github.com/khiem2794/dotfiles
 ```
 
-### 5. Installing hyprland and start desktop mode
+## 5. Installing required themes, icons, fonts
+
+```bash
+yay -S tela-circle-icon-theme-dracula tokyonight-gtk-theme-git bibata-cursor-theme-bin ttf-mapple
+sudo pacman -S ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd noto-fonts-emoji
 ```
+
+## 6. Installing hyprland, kitty and start desktop mode
+
+```bash
 sudo pacman -S hyprland hyprlock kitty xdg-desktop-portal-hyprland
 rm -rf ~/.config/hyprland
 cp -r ~/Repos/dotfiles/hypr ~/.config/
@@ -42,130 +53,236 @@ cp -r ~/Repos/dotfiles/kitty ~/.config/
 Hyprland #Super + R after to start kitty
 ```
 
-### Installing + Config FastFetch
-```
-sudo pacman -S fastfetch imagemagick
-cp ~/Repos/dotfiles/fastfetch ~/.config/
-```
+## 7. Installing required softwares & packages
 
-### Installing themes, icons, fonts
-```
-yay -S tela-circle-icon-theme-dracula dracula-gtk-theme bibata-cursor-theme-bin ttf-mapple
-sudo pacman -S nwg-look ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd noto-fonts-emoji
-nwg-look #change to widget to dracula and cursor to bibata-modern-ice
-```
+<details>
+  <summary><b>7.2 Installing FastFetch</b></summary>
 
-### Installing File browser (Super + E)
-```
-sudo pacman -S thunar gvfs
-```
+  ```bash
+    sudo pacman -S fastfetch imagemagick
+    cp ~/Repos/dotfiles/fastfetch ~/.config/
+  ```
 
-### Installing VSCode (Super + C)
-```
-yay -S visual-studio-code-bin
-cp ~/Repos/dotfiles/Code ~/.config/
-#install tokyo night theme
-```
+</details>
 
-### Installing Firefox (Super + F) 
+<details>
+  <summary><b>7.3 Installing Thunar file browser (Super + E)</b></summary>
+
+  ```bash
+    sudo pacman -S thunar gvfs
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.4 Installing VSCode (Super + C)</b></summary>
+
+  ```bash
+    yay -S visual-studio-code-bin
+    cp ~/Repos/dotfiles/Code ~/.config/
+    #install tokyonight theme
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.5 Installing Firefox (Super + F)</b></summary>
+
 - Enable toolkit.legacyUserProfileCustomizations.stylesheets
-- Copy https://gist.github.com/khiem2794/4c8cd1e43c5bdf6c630cc314c55201e9
-```
-sudo pacman -S firefox
-```
+- Copy <https://gist.github.com/khiem2794/4c8cd1e43c5bdf6c630cc314c55201e9>
 
-### Installing + Config Waybar
-```
-sudo pacman -S waybar
-cp ~/Repos/dotfiles/Code ~/.config/
-```
+  ```bash
+    sudo pacman -S firefox
+  ```
 
-### Installing + Config Dunst
-```
-sudo pacman -S dunst libnotify
-cp ~/Repos/dotfiles/dunst ~/.config/
-```
+</details>
 
-### Installing screenshot tools (Super + P)
-```
-sudo pacman -S slurp swappy cliphist && yay -S grimblast-git
-```
+<details>
+  <summary><b>7.6 Installing Waybar</b></summary>
 
-### Installing + Config Rofi (Super + A | Super + Shift + E | Super + Tab)
-```
-yay -S rofi-lbonn-wayland-git
-cp ~/Repos/dotfiles/rofi ~/.config/
-```
+  ```bash
+    sudo pacman -S waybar
+    cp ~/Repos/dotfiles/Code ~/.config/
+  ```
 
-### Installing + Config Wlogout (Super + Backspace | Super + Shift + Backspace)
-```
-yay -S wlogout
-cp ~/Repos/dotfiles/wlogout ~/.config/
-```
+</details>
 
-### Installing Swww for Wallpaper
-```
-yay -S swww
-mkdir ~/Pictures
-mkdir ~/Pictures/Wallpapers #Download and put wallpapers here
-```
+<details>
+  <summary><b>7.7 Installing Dunst</b></summary>
 
-### Installing Warp VPN
-```
-yay -S cloudflare-warp-bin 
-sudo systemctl enable warp-svc
-warp-cli connect
-```
+  ```bash
+    sudo pacman -S dunst libnotify
+    cp ~/Repos/dotfiles/dunst ~/.config/
+  ```
 
-### Installing + Config Starship prompt
-```
-sudo pacman -S starship
-echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
-echo "eval \"\$(starship init bash)\"" >> ~/.bashrc
-rm ~/.config/starship.toml
-cp ~/Repos/dotfiles/starship ~/.config/
-```
+</details>
 
-### Installing + Config Tmux
-```
-sudo pacman -S tmux
-cp ~/Repos/dotfiles/tmux ~/.config/
-```
+<details>
+  <summary><b>7.9 Installing Rofi (Super + A)</b></summary>
 
-### Updating Grub settings
-```
-sudo nvim /etc/defaut/grub
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-```
+  ```bash
+    yay -S rofi-lbonn-wayland-git
+    cp ~/Repos/dotfiles/rofi ~/.config/
+  ```
 
-### Installing + Config SDDM
-```
-sudo pacman -S sddm
-yay -S sddm-theme-corners-git #settings in /usr/share/sddm/themes/corners/
-sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
-sudo nvim /etc/sddm.conf #change theme to corners
-sudo systemctl enable sddm 
-```
+</details>
 
-### Installing TimeShift and create backup
-```
-sudo pacman -S  timeshift
-sudo -E timeshift-launcher
-sudo nvim /usr/share/applications/timeshift-gtk.desktop #fixing not start in rofi
-```
+<details>
+  <summary><b>7.10 Installing Wlogout (Super + [Shift] + Backspace)</b></summary>
 
-# Replace some dracula theme color
-```
-cd /usr/share/themes/Dracula
-sed -i 's/282a36/1a1b26/g' *
-sed -i 's/232530/1a1b26/g' *
-sed -i 's/2a2c39/1a1b26/g' *
-```
+  ```bash
+    yay -S wlogout
+    cp ~/Repos/dotfiles/wlogout ~/.config/
+  ```
 
-### Installing nvm
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-nvm install --lts
-```
+</details>
 
-# fixing cursor state, system-wide changed https://wiki.archlinux.org/title/Cursor_themes#Configuration 
+<details>
+  <summary><b>7.11 Installing Swww</b></summary>
+
+  ```bash
+    yay -S swww
+    mkdir ~/Pictures
+    mkdir ~/Pictures/Wallpapers #Download and put wallpapers here
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.12 Installing Warp VPN</b></summary>
+
+  ```bash
+    yay -S cloudflare-warp-bin 
+    sudo systemctl enable warp-svc
+    warp-cli connect
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.13 Installing + Config Starship prompt</b></summary>
+
+  ```bash
+  sudo pacman -S starship
+  echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
+  echo "eval \"\$(starship init bash)\"" >> ~/.bashrc
+  rm ~/.config/starship.toml
+  cp ~/Repos/dotfiles/starship ~/.config/
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.14 Installing Tmux</b></summary>
+
+  ```bash
+    sudo pacman -S tmux
+    cp ~/Repos/dotfiles/tmux ~/.config/
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.15 Updating grub settings</b></summary>
+
+  ```bash
+    sudo nvim /etc/defaut/grub
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.16 Installing + Config SDDM</b></summary>
+
+  ```bash
+    sudo pacman -S sddm
+    yay -S sddm-theme-corners-git
+    sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
+    sudo nvim /etc/sddm.conf #change theme to corners
+    sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background
+    sudo systemctl enable sddm 
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.17 Installing TimeShift & Backup</b></summary>
+
+  ```bash
+    sudo pacman -S timeshift
+    sudo -E timeshift-launcher
+    sudo nvim /usr/share/applications/timeshift-gtk.desktop #fixing launcher
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.18 Installing nvm</b></summary>
+
+  ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    nvm install --lts
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.19 Config neovim + install neovide</b></summary>
+
+  ```bash
+    git clone https:// github.com/khiem2794/nvim-config ~/.config/nvim
+    sudo pacman -S neovide
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.8 Installing screenshot tools (Super + P)</b></summary>
+
+  ```bash
+    sudo pacman -S slurp swappy cliphist
+    yay -S grimblast-git
+  ```
+
+</details>
+
+<details>
+  <summary><b>7.1 Installing nwg-look</b></summary>
+
+  ```bash
+    sudo pacman -S nwg-look
+    nwg-look
+  ```
+
+</details>
+
+## 8. Resolve bugs might happen after
+
+<details>
+  <summary>1. Cursor theme not consistent</summary>
+
+  Checking <https://wiki.archlinux.org/title/Cursor_themes#Configuration> and apply system-wide change.
+
+</details>
+
+## 9. Optional useful softwares & packages
+
+<details>
+  <summary><b>1. Chromium for running website headless</b></summary>
+
+  ```bash
+    sudo pacman -S chromium
+    chromium --app=https://chat.openai.com
+  ```
+
+</details>
+
+<details>
+  <summary><b>2. Image viewer and Media player</b></summary>
+
+  ```bash
+    sudo pacman -S imv mpv
+  ```
+
+</details>
