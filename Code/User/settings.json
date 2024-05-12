@@ -15,6 +15,7 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Tokyo Night Light",
-    "extensions.ignoreRecommendations": true
+    "workbench.colorTheme": "Tokyo Night",
+    "extensions.ignoreRecommendations": true,
+    "editor.minimap.enabled": false
 }

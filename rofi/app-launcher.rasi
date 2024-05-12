@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_theme_light.rasi"
+@theme "~/.config/rofi/_theme_night.rasi"
 
 // Config //
 configuration {
