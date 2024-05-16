@@ -1,12 +1,9 @@
 {
     "window.menuBarVisibility": "toggle",
-    "editor.fontSize": 14,
-    "editor.scrollbar.vertical": "hidden",
-    "editor.scrollbar.verticalScrollbarSize": 0,
     "security.workspace.trust.untrustedFiles": "newWindow",
     "security.workspace.trust.startupPrompt": "never",
     "security.workspace.trust.enabled": false,
-    "editor.fontFamily": "JetBrainsMono Nerd Font",
+    "editor.fontFamily": "\"Maple Mono\", \"JetBrainsMono Nerd Font\"",
     "extensions.autoUpdate": false,
     "terminal.external.linuxExec": "kitty",
     "terminal.explorerKind": "both",
@@ -15,7 +12,9 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Tokyo Night",
+    "workbench.colorTheme": "Catppuccin Mocha",
     "extensions.ignoreRecommendations": true,
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "explorer.confirmPasteNative": false,
+    "git.openRepositoryInParentFolders": "never"
 }

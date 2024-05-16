@@ -1,0 +1,87 @@
+@import "$HOME/.config/wlogout/_catppuccin_mocha.css";
+
+window {
+    font-size: 14pt;
+    color: @text;
+    background-color: transparent;
+}
+
+button {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%;
+    background-color: @surface0;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.3s ease-in;
+    box-shadow: 0 0 10px 2px transparent;
+    border-radius: 36px;
+    margin: 25px 100px 25px 100px;
+    border: 1px solid @maroon;
+    color: @text;
+}
+
+button:focus {
+    box-shadow: none;
+    background-size: 35%;
+    background-color: @surface2;
+    border: 1px solid @surface2;
+}
+
+button:hover {
+    background-size: 40%;
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, .4);
+    background-color: @maroon;
+    color: @maroon;
+    transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682), box-shadow 0.5s ease-in;
+}
+
+#shutdown {
+    background-image: image(url("$HOME/.config/wlogout/icons/power-light.png"));
+}
+
+#shutdown:hover {
+    background-image: image(url("$HOME/.config/wlogout/icons/power-dark.png"));
+}
+
+#logout {
+    background-image: image(url("$HOME/.config/wlogout/icons/logout-light.png"));
+
+}
+
+#logout:hover {
+    background-image: image(url("$HOME/.config/wlogout/icons/logout-dark.png"));
+}
+
+#reboot {
+    background-image: image(url("$HOME/.config/wlogout/icons/restart-light.png"));
+}
+
+#reboot:hover {
+    background-image: image(url("$HOME/.config/wlogout/icons/restart-dark.png"));
+}
+
+#lock {
+    background-size: 25%;
+    background-image: image(url("$HOME/.config/wlogout/icons/lock-light.png"));
+}
+
+#lock:hover {
+    background-size: 35%;
+    background-image: image(url("$HOME/.config/wlogout/icons/lock-dark.png"));
+}
+
+#hibernate {
+    background-image: image(url("$HOME/.config/wlogout/icons/hibernate-light.png"));
+}
+
+#hibernate:hover {
+    background-image: image(url("$HOME/.config/wlogout/icons/hibernate-dark.png"));
+}
+
+#suspend {
+    background-image: image(url("$HOME/.config/wlogout/icons/suspend-light.png"));
+}
+
+#suspend:hover {
+    background-image: image(url("$HOME/.config/wlogout/icons/suspend-dark.png"));
+}

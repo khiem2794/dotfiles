@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_theme_night.rasi"
+@theme "~/.config/rofi/_catppuccin_mocha.rasi"
 
 // Config //
 configuration {
@@ -10,63 +10,84 @@ configuration {
     display-window:              " ";
     drun-display-format:         "{name}";
     window-format:               "{w}{t}";
-    font:                        "JetBrainsMono Nerd Font 10";
+    font:                        "JetBrainsMono Nerd Font 12";
     icon-theme:                  "Tela-circle-dracula";
 }
 
 // Main //
 window {
-    height:                      31em;
-    width:                       37em;
+    height:                      20em;
+    width:                       35em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @main-br;
-    background-color:            @main-bg;
+    border-color:                @border-col;
+    background-color:            @bg-col;
+    border-radius:               0.7em;
+    border:                      0.2em;
 }
 mainbox {
     enabled:                     true;
     spacing:                     0em;
     padding:                     0em;
-    orientation:                 horizontal;
-    children:                    [ "inputbar" , "mode-switcher" , "listbox" ];
-    background-color:            @main-bg;
+    orientation:                 vertical;
+    children:                    [ "choicebox" , "listbox" ];
+    background-color:            @bg-col;
 }
 
+choicebox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 horizontal;
+    children:                    [ "inputbar", "mode-switcher" ];
+    background-color:            transparent;
+    expand:                      false;
+}
 
 // Inputs //
 inputbar {
-    width:                       0em;
     enabled:                     true;
+    width:                       19em;
+    padding:                     0em;
+    spacing:                     0em;
     children:                    [ "entry" ];
-}
-entry {
-    enabled:                     false;
+    background-color:            transparent;
+    expand:                      false;
 }
 
+entry {
+    enabled:                     true;
+    padding:                     1em;
+    text-color:                  @fg-col;
+    background-color:            transparent;
+    vertical-align:              0.5;
+    placeholder:                 "";
+}
 
 // Modes //
 mode-switcher {
-    width:                       9em;
-    orientation:                 vertical;
+    width: 15em;
+    orientation:                 horizontal;
     enabled:                     true;
-    padding:                     3em 1.8em 3em 1.8em;
-    spacing:                     1em;
-    background-color:            @main-bg;
+    padding:                     0.5em;
+    spacing:                     0em;
+    background-color:            transparent;
+    expand:                      false;
 }
 button {
+    padding:                     0em;
     cursor:                      pointer;
-    border-radius:               3em;
-    background-color:            @main-bg;
-    text-color:                  @main-fg;
+    border-radius:               0.3em;
+    background-color:            @bg-col;
+    text-color:                  @fg-col;
 }
 button selected {
-    border-radius:               3em;
-    background-color:            @select-fg;
-    text-color:                  @text-select;
+    background-color:            @selected-col;
+    text-color:                  @fg-col2;
 }
 
 
@@ -82,7 +103,7 @@ listview {
     padding:                     1em;
     spacing:                     0em;
     enabled:                     true;
-    columns:                     1;
+    columns:                     2;
     lines:                       7;
     cycle:                       true;
     dynamic:                     true;
@@ -94,7 +115,7 @@ listview {
     fixed-columns:               true;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @main-fg;
+    text-color:                  @fg-col;
 }
 dummy {
     background-color:            transparent;
@@ -105,11 +126,11 @@ dummy {
 element {
     orientation:                 horizontal;
     enabled:                     true;
-    spacing:                     1.5em;
+    spacing:                     2.5em;
     padding:                     0.5em;
     cursor:                      pointer;
     background-color:            transparent;
-    text-color:                  @main-fg;
+    text-color:                  @fg-col;
 }
 @media(max-aspect-ratio: 1.8) {
     element {
@@ -118,10 +139,11 @@ element {
 }
 element selected.normal {
     background-color:            @select-fg;
-    text-color:                  @text-select;
+    text-color:                  @fg-col2;
+    border-radius:               0.5em;
 }
 element-icon {
-    size:                        3em;
+    size:                        1em;
     cursor:                      inherit;
     background-color:            transparent;
     text-color:                  inherit;
@@ -130,7 +152,6 @@ element-text {
     vertical-align:              0.5;
     horizontal-align:            0;
     cursor:                      inherit;
-    background-color:            transparent;
     text-color:                  inherit;
+    background-color:            transparent;
 }
-

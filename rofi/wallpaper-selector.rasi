@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_theme_night.rasi"
+@theme "~/.config/rofi/_catppuccin_mocha.rasi"
 
 // Config //
 configuration {
@@ -16,11 +16,10 @@ window {
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border:                      0em;
-    border-radius:               1em;
+    border-color:                @border-col;
+    background-color:            @bg-col;
+    border-radius:               0.7em;
     border:                      0.2em;
-    border-color:                @main-br;
-    background-color:            @main-bg;
 }
 
 mainbox {
@@ -49,7 +48,7 @@ listview {
     reverse:                     false;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @main-fg;
+    text-color:                  @fg-col;
 }
 
 // Elements //
@@ -65,10 +64,9 @@ element {
 }
 
 element selected {
-    background-color:            @select-bg;
-    border-color:                @main-fg;
+    background-color:            @selected-col;
+    border-color:                @fg-col2;
     border:                      0 0 0.2em 0;
-    border-radius:               1em 1em 0em 0em;
 }
 
 element-icon {

@@ -1,36 +1,36 @@
 #!/bin/sh
 
-current=$(grep -o -E 'theme_\w+' ~/.config/hypr/hyprland.conf | cut -d '_' -f2)
-new="light"
+current=$(grep -o -E 'catppuccin_\w+' ~/.config/hypr/hyprland.conf | cut -d '_' -f2)
+new="mocha"
 
-if [ $current = "night" ]; then
-    new="light"
-
-    # change the theme in vscode
-    sed -i -e 's/"workbench.colorTheme": ".*"/"workbench.colorTheme": "Tokyo Night Light"/g' "$HOME/.config/Code/User/settings.json"
-
-    # change firefox uesrContent
-    cp ~/.mozilla/firefox/*.default-release/chrome/userContent-light.css ~/.mozilla/firefox/*.default-release/chrome/userContent.css
-
-    #change neovim color scheme
-    sed -i 's/tokyonight-night/tokyonight-day/g' "$HOME/.config/nvim/lua/plugins/colorscheme.lua"
+if [ $current = "mocha" ]; then
+    new="latte"
+    vscode_theme="Catppuccin Latte"
+    swww img ~/Pictures/Wallpapers/_latte.png --transition-type center --transition-fps 60
+    cp ~/.mozilla/firefox/*.default-release/chrome/userContent-latte.css ~/.mozilla/firefox/*.default-release/chrome/userContent.css
+    cp ~/.config/dunst/dunstrc.latte ~/.config/dunst/dunstrc
 else
-    new="night"
-    sed -i -e 's/"workbench.colorTheme": ".*"/"workbench.colorTheme": "Tokyo Night"/g' "$HOME/.config/Code/User/settings.json"
-    cp ~/.mozilla/firefox/*.default-release/chrome/userContent-night.css ~/.mozilla/firefox/*.default-release/chrome/userContent.css
-    sed -i 's/tokyonight-day/tokyonight-night/g' "$HOME/.config/nvim/lua/plugins/colorscheme.lua"
+    new="mocha"
+    vscode_theme="Catppuccin Mocha"
+    swww img ~/Pictures/Wallpapers/_mocha.png --transition-type center --transition-fps 60
+    cp ~/.mozilla/firefox/*.default-release/chrome/userContent-mocha.css ~/.mozilla/firefox/*.default-release/chrome/userContent.css
+    cp ~/.config/dunst/dunstrc.mocha ~/.config/dunst/dunstrc
 fi
 
 
-sed -i "s/theme_$current/theme_$new/g" ~/.config/hypr/hyprland.conf
-sed -i "s/theme_$current/theme_$new/g" ~/.config/kitty/kitty.conf
-sed -i "s/theme_$current/theme_$new/g" ~/.config/rofi/app-launcher.rasi
-sed -i "s/theme_$current/theme_$new/g" ~/.config/rofi/clipboard.rasi
-sed -i "s/theme_$current/theme_$new/g" ~/.config/rofi/notification.rasi
-sed -i "s/theme_$current/theme_$new/g" ~/.config/rofi/wallpaper-selector.rasi
-sed -i "s/theme_$current/theme_$new/g" ~/.config/waybar/style.css
-sed -i "s/theme_$current/theme_$new/g" ~/.config/wlogout/style_1.css
-sed -i "s/theme_$current/theme_$new/g" ~/.config/wlogout/style_2.css
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/hypr/hyprland.conf
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/kitty/kitty.conf
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/rofi/app-launcher.rasi
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/rofi/clipboard.rasi
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/rofi/wallpaper-selector.rasi
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/waybar/style.css
+sed -i "s/catppuccin_$current/catppuccin_$new/g" ~/.config/wlogout/style.css
+sed -i "s/\"catppuccin_$current\"/\"catppuccin_$new\"/g" ~/.config/starship/starship.toml
 
-#restart the waybar
+sed -i "s/catppuccin-$current/catppuccin-$new/g" ~/.config/nvim/lua/plugins/colorscheme.lua
+sed -i -e "s/\"workbench.colorTheme\": \".*\"/\"workbench.colorTheme\": \"$vscode_theme\"/g" ~/.config/Code/User/settings.json
+
+
+#restart
 killall -SIGUSR2 waybar
+killall dunst; dunst &

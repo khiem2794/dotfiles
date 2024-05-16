@@ -1,23 +1,26 @@
-@theme "~/.config/rofi/_theme_night.rasi"
+@theme "~/.config/rofi/_catppuccin_mocha.rasi"
 
 // Config //
 configuration {
     modi:                        "drun";
     show-icons:                  false;
+    font:                        "JetBrainsMono Nerd Font 10";
 }
 
 // Main //
 window {
-    width:                       23em;
-    height:                      30em;
+    width:                       25em;
+    height:                      28em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @main-br;
-    background-color:            @main-bg;
+    border-color:                @border-col;
+    background-color:            @bg-col;
+    border-radius:               0.7em;
+    border:                      0.2em;
 }
 
 mainbox {
@@ -25,41 +28,23 @@ mainbox {
     spacing:                     0em;
     padding:                     0.5em;
     orientation:                 vertical;
-    children:                    [ "wallbox" , "listbox" ];
+    children:                    [ "inputbar" , "listbox" ];
     background-color:            transparent;
-}
-
-wallbox {
-    spacing:                     0em;
-    padding:                     0em;
-    expand:                      false;
-    orientation:                 horizontal;
-    background-color:            transparent;
-    children:                    [ "wallframe" , "inputbar" ];
-}
-
-wallframe {
-    width:                       5em;
-    spacing:                     0em;
-    padding:                     0em;
-    expand:                      false;
-    background-color:            @main-bg;
-    background-image:            url("~/.cache/hyde/wall.quad", width);
 }
 
 // Inputs //
 inputbar {
     enabled:                     true;
-    padding:                     0em;
+    padding:                     0.1em;
     children:                    [ "entry" ];
-    background-color:            @main-bg;
-    expand:                      true;
+    background-color:            @bg-col;
+    expand:                      false;
 }
 
 entry {
     enabled:                     true;
-    padding:                     1.8em;
-    text-color:                  @main-fg;
+    padding:                     1em;
+    text-color:                  @fg-col;
     background-color:            transparent;
 }
 
@@ -76,14 +61,14 @@ listview {
     enabled:                     true;
     padding:                     0.5em;
     columns:                     1;
-    lines:                       11; 
+    lines:                       10; 
     cycle:                       true;
     fixed-height:                true;
     fixed-columns:               false;
     expand:                      false;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @main-fg;
+    text-color:                  @fg-col;
 }
 
 dummy {
@@ -98,12 +83,13 @@ element {
     padding:                     0.5em;
     cursor:                      pointer;
     background-color:            transparent;
-    text-color:                  @main-fg;
+    text-color:                  @fg-col;
 }
 
 element selected.normal {
-    background-color:            @select-fg;
-    text-color:                  @text-select;
+    background-color:            @selected-col;
+    text-color:                  @fg-col2;
+    border-radius:               0.5em;
 }
 
 element-text {
