@@ -77,7 +77,7 @@
   <summary><b>Installing Thunar file browser (Super + E)</b></summary>
 
   ```bash
-    sudo pacman -S thunar gvfs
+    sudo pacman -S thunar gvfs tumbler
   ```
 
 </details>
@@ -88,7 +88,7 @@
   ```bash
     yay -S visual-studio-code-bin
     cp ~/Repos/dotfiles/Code ~/.config/
-    code --install-extension enkia.tokyo-night
+    code --install-extension Catppuccin.catppuccin-vsc
   ```
 
 </details>
