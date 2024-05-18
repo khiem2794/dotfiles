@@ -6,7 +6,10 @@
 <summary><b>Archinstall & reboot</b></summary>
 
 - Extra packages: neovim sudo git
-
+- Partition: /boot, /, /home
+- Bootloader: grub
+- Type: Minimal
+- Audio: pipewire
 </details>
 
 
@@ -31,12 +34,12 @@
     makepkg -si
 
     # Installing themes, fonts & cursor
-    yay -S tela-circle-icon-theme-dracula catppuccin-gtk-theme-mocha catppuccin-gtk-theme-latte bibata-cursor-theme-bin ttf-mapple
-    sudo pacman -S ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd noto-fonts-emoji
+    yay -S tela-circle-icon-theme-dracula catppuccin-gtk-theme-mocha catppuccin-gtk-theme-latte bibata-cursor-theme-bin ttf-maple
+    sudo pacman -S ttf-jetbrains-mono-nerd 
 
     # Installing hyprland, hyprlock & kitty
     sudo pacman -S hyprland hyprlock kitty xdg-desktop-portal-hyprland
-    rm -rf ~/.config/hyprland
+    rm -rf ~/.config/hypr
     cp -r ~/Repos/dotfiles/hypr ~/.config/
     cp -r ~/Repos/dotfiles/kitty ~/.config/
     Hyprland #Super + R after to start kitty
@@ -51,7 +54,7 @@
 
   ```bash
     sudo pacman -S fastfetch imagemagick
-    cp ~/Repos/dotfiles/fastfetch ~/.config/
+    cp -r ~/Repos/dotfiles/fastfetch ~/.config/
   ```
 
 </details>
@@ -70,8 +73,8 @@
 
   ```bash
     yay -S visual-studio-code-bin
-    cp ~/Repos/dotfiles/Code ~/.config/
     code --install-extension Catppuccin.catppuccin-vsc
+    cp -r ~/Repos/dotfiles/Code ~/.config/
   ```
 
 </details>
@@ -93,7 +96,8 @@
 
   ```bash
     sudo pacman -S waybar
-    cp ~/Repos/dotfiles/Code ~/.config/
+    rm -rf ~/.config/waybar
+    cp -r ~/Repos/dotfiles/Code ~/.config/
   ```
 
 </details>
@@ -103,7 +107,7 @@
 
   ```bash
     sudo pacman -S dunst libnotify
-    cp ~/Repos/dotfiles/dunst ~/.config/
+    cp -r ~/Repos/dotfiles/dunst ~/.config/
   ```
 
 </details>
@@ -113,7 +117,7 @@
 
   ```bash
     yay -S rofi-lbonn-wayland-git
-    cp ~/Repos/dotfiles/rofi ~/.config/
+    cp -r ~/Repos/dotfiles/rofi ~/.config/
   ```
 
 </details>
@@ -123,7 +127,7 @@
 
   ```bash
     yay -S wlogout
-    cp ~/Repos/dotfiles/wlogout ~/.config/
+    cp -r ~/Repos/dotfiles/wlogout ~/.config/
   ```
 
 </details>
@@ -145,6 +149,8 @@
   ```bash
     yay -S cloudflare-warp-bin 
     sudo systemctl enable warp-svc
+    sudo systemctl start warp-svc
+    warp-cli register
     warp-cli connect
   ```
 
@@ -158,7 +164,7 @@
   echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
   echo "eval \"\$(starship init bash)\"" >> ~/.bashrc
   rm ~/.config/starship.toml
-  cp ~/Repos/dotfiles/starship ~/.config/
+  cp -r ~/Repos/dotfiles/starship ~/.config/
   ```
 
 </details>
@@ -168,7 +174,7 @@
 
   ```bash
     sudo pacman -S tmux
-    cp ~/Repos/dotfiles/tmux ~/.config/
+    cp -r ~/Repos/dotfiles/tmux ~/.config/
   ```
 
 </details>
@@ -184,9 +190,10 @@
 </details>
 
 <details>
-  <summary><b>Installing nvm</b></summary>
+  <summary><b>Installing rust + nvm</b></summary>
 
   ```bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     nvm install --lts
   ```
@@ -197,7 +204,7 @@
   <summary><b>Config neovim + install neovide</b></summary>
 
   ```bash
-    git clone https:// github.com/khiem2794/nvim-config ~/.config/nvim
+    git clone https://github.com/khiem2794/nvim-config ~/.config/nvim
     sudo pacman -S neovide
   ```
 
@@ -232,7 +239,7 @@
     sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
     sudo nvim /etc/sddm.conf #change theme to corners
     sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background
-    sudo systemctl enable sddm 
+    sudo systemctl enable sddm
   ```
 
 </details>

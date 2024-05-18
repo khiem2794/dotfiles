@@ -134,14 +134,10 @@ element {
     cursor:                      pointer;
     background-color:            transparent;
     text-color:                  @fg-col;
-}
-@media(max-aspect-ratio: 1.8) {
-    element {
-        orientation:             vertical;
-    }
+    orientation:                 horizontal;
 }
 element selected.normal {
-    background-color:            @select-fg;
+    background-color:            @selected-col;
     text-color:                  @fg-col2;
     border-radius:               0.5em;
 }
