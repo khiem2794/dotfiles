@@ -88,6 +88,9 @@ button {
 button selected {
     background-color:            @selected-col;
     text-color:                  @fg-col2;
+    border:                      0 0 0.1em 0;
+    border-color:                @border-col;
+    border-radius:               0;
 }
 
 

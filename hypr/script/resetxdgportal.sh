@@ -8,13 +8,6 @@ killall xdg-desktop-portal-wlr
 killall xdg-desktop-portal
 sleep 1
 
-# NixOS check
-if [ -d /run/current-system/sw/libexec ]; then
-    libDir=/run/current-system/sw/libexec
-else
-    libDir=/usr/lib
-fi
-
-$libDir/xdg-desktop-portal-hyprland &
+/usr/lib/xdg-desktop-portal-hyprland &
 sleep 2
-$libDir/xdg-desktop-portal &
+/usr/lib/xdg-desktop-portal &

@@ -3,7 +3,7 @@
 ## 1. Setting up Archlinux & Hyprland
 
 <details>
-<summary><b>Archinstall</b></summary>
+<summary><b>Archinstall & reboot</b></summary>
 
 - Extra packages: neovim sudo git
 
@@ -11,46 +11,30 @@
 
 
 <details>
-  <summary><b>After rebooting, connect wifi + install some packages</b></summary>
+  <summary><b>Installing starter packages</b></summary>
 
   ```bash
-    nmtui
+    nmtui # use to connect wifi
+
+    # Installing essential packages
     sudo pacman -S wget unzip polkit-gnome pacman-contrib lazygit
     sudo pacman -S udiskie
     sudo pacman -S brightnessctl 
     sudo pacman -S pavucontrol pamixer
-    sudo pacman -S network-manager-applet bluez bluez-utils blueman
-  ```
+    sudo pacman -S network-manager-applet nm-connection-editor bluez bluez-utils blueman
 
-</details>
-
-<details>
-  <summary><b>Installing yay & Clonning dotfiles</b></summary>
-
-  ```bash
+    # Installing yay + cloning dotfiles
     mkdir Repos && cd Repos
     git clone https://github.com/khiem2794/dotfiles
     git clone https://aur.archlinux.org/yay.git
     cd yay
     makepkg -si
-  ```
 
-</details>
-
-<details>
-  <summary><b>Installing required themes, icons, fonts</b></summary>
-
-  ```bash
+    # Installing themes, fonts & cursor
     yay -S tela-circle-icon-theme-dracula catppuccin-gtk-theme-mocha catppuccin-gtk-theme-latte bibata-cursor-theme-bin ttf-mapple
     sudo pacman -S ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd noto-fonts-emoji
-  ```
 
-</details>
-
-<details>
-  <summary><b>Installing hyprland, kitty and start desktop mode</b></summary>
-
-  ```bash
+    # Installing hyprland, hyprlock & kitty
     sudo pacman -S hyprland hyprlock kitty xdg-desktop-portal-hyprland
     rm -rf ~/.config/hyprland
     cp -r ~/Repos/dotfiles/hypr ~/.config/
@@ -59,7 +43,6 @@
   ```
 
 </details>
-
 
 ## 2. Installing required softwares & packages
 
@@ -201,31 +184,6 @@
 </details>
 
 <details>
-  <summary><b>Installing + Config SDDM</b></summary>
-
-  ```bash
-    sudo pacman -S sddm
-    yay -S sddm-theme-corners-git
-    sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
-    sudo nvim /etc/sddm.conf #change theme to corners
-    sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background
-    sudo systemctl enable sddm 
-  ```
-
-</details>
-
-<details>
-  <summary><b>Installing TimeShift & Backup</b></summary>
-
-  ```bash
-    sudo pacman -S timeshift
-    sudo -E timeshift-launcher
-    sudo nvim /usr/share/applications/timeshift-gtk.desktop #fixing launcher
-  ```
-
-</details>
-
-<details>
   <summary><b>Installing nvm</b></summary>
 
   ```bash
@@ -261,6 +219,31 @@
   ```bash
     sudo pacman -S nwg-look
     nwg-look
+  ```
+
+</details>
+
+<details>
+  <summary><b>Installing + Config SDDM</b></summary>
+
+  ```bash
+    sudo pacman -S sddm
+    yay -S sddm-theme-corners-git
+    sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
+    sudo nvim /etc/sddm.conf #change theme to corners
+    sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background
+    sudo systemctl enable sddm 
+  ```
+
+</details>
+
+<details>
+  <summary><b>Installing TimeShift & Backup</b></summary>
+
+  ```bash
+    sudo pacman -S timeshift
+    sudo -E timeshift-launcher
+    sudo nvim /usr/share/applications/timeshift-gtk.desktop #fixing launcher
   ```
 
 </details>
