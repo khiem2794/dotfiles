@@ -258,16 +258,20 @@
 ## 3. Resolve bugs might happen after
 
 <details>
-  <summary>1. Cursor theme not consistent</summary>
+  <summary><b>Cursor theme not consistent</b></summary>
 
   Checking <https://wiki.archlinux.org/title/Cursor_themes#Configuration> and apply system-wide change.
+  ```bash
+    mkdir ~/.local/share/icons
+    ln --symbolic /usr/share/icons/Bibata-Modern-Ice/ ~/.local/share/icons/default
+  ```
 
 </details>
 
 ## 4. Optional useful softwares & packages
 
 <details>
-  <summary><b>Chromium for running website headless</b></summary>
+  <summary><b>Chromium</b></summary>
 
   ```bash
     sudo pacman -S chromium
