@@ -115,7 +115,7 @@
   ```bash
     sudo pacman -S waybar
     rm -rf ~/.config/waybar
-    cp -r ~/Repos/dotfiles/Code ~/.config/
+    cp -r ~/Repos/dotfiles/waybar ~/.config/
   ```
 
 </details>
@@ -256,8 +256,9 @@
     yay -S sddm-theme-corners-git
     sudo cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
     sudo nvim /etc/sddm.conf #change theme to corners
-    sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background
+    sudo nvim /usr/share/sddm/themes/corners/theme.conf #change background + remove avatar
     sudo systemctl enable sddm
+    sudo systemctl start sddm
   ```
 
 </details>
