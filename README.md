@@ -1,6 +1,24 @@
-# Archlinux & Hyprland setup (Thinkpad T14s)
+<h1 align=center>Arch Linux Dotfiles</h1>
 
-## 1. Setting up Archlinux & Hyprland
+<div align="center">
+<a href="#setting-up-starter">Starter</a> - <a href="#setting-up-essential">Essential</a> - <a href="#resolving-issues">Issues</a> - <a href="#setting-up-optional">Optional</a>
+</div>
+
+
+<h2>Themes</h2>
+
+- **Latte**
+
+<img src="./hypr/assets/screenshot_latte.png" alt="img">
+
+- **Mocha**
+
+<img src="./hypr/assets/screenshot_mocha.png" alt="img">
+
+
+---
+
+<h2 id="setting-up-starter">1. Setting up starter</h2>
 
 <details>
 <summary><b>Archinstall & reboot</b></summary>
@@ -47,7 +65,7 @@
 
 </details>
 
-## 2. Installing required softwares & packages
+<h2 id="setting-up-essential">2. Setting up essential packages</h2>
 
 <details>
   <summary><b>Installing FastFetch</b></summary>
@@ -255,7 +273,7 @@
 
 </details>
 
-## 3. Resolve bugs might happen after
+<h2 id="resolving-issues">3. Resolve issues might happen</h2>
 
 <details>
   <summary><b>Cursor theme not consistent</b></summary>
@@ -268,7 +286,7 @@
 
 </details>
 
-## 4. Optional useful softwares & packages
+<h2 id="setting-up-optional">4. Optional softwares & packages</h2>
 
 <details>
   <summary><b>Chromium</b></summary>
@@ -285,6 +303,15 @@
 
   ```bash
     sudo pacman -S imv mpv
+  ```
+
+</details>
+
+<details>
+  <summary><b>Obs studio - recorder</b></summary>
+
+  ```bash
+    sudo pacman -S obs-studio
   ```
 
 </details>
