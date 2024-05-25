@@ -313,12 +313,21 @@
 
   ```bash
     sudo pacman -S obs-studio
+    git clone https://github.com/catppuccin/obs ~/Repos/obs
+    cp -r ~/Repos/obs/themes ~/.config/obs-studio/
   ```
 
 </details>
 
 <details>
-  <summary><b>Pdf reader</b></summary>
+  <summary><b>Book gallery, pdf reader</b></summary>
+
+  ```bash
+    sudo pacman -S calibre zathura zathura-pdf-poppler
+    cp -r ~/Repos/calibre ~/.config/
+    cp -r ~/Repos/zathura ~/.config/
+  ```
+
 </details>
 
 <details>

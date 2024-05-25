@@ -1,0 +1,4 @@
+include catppuccin_mocha
+
+map <Esc> toggle_statusbar
+map <F1> toggle_page_mode

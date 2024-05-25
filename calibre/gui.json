@@ -1,0 +1,486 @@
+{
+  "book_list_pin_splitter_state": {
+    "__class__": "bytearray",
+    "__value__": "AAAA/wAAAAEAAAACAAABAAAAAEYA/////wEAAAABAA=="
+  },
+  "book_list_tooltips": false,
+  "choose_icon_theme_initial_tab": 2,
+  "color_palette": "dark",
+  "cover_grid_color": [
+    80,
+    80,
+    80
+  ],
+  "cover_grid_texture": null,
+  "custom_colors_for_color_dialog": [
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ]
+  ],
+  "dark_palette_name": "__current__",
+  "dark_palettes": {
+    "__current__": {
+      "AlternateBase": "#1e1e2e",
+      "Base": "#181825",
+      "BrightText": "#cdd6f4",
+      "BrightText-disabled": "#cdd6f4",
+      "Button": "#1e1e2e",
+      "ButtonText": "#cdd6f4",
+      "ButtonText-disabled": "#585b70",
+      "Highlight": "#cba6f7",
+      "HighlightedText": "#1e1e2e",
+      "HighlightedText-disabled": "#181825",
+      "Link": "#f5e0dc",
+      "LinkVisited": "#89b4fa",
+      "PlaceholderText": "#cdd6f4",
+      "PlaceholderText-disabled": "#cdd6f4",
+      "Text": "#cdd6f4",
+      "Text-disabled": "#585b70",
+      "ToolTipBase": "#11111b",
+      "ToolTipText": "#cdd6f4",
+      "ToolTipText-disabled": "#cdd6f4",
+      "Window": "#11111b",
+      "WindowText": "#cdd6f4",
+      "WindowText-disabled": "#585b70"
+    }
+  },
+  "default_author_link": null,
+  "font": [
+    "Cantarell",
+    10,
+    300,
+    false
+  ],
+  "font_stretch": 0,
+  "geometry-of-calibre_main_window_geometry": {
+    "frame_geometry": {
+      "height": 1039,
+      "width": 1906,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 1039,
+      "width": 1906,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 1080,
+      "width": 1920,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAAB3EAAAQOAAAAAAAAAAAAAAd/AAAENwAAAAACAAAAB4AAAAAAAAAAAAAAB3EAAAQO"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "geometry-of-choose-icon-theme-dialog-geometry": {
+    "frame_geometry": {
+      "height": 748,
+      "width": 1318,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 748,
+      "width": 1318,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAABSUAAALrAAAAAAAAAAAAAAO/AAACGwAAAAACAAAAB4AAAAAAAAAAAAAABSUAAALr"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "geometry-of-customize-palette-geometry": {
+    "frame_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAAA78AAAIbAAAAAAAAAAAAAAO/AAACGwAAAAACAAAAB4AAAAAAAAAAAAAAA78AAAIb"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "geometry-of-preferences dialog geometry": {
+    "frame_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAAA78AAAIbAAAAAAAAAAAAAAO/AAACGwAAAAACAAAAB4AAAAAAAAAAAAAAA78AAAIb"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "geometry-of-quickview_dialog_geometry": {
+    "frame_geometry": {
+      "height": 1039,
+      "width": 948,
+      "x": 413,
+      "y": 367
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 1039,
+      "width": 948,
+      "x": 413,
+      "y": 367
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 1053,
+      "width": 960,
+      "x": 413,
+      "y": 367
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAGdAAABbwAABVAAAAV9AAABnQAAAW8AAAVcAAAFiwAAAAACAAAAB4AAAAGdAAABbwAABVAAAAV9"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "grid view visible": false,
+  "library_usage_stats": {
+    "/home/khiem2794/Calibre": 16
+  },
+  "light_palette_name": "__current__",
+  "light_palettes": {
+    "__current__": {
+      "AlternateBase": "#eff1f5",
+      "Base": "#e6e9ef",
+      "BrightText": "#4c4f69",
+      "BrightText-disabled": "#4c4f69",
+      "Button": "#eff1f5",
+      "ButtonText": "#4c4f69",
+      "ButtonText-disabled": "#acb0be",
+      "Highlight": "#ba9deb",
+      "HighlightedText": "#4c4f69",
+      "HighlightedText-disabled": "#e6e9ef",
+      "Link": "#dc8a78",
+      "LinkVisited": "#1e66f5",
+      "PlaceholderText": "#4c4f69",
+      "PlaceholderText-disabled": "#4c4f69",
+      "Text": "#4c4f69",
+      "Text-disabled": "#acb0be",
+      "ToolTipBase": "#dce0e8",
+      "ToolTipText": "#4c4f69",
+      "ToolTipText-disabled": "#4c4f69",
+      "Window": "#dce0e8",
+      "WindowText": "#4c4f69",
+      "WindowText-disabled": "#acb0be"
+    }
+  },
+  "main_window_central_widget_state": {
+    "layout": "wide",
+    "narrow_desires": {
+      "book_details_height": 0.23059866962305986,
+      "cover_browser_width": 0.3494704992435703,
+      "quick_view_height": 0.25609756097560976,
+      "tag_browser_width": 0.24962178517397882
+    },
+    "narrow_visibility": {
+      "book_details": true,
+      "book_list": true,
+      "cover_browser": false,
+      "quick_view": false,
+      "tag_browser": true
+    },
+    "wide_desires": {
+      "book_details_width": 0.2738719832109129,
+      "cover_browser_height": 0.28600823045267487,
+      "quick_view_height": 0.23765432098765432,
+      "tag_browser_width": 0.12801678908709338
+    },
+    "wide_visibility": {
+      "book_details": true,
+      "book_list": true,
+      "cover_browser": false,
+      "quick_view": false,
+      "tag_browser": true
+    }
+  },
+  "previous_sort_order_BooksView": {
+    "pubdate": true
+  },
+  "quick_start_guide_added": true,
+  "quickview_dialog_books_table_widths": [
+    267,
+    267,
+    267
+  ],
+  "qv_open_at_shutdown": false,
+  "search bar visible": true,
+  "show_emblems": false,
+  "show_splash_screen": false,
+  "tag browser search box visible": false,
+  "tb_search_order": {
+    "0": 1,
+    "1": 2,
+    "2": 3,
+    "3": 4,
+    "4": 0
+  },
+  "toolbar_icon_size": "off",
+  "toolbar_text": "never"
+}
