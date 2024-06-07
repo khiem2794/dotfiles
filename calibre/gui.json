@@ -1,9 +1,14 @@
 {
+  "basic_metadata_widget_splitter_state": {
+    "__class__": "bytearray",
+    "__value__": "AAAA/wAAAAEAAAADAAAA5AAAAV8AAAEKAf////8BAAAAAQA="
+  },
   "book_list_pin_splitter_state": {
     "__class__": "bytearray",
     "__value__": "AAAA/wAAAAEAAAACAAABAAAAAEYA/////wEAAAABAA=="
   },
   "book_list_tooltips": false,
+  "bulk_metadata_window_tab": 0,
   "choose_icon_theme_initial_tab": 2,
   "color_palette": "dark",
   "cover_grid_color": [
@@ -145,6 +150,57 @@
     false
   ],
   "font_stretch": 0,
+  "geometry-of-bulk_metadata_window_geometry": {
+    "frame_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 18,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 18,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 1030,
+      "width": 1850,
+      "x": 18,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAASAAAAAAAAA9EAAAIbAAAAEgAAAAAAAAdLAAAEBQAAAAACAAAAB4AAAAASAAAAAAAAA9EAAAIb"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
   "geometry-of-calibre_main_window_geometry": {
     "frame_geometry": {
       "height": 1039,
@@ -298,6 +354,108 @@
       }
     }
   },
+  "geometry-of-metadata_single_gui_geom": {
+    "frame_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAAA78AAAIbAAAAAAAAAAAAAAO/AAACGwAAAAACAAAAB4AAAAAAAAAAAAAAA78AAAIb"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "geometry-of-metasingle_window_geometry3": {
+    "frame_geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "full_screened": false,
+    "geometry": {
+      "height": 540,
+      "width": 960,
+      "x": 0,
+      "y": 0
+    },
+    "maximized": true,
+    "normal_geometry": {
+      "height": 685,
+      "width": 1225,
+      "x": 0,
+      "y": 0
+    },
+    "qt": {
+      "__class__": "bytearray",
+      "__value__": "AdnQywADAAAAAAAAAAAAAAAAA78AAAIbAAAAAAAAAAAAAATIAAACrAAAAAACAAAAB4AAAAAAAAAAAAAAA78AAAIb"
+    },
+    "screen": {
+      "depth": 32,
+      "device_pixel_ratio": 1.0,
+      "geometry_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "index_in_screens_list": 0,
+      "manufacturer": "AU Optronics",
+      "model": "0x403D",
+      "name": "eDP-1",
+      "serial": "",
+      "size_in_logical_pixels": {
+        "height": 1080,
+        "width": 1920
+      },
+      "virtual_geometry": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
   "geometry-of-preferences dialog geometry": {
     "frame_geometry": {
       "height": 540,
@@ -402,7 +560,7 @@
   },
   "grid view visible": false,
   "library_usage_stats": {
-    "/home/khiem2794/Calibre": 16
+    "/home/khiem2794/Calibre": 28
   },
   "light_palette_name": "__current__",
   "light_palettes": {
@@ -460,9 +618,19 @@
       "tag_browser": true
     }
   },
-  "previous_sort_order_BooksView": {
-    "pubdate": true
+  "metadata-download-identify-widget-splitter-state": {
+    "__class__": "bytearray",
+    "__value__": "AAAA/wAAAAEAAAACAAACAAAAAQAA/////wEAAAABAA=="
   },
+  "previous_sort_order_BooksView": {
+    "pubdate": true,
+    "publisher": false,
+    "timestamp": true,
+    "title": false
+  },
+  "questions_to_auto_skip": [
+    "tag_item_delete"
+  ],
   "quick_start_guide_added": true,
   "quickview_dialog_books_table_widths": [
     267,
@@ -470,6 +638,9 @@
     267
   ],
   "qv_open_at_shutdown": false,
+  "recently_used_languages": [
+    "English"
+  ],
   "search bar visible": true,
   "show_emblems": false,
   "show_splash_screen": false,

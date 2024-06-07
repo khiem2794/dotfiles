@@ -331,5 +331,10 @@
 </details>
 
 <details>
-  <summary><b>Image galery</b></summary>
+  <summary><b>Ags</b></summary>
+
+  ```bash
+    yay -S aylurs-gtk-shell
+  ```
+
 </details>

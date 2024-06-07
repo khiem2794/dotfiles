@@ -4,11 +4,18 @@ palette = "catppuccin_mocha"
 [line_break]
 disabled = true
 
+format="$directory$git_branch$character"
+
 [character]
-# Note the use of Catppuccin color 'maroon'
-# success_symbol = "[[](green) ❯](maroon)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = "[🞈](#a6e3a1 bold)"
+error_symbol = "[🞈](#f38ba8)"
+vicmd_symbol = "[🞈](#f9e2af)"
+
+[directory]
+format = "[]($style)[(bg:pink fg:red)$path](bg:pink fg:base)[ ]($style)"
+style = "bg:base fg:pink"
+truncation_length=1
+
 
 [aws]
 symbol = "  "
@@ -27,12 +34,6 @@ symbol = " "
 
 [dart]
 symbol = " "
-
-[directory]
-read_only = " 󰌾"
-truncation_length = 4
-# Catppuccin 'lavender'
-style = "bold lavender"
 
 [docker_context]
 symbol = " "
