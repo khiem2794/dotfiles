@@ -277,6 +277,20 @@
 <h2 id="resolving-issues">3. Resolve issues might happen</h2>
 
 <details>
+  <summary><b>NVIDIA gpu</b></summary>
+
+  - Checking out <https://wiki.hyprland.org/Nvidia/>.
+  - Modify "MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)" in /etc/mkinitcpio.conf.
+  - Add "nvidia_drm.modeset=1" in GRUB_CMDLINE_LINUX_DEFAULT and run grub-mkconfig.
+  - Add "source = ~/.config/hypr/nvidia.conf" in hyprland.conf
+  ```bash
+    yay -S linux-headers nvidia-dkms qt5-wayland qt5ct libva libva-nvidia-driver-git
+    
+  ```
+
+</details>
+
+<details>
   <summary><b>Cursor theme not consistent</b></summary>
 
   Checking <https://wiki.archlinux.org/title/Cursor_themes#Configuration> and apply system-wide change.
