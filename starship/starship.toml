@@ -4,18 +4,25 @@ palette = "catppuccin_mocha"
 [line_break]
 disabled = true
 
-format="$directory$git_branch$character"
-
 [character]
-success_symbol = "[🞈](#a6e3a1 bold)"
-error_symbol = "[🞈](#f38ba8)"
-vicmd_symbol = "[🞈](#f9e2af)"
+success_symbol = "[ ᐉ](bright-green bold)"
+error_symbol = "[ ᐉ](bright-red)"
+vicmd_symbol = "[ ᐉ](bright-yellow)"
 
 [directory]
-format = "[]($style)[(bg:pink fg:red)$path](bg:pink fg:base)[ ]($style)"
-style = "bg:base fg:pink"
+format = "[▉]($style)[(bg:background fg:none) $path ](inverted)[▕]($style)"
+style = "bg:background fg:none"
 truncation_length=1
 
+[git_branch]
+symbol = " "
+format = "[ \ue725 $branch ](inverted)($style)"
+style = "bg:background fg:none"
+
+[git_status]
+disabled = false
+format = '[\[$all_status$ahead_behind\]](inverted)($style)'
+style = "bg:background fg:none"
 
 [aws]
 symbol = "  "
@@ -48,9 +55,6 @@ symbol = " "
 symbol = " "
 
 [fossil_branch]
-symbol = " "
-
-[git_branch]
 symbol = " "
 
 [golang]
