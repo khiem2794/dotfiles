@@ -1,9 +1,9 @@
-@import "_catppuccin_mocha.css";
+@import "_dark.css";
 
 * {
     padding: 0;
     margin: 0;
-    font-family: "Maple Mono", "JetBrains Mono Nerd Font";
+    font-family: "JetBrains Mono Nerd Font";
     font-size: 12px;
     margin-top: 1px;
 }
@@ -12,25 +12,25 @@
 #cpu,
 #temperature,
 #memory {
-    background-color: @surface1;
+    background-color: @bg;
 }
 
 #cpu {
-    color: @peach;
+    color: @fg;
 }
 
 #memory {
-    color: @mauve;
+    color: @fg;
 }
 
 #temperature {
-    color: @maroon;
+    color: @fg;
 }
 
 /* ------ Window Title ------ */
 #window {
-    color: @green;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     border-radius: 0px;
     padding-right: 4px;
 }
@@ -48,96 +48,96 @@ window#waybar {
  * ----------------------------------------------------- */
 
 #workspaces button.empty {
-    color: @surface2;
+    color: @fg;
 }
 #workspaces button {
     border-radius: 0px;
     padding: 0;
     margin: 0;
-    background-color: @surface1;
+    background-color: @bg;
+    color: @fg;
 }
 
 #workspaces button:hover {
     text-decoration: underline;
-    color: @maroon;
+    color: @red;
 }
 
 /* ------ Pulseaudio ------ */
 #pulseaudio {
-    color: @peach;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 /* ------ Backlight ------ */
 #backlight {
-    color: @sky;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 /* ------ Network ------ */
 #network {
-    color: @mauve;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 /* ------ Battery ------ */
 #battery {
-    color: @maroon;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 /* ------ Clock ------ */
 #clock {
     padding-left: 10px;
-    color: @text;
+    color: @fg;
     border-radius: 0px;
-    background-color: @surface1;
+    background-color: @bg;
     font-weight: bold;
     font-size: 12px;
 }
 
 /* ------ System Tray ------ */
 #tray {
-    background-color: @surface1;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 /* ------ Custom Modules ------ */
 #custom-warp {
-    color: @maroon;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
     padding: 2px 5px;
 }
 
 #custom-power {
-    color: @red;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
 }
 
 #custom-arch {
-    color: @blue;
-    background-color: @surface1;
+    color: @fg;
+    background-color: @bg;
 }
 
 #custom-arch:hover {
-    text-decoration: underline;
-    color: @maroon;
+    color: @red;
 }
 
 #custom-r_end {
-    border-radius: 0px 16px 16px 0px;
+    border-radius: 0px;
     margin-right: 7px;
     padding-right: 0px;
-    background-color: @surface1;
+    background-color: @bg;
 }
 
 #custom-l_end {
-    border-radius: 16px 0px 0px 16px;
+    border-radius: 0px;
     margin-left: 7px;
     padding-left: 0px;
-    background-color: @surface1;
+    background-color: @bg;
 }

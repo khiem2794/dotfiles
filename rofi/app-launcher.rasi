@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_catppuccin_mocha.rasi"
+@theme "~/.config/rofi/_dark.rasi"
 
 // Config //
 configuration {
@@ -11,7 +11,6 @@ configuration {
     drun-display-format:         "{name}";
     window-format:               "{w}{t}";
     font:                        "JetBrainsMono Nerd Font 12";
-    icon-theme:                  "Tela-circle-dracula";
 }
 
 // Main //
@@ -24,10 +23,10 @@ window {
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @border-col;
-    background-color:            @bg-col;
-    border-radius:               0.7em;
-    border:                      0.2em;
+    border-color:                @red;
+    background-color:            @bg;
+    border-radius:               0em;
+    border:                      0.1em;
 }
 mainbox {
     enabled:                     true;
@@ -35,7 +34,7 @@ mainbox {
     padding:                     0em;
     orientation:                 vertical;
     children:                    [ "choicebox" , "listbox" ];
-    background-color:            @bg-col;
+    background-color:            @bg;
 }
 
 choicebox {
@@ -51,8 +50,8 @@ choicebox {
 // Inputs //
 inputbar {
     enabled:                     true;
-    width:                       19em;
-    padding:                     0em;
+    width:                       18.5em;
+    padding:                     1em;
     spacing:                     0em;
     children:                    [ "entry" ];
     background-color:            transparent;
@@ -61,9 +60,9 @@ inputbar {
 
 entry {
     enabled:                     true;
-    padding:                     1em;
-    text-color:                  @fg-col;
-    background-color:            transparent;
+    padding:                     0.5em;
+    text-color:                  @bg;
+    background-color:            @green;
     vertical-align:              0.5;
     placeholder:                 "";
 }
@@ -73,7 +72,7 @@ mode-switcher {
     width: 15em;
     orientation:                 horizontal;
     enabled:                     true;
-    padding:                     0.5em;
+    padding:                     1em;
     spacing:                     0em;
     background-color:            transparent;
     expand:                      false;
@@ -81,15 +80,15 @@ mode-switcher {
 button {
     padding:                     0em;
     cursor:                      pointer;
-    border-radius:               0.3em;
-    background-color:            @bg-col;
-    text-color:                  @fg-col;
+    border-radius:               0em;
+    background-color:            @bg;
+    text-color:                  @fg;
 }
 button selected {
-    background-color:            @selected-col;
-    text-color:                  @fg-col2;
+    background-color:            @fg;
+    text-color:                  @bg;
     border:                      0 0 0.1em 0;
-    border-color:                @border-col;
+    border-color:                @red;
     border-radius:               0;
 }
 
@@ -118,7 +117,7 @@ listview {
     fixed-columns:               true;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @fg-col;
+    text-color:                  @fg;
 }
 dummy {
     background-color:            transparent;
@@ -133,19 +132,18 @@ element {
     padding:                     0.5em;
     cursor:                      pointer;
     background-color:            transparent;
-    text-color:                  @fg-col;
+    text-color:                  @fg;
     orientation:                 horizontal;
 }
 element selected.normal {
-    background-color:            @selected-col;
-    text-color:                  @fg-col2;
-    border-radius:               0.5em;
+    background-color:            @fg;
+    text-color:                  @bg;
+    border-radius:               0em;
 }
 element-icon {
     size:                        1em;
     cursor:                      inherit;
     background-color:            transparent;
-    text-color:                  inherit;
 }
 element-text {
     vertical-align:              0.5;

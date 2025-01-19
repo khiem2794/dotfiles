@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_catppuccin_mocha.rasi"
+@theme "~/.config/rofi/_dark.rasi"
 
 // Config //
 configuration {
@@ -17,9 +17,9 @@ window {
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @border-col;
-    background-color:            @bg-col;
-    border-radius:               0.7em;
+    border-color:                @red;
+    background-color:            @bg;
+    border-radius:               0em;
     border:                      0.2em;
 }
 
@@ -35,17 +35,18 @@ mainbox {
 // Inputs //
 inputbar {
     enabled:                     true;
-    padding:                     0.1em;
+    padding:                     0.5em;
     children:                    [ "entry" ];
-    background-color:            @bg-col;
+    background-color:            @bg;
     expand:                      false;
 }
 
 entry {
     enabled:                     true;
-    padding:                     1em;
-    text-color:                  @fg-col;
-    background-color:            transparent;
+    padding:                     0.5em;
+    text-color:                  @bg;
+    background-color:            @green;
+    placeholder:                 "Search clipboard...";
 }
 
 // Lists //
@@ -68,7 +69,7 @@ listview {
     expand:                      false;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @fg-col;
+    text-color:                  @fg;
 }
 
 dummy {
@@ -83,13 +84,13 @@ element {
     padding:                     0.5em;
     cursor:                      pointer;
     background-color:            transparent;
-    text-color:                  @fg-col;
+    text-color:                  @fg;
 }
 
 element selected.normal {
-    background-color:            @selected-col;
-    text-color:                  @fg-col2;
-    border-radius:               0.5em;
+    background-color:            @fg;
+    text-color:                  @bg;
+    border-radius:               0em;
 }
 
 element-text {

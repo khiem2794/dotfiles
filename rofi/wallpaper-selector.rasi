@@ -1,4 +1,4 @@
-@theme "~/.config/rofi/_catppuccin_mocha.rasi"
+@theme "~/.config/rofi/_light.rasi"
 
 // Config //
 configuration {
@@ -16,9 +16,9 @@ window {
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @border-col;
-    background-color:            @bg-col;
-    border-radius:               0.7em;
+    border-color:                @red;
+    background-color:            @bg;
+    border-radius:               0em;
     border:                      0.2em;
 }
 
@@ -48,25 +48,23 @@ listview {
     reverse:                     false;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @fg-col;
+    text-color:                  @fg;
 }
 
 // Elements //
 element {
-    enabled:                     true;
-    cursor:                      pointer;
     background-color:            transparent;
     border-color:                transparent;
-    padding:                     -4.5em;
-    border:                      0em 0em 1em 0em;
-    border-radius:               1em 1em 0em 0em;
+    enabled:                     true;
+    cursor:                      pointer;
+    padding:                     -5em;
+    border:                      0em;
     orientation:                 vertical;
 }
 
 element selected {
-    background-color:            @selected-col;
-    border-color:                @fg-col2;
-    border:                      0 0 0.2em 0;
+    border-color:                @red;
+    border:                      0.2em;
 }
 
 element-icon {

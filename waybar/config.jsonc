@@ -46,7 +46,7 @@
         "custom/r_end",
         "custom/padd"
     ],
-    
+
     "custom/arch": {
         "format": " ",
         "on-click": "toggle-theme.sh",
@@ -234,7 +234,7 @@
         "format": "  {}",
         "rotate": 0,
         "exec": "echo ; echo  logout",
-        "on-click": "wlogout-launch.sh",
+        "on-click": "rofi-powermenu.sh",
         "interval": 86400, // once every day
         "tooltip": true
     },

@@ -12,10 +12,11 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.colorTheme": "Gruvbox Dark Medium",
     "extensions.ignoreRecommendations": true,
     "editor.minimap.enabled": false,
     "explorer.confirmPasteNative": false,
-    "git.openRepositoryInParentFolders": "never",
-    "typescript.updateImportsOnFileMove.enabled": "always"
+    "git.openRepositoryInParentFolders": "prompt",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always"
 }
