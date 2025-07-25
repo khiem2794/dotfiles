@@ -2,55 +2,40 @@
     "layer": "top",
     "position": "top",
     "mod": "dock",
-    "height": 15,
+    "margin-top": 5,
+    "margin-bottom": 0,
     "exclusive": true,
     "passthrough": false,
     "gtk-layer-shell": true,
     "reload_style_on_change": true,
     
     "modules-left": [
-        "custom/l_end", "custom/arch", "custom/r_end",
-        "custom/l_end",
-        "hyprland/workspaces",
-        "hyprland/window",
-        "custom/r_end"
+        // "custom/l_end", "custom/arch", "custom/r_end",
+        "custom/border_start",  "custom/arch", "custom/empty_space",
+        "hyprland/workspaces",  "custom/empty_space",
+        "hyprland/window"
     ],
 
     "modules-center": [
-        "custom/padd",
-        "custom/l_end",
-        "clock",
-        "custom/r_end",
-        "custom/padd"
+        "custom/clock_start", "clock", "custom/empty_space",
+        // "custom/warp_start", 
+        "custom/nordvpn"
     ],
     
     "modules-right": [
-        "custom/padd",
-        "custom/l_end",
-        "custom/warp",
-        "custom/r_end",
-        "custom/l_end",
-        "backlight",
-        "pulseaudio",
-        "pulseaudio#microphone",
-        "custom/r_end",
-        "custom/l_end",
-        "cpu",
-        "memory",
-        "battery",
-        "custom/r_end",
-        "custom/l_end",
-        "network",
-        "tray",
-        "custom/power",
-        "custom/r_end",
-        "custom/padd"
+        "custom/notification", "custom/empty_space",
+        "custom/group_start", "backlight", "pulseaudio", "pulseaudio#microphone", "custom/group_end", "custom/empty_space",
+        "custom/group_start", "cpu", "memory", "battery", "custom/group_end", "custom/empty_space",
+        "tray", "custom/empty_space",
+        "custom/power"
+        // "custom/bar_end"
     ],
 
     "custom/arch": {
-        "format": " ",
-        "on-click": "toggle-theme.sh",
+        "format": "[\u2006 ]",
+        "interval": "once",
         "tooltip": false,
+        "on-click": "~/.config/hypr/script/toggle-theme.sh;",
         "on-click-right": "code ~/.config/hypr/script/toggle-theme.sh"
     },
     
@@ -65,7 +50,7 @@
         "persistent-workspaces": {}
     },
     "hyprland/window": {
-        "format": " | {}",
+        "format": " {}",
         "rotate": 0,
         "separate-outputs": true,
         "rewrite": {
@@ -78,6 +63,12 @@
             "(.*)Steam": "Steam 󰓓"
         },
         "max-length": 1000
+    },
+
+    "custom/clock_start": {
+        "format": "\u2004",
+        "interval": "once",
+        "tooltip": false
     },
     "clock": {
         "format": "{:%R, %d %B %Y} ",
@@ -97,6 +88,7 @@
             }
         },
         "actions": {
+            "on-click": "mode",
             "on-click-right": "mode",
             "on-click-forward": "tz_up",
             "on-click-backward": "tz_down",
@@ -104,43 +96,10 @@
             "on-scroll-down": "shift_down"
         }
     },
-    "cpu": {
-        "interval": 10,
-        "format": "󰍛 {usage}% ",
-        "rotate": 0,
-        "format-alt": "{icon0}{icon1}{icon2}{icon3}",
-        "format-icons": [
-            "▁",
-            "▂",
-            "▃",
-            "▄",
-            "▅",
-            "▆",
-            "▇",
-            "█"
-        ]
-    },
-    "memory": {
-        "states": {
-            "c": 90, // critical
-            "h": 60, // high
-            "m": 30, // medium
-        },
-        "interval": 30,
-        "format": "󰾆 {percentage}% ",
-        "rotate": 0,
-        "format-m": "󰾅 {percentage}% ",
-        "format-h": "󰓅 {percentage}% ",
-        "format-c": " {percentage}% ",
-        "format-alt": "󰾆 {used}GB ",
-        "max-length": 10,
-        "tooltip": true,
-        "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB "
-    },
     "backlight": {
+        "format": "{icon} {percent}%",
         "device": "intel_backlight",
         "rotate": 0,
-        "format": "{icon} {percent}% ",
         "format-icons": [
             "",
             "",
@@ -156,20 +115,8 @@
         "on-scroll-down": "brightnessctl set 1%-",
         "min-length": 6
     },
-    "network": {
-        "tooltip": true,
-        "format-wifi": " ",
-        "rotate": 0,
-        "format-ethernet": "󰈀  ",
-        "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
-        "format-linked": "󰈀 {ifname} (No IP) ",
-        "format-disconnected": "󰖪  ",
-        "tooltip-format-disconnected": "Disconnected",
-        "format-alt": "<span> {bandwidthDownBytes}</span> <span> {bandwidthUpBytes}</span> ",
-        "interval": 5
-    },
     "pulseaudio": {
-        "format": "{icon} {volume} ",
+        "format": "{icon} {volume}",
         "rotate": 0,
         "format-muted": " _ ",
         "on-click": "pavucontrol -t 3",
@@ -192,7 +139,7 @@
         }
     },
     "pulseaudio#microphone": {
-        "format": "{format_source}",
+        "format": " {format_source}",
         "rotate": 0,
         "format-source": "",
         "format-source-muted": "",
@@ -200,22 +147,50 @@
         "tooltip-format": "{format_source} {source_desc} // {source_volume}%",
         "scroll-step": 5
     },
-    "tray": {
-        "icon-size": 14,
+    "cpu": {
+        "format": "󰍛 {usage}%",
+        "interval": 10,
         "rotate": 0,
-        "spacing": 10
+        "format-alt": "{icon0}{icon1}{icon2}{icon3}",
+        "format-icons": [
+            "▁",
+            "▂",
+            "▃",
+            "▄",
+            "▅",
+            "▆",
+            "▇",
+            "█"
+        ]
+    },
+    "memory": {
+        "states": {
+            "c": 90, // critical
+            "h": 60, // high
+            "m": 30, // medium
+        },
+        "interval": 30,
+        "format": "󰾆 {percentage}%",
+        "rotate": 0,
+        "format-m": "󰾅 {percentage}%",
+        "format-h": "󰓅 {percentage}%",
+        "format-c": " {percentage}%",
+        "format-alt": "󰾆 {used}GB",
+        "max-length": 10,
+        "tooltip": true,
+        "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB "
     },
     "battery": {
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}% ",
+        "format-plugged": " {capacity}% ",
+        "format-alt": "{time} {icon} ",
+        "rotate": 0,
         "states": {
             "good": 95,
             "warning": 30,
             "critical": 20
         },
-        "format": "{icon} {capacity}%",
-        "rotate": 0,
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-alt": "{time} {icon}",
         "format-icons": [
             "󰂎",
             "󰁺",
@@ -230,16 +205,39 @@
             "󰁹"
         ]
     },
+    "network": {
+        "tooltip": true,
+        "format-wifi": "\u2004 ",
+        "format-ethernet": "\u2004󰈀 ",
+        "format-disconnected": "\u2004󰖪 ",
+        "rotate": 0,
+        "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+        "format-linked": "󰈀 {ifname} (No IP) ",
+        "tooltip-format-disconnected": "Disconnected",
+        "interval": 5
+    },
+    "tray": {
+        "icon-size": 15,
+        "rotate": 0,
+        "spacing": 12,
+        "show-passive-items": true,
+    },
     "custom/power": {
-        "format": "  {}",
+        "format": " \u2005 \u2002",
         "rotate": 0,
         "exec": "echo ; echo  logout",
-        "on-click": "rofi-powermenu.sh",
+        "on-click": "~/.config/hypr/script/rofi-powermenu.sh",
         "interval": 86400, // once every day
         "tooltip": true
     },
+
+    "custom/warp_start": {
+        "format": "Warp",
+        "interval": "once",
+        "tooltip": false
+    },
     "custom/warp": {
-        "format": "VPN: {} ",
+        "format": "[\u2004{text}]",
         // "exec": "warp-cli status",
         "exec": "status=$(warp-cli status | grep Status | awk '{print $3}' | sed 's/\\.//g'); if [ \"$status\" = \"Connected\" ]; then echo 󰅠; else if [ \"$status\" = \"Disconnected\" ]; then echo ; else if [ \"$status\" = \"Connecting\" ]; then echo 󱋖; else echo ?; fi; fi; fi;",
         "on-click": "warp-cli connect",
@@ -247,6 +245,41 @@
         "interval": 5,
         "tooltip": false
     },
+    "custom/nordvpn": {
+        "format": "[\u2004{text}\u2006]",
+        "exec": "country=$(nordvpn status | grep Country | awk '{print $2}' | sed 's/\\.//g');status=$(nordvpn status | grep Status | awk '{print $2}' | sed 's/\\.//g'); if [ \"$status\" = \"Connected\" ]; then icon=󰅠; else if [ \"$status\" = \"Disconnected\" ]; then icon=; else if [ \"$status\" = \"Connecting\" ]; then icon=󱋖; else icon=?; fi; fi; fi; echo '{\"text\": \"'$icon $country'\", \"tooltip\": \"'$(nordvpn status)'\"}' ",
+        "on-click": "nordvpn connect",
+        "on-click-right": "nordvpn disconnect",
+        "interval": 5,
+        "return-type": "json",
+        "tooltip": true
+    },
+
+    "custom/border_start": {
+        "format": "\u2004",
+        "tooltip": false
+    },
+    "custom/notification": {
+        "tooltip": false,
+        "format": "[ \u2006{icon}\u2004 ]",
+        "format-icons": {
+            "notification": "<span foreground='red'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
     // modules for padding //
     "custom/l_end": {
         "format": " ",
@@ -279,8 +312,34 @@
         "tooltip": false
     },
     "custom/padd": {
-        "format": "",
+        "format": "  ",
         "interval": "once",
         "tooltip": false
-    }
+    },
+    "custom/empty_space": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/bar_start": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/bar_end": {
+        "format": " ",
+        "interval": "once",
+        "tooltip": false
+    },
+    "custom/group_start": {
+        "format": "[ ",
+        "interval": "once",
+        "tooltip": false,
+    },
+    "custom/group_end": {
+        "format": " ]",
+        "interval": "once",
+        "tooltip": false,
+    },
+    
 }

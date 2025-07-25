@@ -5,11 +5,12 @@ roconf="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/powermenu.rasi"
 uptime="`uptime -p | sed -e 's/up //g'`"
 host=`hostname`
 
-shutdown=''
-reboot=''
-lock=''
-suspend='󰤄'
-logout='󰍃'
+shutdown=' shutdown'
+reboot=' restart'
+lock=' lock'
+suspend='󰤄 suspend'
+logout='󰍃 logout'
+exit='󰩈 exit'
 
 rofi_cmd() {
 	rofi -dmenu \
@@ -19,7 +20,7 @@ rofi_cmd() {
 }
 
 run_rofi() {
-	echo -e "$lock\n$suspend\n$logout\n$reboot\n$shutdown" | rofi_cmd
+	echo -e "$lock\n$exit\n$suspend\n$logout\n$reboot\n$shutdown" | rofi_cmd
 }
 
 chosen="$(run_rofi)"
@@ -38,5 +39,8 @@ case ${chosen} in
         ;;
     $logout)
 		hyprctl dispatch exit 0
+        ;;
+    $exit)
+        hyprctl dispatch exit 1
         ;;
 esac

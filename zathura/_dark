@@ -7,7 +7,7 @@ set notification-fg             "#b8bb26" # bright:green
 
 set completion-bg               "#504945" # bg2
 set completion-fg               "#ebdbb2" # fg
-set completion-group-bg         "#3c3836" # bg1
+set completion-group-bg         "#bab59d" # bg1
 set completion-group-fg         "#928374" # gray
 set completion-highlight-bg     "#83a598" # bright:blue
 set completion-highlight-fg     "#504945" # bg2

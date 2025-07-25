@@ -64,7 +64,7 @@
     echo "eval \"\$(starship init bash)\"" >> ~/.bashrc
     rm ~/.config/starship.toml
 
-    sudo pacman -S tmux
+    sudo pacman -S zellij
     
     sudo pacman -S slurp swappy cliphist
     yay -S grimblast-git

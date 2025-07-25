@@ -1,7 +1,7 @@
 @import "_dark.rasi"
 
 * {
-    font: "JetBrains Mono Nerd Font 10";
+    font: "JetBrains Mono Nerd Font 12";
 }
 
 configuration {
@@ -10,29 +10,38 @@ configuration {
 
 /*****----- Main Window -----*****/
 window {
-    width:                       800px;
+    width:                       20em;
+    height:                      21.5em;
     x-offset:                    0px;
     y-offset:                    0px;
     enabled:                     true;
     margin:                      0px;
     padding:                     0px;
-    border:                      0.1em solid;
-    border-radius:               0px;
-    border-color:                @red;
-    background-color:            @bg;
+    border:                      0.06em;
+    border-color:                @fg;
 }
 
 /*****----- Main Box -----*****/
 mainbox {
     enabled:                     true;
-    spacing:                     15px;
+    spacing:                     0px;
     margin:                      0px;
-    padding:                     30px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @red;
+    padding:                     0px;
+    background-color:            @bg;
+    children:                    [ "infobox", "optionbox" ];
+}
+
+
+infobox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 horizontal;
+    children:                    [ "inputbar" ];
     background-color:            transparent;
-    children:                    [ "inputbar", "listview" ];
+    expand:                      false;
+    border:                      1px;
+    border-color:                @gray;
 }
 
 /*****----- Inputbar -----*****/
@@ -43,108 +52,97 @@ inputbar {
     padding:                     0px;
     border:                      0px;
     border-radius:               0px;
-    border-color:                @red;
-    background-color:            transparent;
     text-color:                  @fg;
+    background-color:            @bg;
     children:                    [ "textbox-prompt-colon", "prompt"];
-}
-
-dummy {
-    background-color:            transparent;
 }
 
 textbox-prompt-colon {
     enabled:                     true;
     expand:                      false;
-    str:                         "";
-    padding:                     12px 16px;
+    str:                         " ";
+    width:                       2em;
     border-radius:               0px;
     background-color:            @red;
     text-color:                  @bg;
+    horizontal-align:            0.5;
+    vertical-align:              0.5;
 }
 prompt {
     enabled:                     true;
-    padding:                     12px;
+    padding:                     5px;
     border-radius:               0px;
-    background-color:            @green;
-    text-color:                  @bg;
-}
-
-/*****----- Message -----*****/
-message {
-    enabled:                     true;
-    margin:                      0px;
-    padding:                     12px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @red;
     background-color:            @bg;
     text-color:                  @fg;
 }
-textbox {
-    background-color:            inherit;
-    text-color:                  inherit;
-    vertical-align:              0.5;
+
+optionbox {
+    orientation:                 vertical;
+    children:                    [  "listview", "icon-cc" ];
+    background-color:            @gray;
+}
+
+ic { 
+    expand:                      true;
+    str:                         " ";
+    border-radius:               0px;
+    padding:                     0 1em 0 7px;
+    background-color:            @blue;
+    text-color:                  @blue;
     horizontal-align:            0.5;
-    placeholder-color:           @fg;
-    blink:                       true;
-    markup:                      true;
+    vertical-align:              0.5;
+    children: ["textbox-cc"];
 }
-error-message {
-    padding:                     12px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @red;
-    background-color:            @bg;
-    text-color:                  @fg;
+icon-cc {
+    expand:                      true;
+    padding: 0;
+    filename: "yorha.png";
+    size: 225;
+    text-color:                  @bg;
+    background-color:            @gray;
+    horizontal-align:            0.5;
+    vertical-align:              0.5;
 }
 
-/*****----- Listview -----*****/
 listview {
     enabled:                     true;
-    columns:                     5;
-    lines:                       1;
+    expand:                      true;
+    columns:                     1;
+    lines:                       6;
     cycle:                       true;
     dynamic:                     true;
     scrollbar:                   false;
     layout:                      vertical;
     reverse:                     false;
-    fixed-height:                true;
-    fixed-columns:               true;
-    
-    spacing:                     15px;
-    margin:                      0px;
-    padding:                     0px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @red;
-    background-color:            transparent;
-    text-color:                  @fg;
     cursor:                      "default";
-}
-
-/*****----- Elements -----*****/
-element {
-    enabled:                     true;
-    spacing:                     0px;
-    margin:                      0px;
-    padding:                     40px 10px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @red;
-    background-color:            @purple;
-    text-color:                  @fg;
-    cursor:                      pointer;
-}
-element-text {
-    font:                        "feather bold 32";
-    background-color:            transparent;
-    text-color:                  inherit;
-    cursor:                      inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
-}
-element selected.normal {
     background-color:            @fg;
     text-color:                  @bg;
+    margin: 0 0 0 0;
+}
+
+element {
+    orientation:                 horizontal;
+    enabled:                     true;
+    padding:                     5px;
+    cursor:                      pointer;
+    background-color:            @fg;
+    text-color:                  @bg;
+    orientation:                 horizontal;
+}
+element selected.normal {
+    background-color:            @bg;
+    text-color:                  @fg;
+    border-radius:               0em;
+}
+element-icon {
+    size:                        1em;
+    cursor:                      inherit;
+    background-color:            transparent;
+}
+element-text {
+    vertical-align:              0.5;
+    horizontal-align:            0;
+    cursor:                      inherit;
+    text-color:                  inherit;
+    background-color:            transparent;
 }

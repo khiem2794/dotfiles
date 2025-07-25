@@ -12,11 +12,21 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Gruvbox Dark Medium",
+    "workbench.colorTheme": "Gruvbox Dark Soft",
     "extensions.ignoreRecommendations": true,
     "editor.minimap.enabled": false,
     "explorer.confirmPasteNative": false,
-    "git.openRepositoryInParentFolders": "prompt",
+    "git.openRepositoryInParentFolders": "never",
     "typescript.updateImportsOnFileMove.enabled": "always",
-    "javascript.updateImportsOnFileMove.enabled": "always"
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "args": ["-l"]
+        },
+        "fish": {
+            "path": "fish"
+        },
+    },
 }

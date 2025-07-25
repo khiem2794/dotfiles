@@ -4,140 +4,206 @@
     padding: 0;
     margin: 0;
     font-family: "JetBrains Mono Nerd Font";
-    font-size: 12px;
-    margin-top: 1px;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 0;
 }
 
 /* ------ Cpu Usage, Temperature, and Memory ------ */
-#cpu,
-#temperature,
-#memory {
-    background-color: @bg;
-}
-
-#cpu {
-    color: @fg;
-}
-
-#memory {
-    color: @fg;
-}
-
-#temperature {
-    color: @fg;
-}
-
-/* ------ Window Title ------ */
 #window {
-    color: @fg;
-    background-color: @bg;
-    border-radius: 0px;
+    color: @bg;
+    background-color: @fg;
     padding-right: 4px;
+    border: none;
 }
 
 window#waybar {
-    background-color: rgba(0, 0, 0, 0);
-    border-bottom: 0px solid #ffffff;
-    background: transparent;
-    transition-property: background-color;
-    transition-duration: .5s;
+    background-color: transparent;
+}
+#waybar > box {
+    margin: 4px 7px 5px 7px;
+    background-color: @fg;
+    box-shadow: 3px 3px 0px @bg-1;
 }
 
-/* -----------------------------------------------------
- * Workspaces 
- * ----------------------------------------------------- */
-
-#workspaces button.empty {
-    color: @fg;
+#window {
+    padding-right: 10px;
+}
+#workspaces {
+    border: none;
+}
+#workspaces button.embty {
+    color: @bg;
 }
 #workspaces button {
-    border-radius: 0px;
-    padding: 0;
-    margin: 0;
-    background-color: @bg;
-    color: @fg;
+    color: @bg;
+    background-color: @fg;
 }
 
 #workspaces button:hover {
-    text-decoration: underline;
-    color: @red;
+    color: @bg;
+    background-color: @red;
+}
+#workspaces button.active {
+    color: @fg;
+    background-color: @bg;
 }
 
 /* ------ Pulseaudio ------ */
 #pulseaudio {
-    color: @fg;
-    background-color: @bg;
-    padding: 2px 5px;
+    color: @bg;
+    background-color: @fg;
+    padding-right: 5px;
 }
 
 /* ------ Backlight ------ */
 #backlight {
-    color: @fg;
-    background-color: @bg;
-    padding: 2px 5px;
+    color: @bg;
+    background-color: @fg;
+    padding-right: 5px;
+}
+
+#backlight:hover {
+    text-decoration: underline;
 }
 
 /* ------ Network ------ */
 #network {
-    color: @fg;
-    background-color: @bg;
-    padding: 2px 5px;
+    color: @bg;
+    background-color: @fg;
+    padding-left: 5px;
 }
 
 /* ------ Battery ------ */
 #battery {
-    color: @fg;
-    background-color: @bg;
-    padding: 2px 5px;
+    color: @bg;
+    background-color: @fg;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 /* ------ Clock ------ */
-#clock {
+
+#custom-clock_start {
+    color: @bg;
     padding-left: 10px;
-    color: @fg;
-    border-radius: 0px;
-    background-color: @bg;
+    padding-right: 10px;
+    background-color: @fg;
+    /* border: 1px solid @bg; */
     font-weight: bold;
-    font-size: 12px;
+    font-size: 16px;
+}
+#clock {
+    color: @bg;
+    border: none;
+    padding-right: 5px;
+    padding-right: 5px;
+    background-color: @fg;
+}
+#cpu,
+#temperature,
+#memory {
+    background-color: @fg;
+}
+
+#cpu {
+    color: @bg;
+}
+
+#memory {
+    color: @bg;
+}
+
+#temperature {
+    color: @bg;
 }
 
 /* ------ System Tray ------ */
 #tray {
-    background-color: @bg;
-    padding: 2px 5px;
+    background-color: @fg;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 /* ------ Custom Modules ------ */
+
+#custom-warp_start {
+    color: @bg;
+    background-color: @fg;
+    border: 1px solid @fg;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
 #custom-warp {
-    color: @fg;
-    background-color: @bg;
-    padding: 2px 5px;
+    color: @bg;
+    background-color: @fg;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 16px;
+}
+#custom-nordvpn {
+    color: @bg;
+    background-color: @fg;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 16px;
 }
 
 #custom-power {
-    color: @fg;
-    background-color: @bg;
+    color: @white;
+    background-color: @red;
+}
+#custom-power:hover {
+    color: @black;
+    background-color: @red;
 }
 
 #custom-arch {
+    color: @bg;
+    background-color: @fg;
+}
+#custom-arch:hover {
     color: @fg;
     background-color: @bg;
+    
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
 }
 
-#custom-arch:hover {
-    color: @red;
+#custom-notification {
+    color: @bg;
+    background-color: @fg;
 }
 
-#custom-r_end {
-    border-radius: 0px;
-    margin-right: 7px;
+#custom-empty_space {
+    margin-right: 5px;
     padding-right: 0px;
-    background-color: @bg;
+    background-color: transparent;
 }
 
-#custom-l_end {
-    border-radius: 0px;
-    margin-left: 7px;
-    padding-left: 0px;
-    background-color: @bg;
+#custom-border_start {
+    border: none;
+    font-weight: bold;
+    background-color: @fg;
+    border-left: 6px solid @bg-9;
+    border-right: 2px solid @bg;
+    margin-right: 10px;
+}
+
+#custom-bar_start {
+    margin-left: 0px;
+}
+
+#custom-bar_end {
+    margin-right: 0px;
+}
+
+
+#custom-group_start, #custom-group_end {
+    color: @bg;
+    background-color: @fg;
 }

@@ -2,101 +2,179 @@
 
 // Config //
 configuration {
-    modi:                        "drun";
-    show-icons:                  false;
-    font:                        "JetBrainsMono Nerd Font 10";
+    modi:                        "drun,filebrowser,window,run";
+    show-icons:                  true;
+    display-drun:                " ";
+    display-run:                 " ";
+    display-filebrowser:         " ";
+    display-window:              " ";
+    drun-display-format:         "{name}";
+    window-format:               "{w}{t}";
+    font:                        "JetBrainsMono Nerd Font 12";
 }
 
 // Main //
 window {
-    width:                       25em;
-    height:                      28em;
+    height:                      21.5em;
+    width:                       20em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
     padding:                     0em;
-    border-color:                @red;
-    background-color:            @bg;
+    border-color:                @fg;
     border-radius:               0em;
-    border:                      0.2em;
+    border:                      0.05em;
 }
-
 mainbox {
     enabled:                     true;
     spacing:                     0em;
-    padding:                     0.5em;
+    padding:                     0em;
     orientation:                 vertical;
-    children:                    [ "inputbar" , "listbox" ];
+    children:                    [ "choicebox" , "listbox" ];
+    background-color:            @bg;
+}
+
+choicebox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 vertical;
+    children:                    [ "mode-switcher", "searchbox" ];
     background-color:            transparent;
+    expand:                      false;
+}
+
+searchbox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 horizontal;
+    children:                    [ "icon-cc", "inputbar" ];
+    background-color:            transparent;
+    expand:                      false;
 }
 
 // Inputs //
 inputbar {
     enabled:                     true;
-    padding:                     0.5em;
-    children:                    [ "entry" ];
-    background-color:            @bg;
+    width:                       18.5em;
+    padding:                     0em;
+    spacing:                     0em;
+    children:                    [  "entry" ];
+    background-color:            transparent;
+    expand:                      true;
+}
+
+icon-cc {
     expand:                      false;
+    padding: 0;
+    filename: "yorha.png";
+    size: 30;
+    text-color:                  @bg;
+    background-color:            @gray;
+    horizontal-align:            0.5;
+    vertical-align:              0.5;
 }
 
 entry {
     enabled:                     true;
-    padding:                     0.5em;
     text-color:                  @bg;
-    background-color:            @green;
-    placeholder:                 "Search clipboard...";
+    background-color:            @gray;
+    vertical-align:              0.5;
+    placeholder:                 "";
 }
+prompt {
+    vertical-align:              0.5;
+    text-color:                  @red;
+    background-color:            @gray;
+    padding:                     0 1em 0 7px;
+}
+
+// Modes //
+mode-switcher {
+    enabled:                     true;
+    width:                       15em;
+    orientation:                 horizontal;
+    spacing:                     0em;
+    background-color:            transparent;
+    expand:                      false;
+    border:                      0 0 0.1em 0;
+
+}
+button {
+    padding:                     0em;
+    cursor:                      pointer;
+    border-radius:               0em;
+    background-color:            @bg;
+    text-color:                  @fg;
+}
+button selected {
+    background-color:            @fg;
+    text-color:                  @bg;
+//  border:                      0 0 0.1em 0;
+    border-color:                @red;
+    border-radius:               0;
+}
+
 
 // Lists //
 listbox {
-    spacing:                     0em;
     padding:                     0em;
+    spacing:                     0em;
     orientation:                 vertical;
     children:                    [ "dummy" , "listview" , "dummy" ];
     background-color:            transparent;
+    background-color:            @fg;
 }
+
+dummy { background-color:            transparent; }
 
 listview {
+    padding:                     0em;
+    spacing:                     0em;
     enabled:                     true;
-    padding:                     0.5em;
     columns:                     1;
-    lines:                       10; 
+    lines:                       13;
     cycle:                       true;
-    fixed-height:                true;
-    fixed-columns:               false;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
     expand:                      false;
+    fixed-height:                true;
+    fixed-columns:               true;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @fg;
+    text-color:                  @bg;
 }
 
-dummy {
-    spacing:                     0em;
-    padding:                     0em;
-    background-color:            transparent;
-}
 
 // Elements //
 element {
+    orientation:                 horizontal;
     enabled:                     true;
-    padding:                     0.5em;
+    padding:                     5px;
     cursor:                      pointer;
-    background-color:            transparent;
-    text-color:                  @fg;
-}
-
-element selected.normal {
     background-color:            @fg;
     text-color:                  @bg;
+    orientation:                 horizontal;
+}
+element selected.normal {
+    background-color:            @bg;
+    text-color:                  @fg;
     border-radius:               0em;
 }
-
-element-text {
-    vertical-align:              0.0;
-    horizontal-align:            0.0;
+element-icon {
+    size:                        1em;
     cursor:                      inherit;
     background-color:            transparent;
+}
+element-text {
+    vertical-align:              0.5;
+    horizontal-align:            0;
+    cursor:                      inherit;
     text-color:                  inherit;
+    background-color:            transparent;
 }

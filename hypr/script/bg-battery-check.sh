@@ -18,5 +18,5 @@ while true; do
         notify-send -a "Power" "Battery Low" -u critical "Battery is at $battery_capacity%."
         brightnessctl set 10%
     fi
-    sleep 60
+    sleep 120
 done

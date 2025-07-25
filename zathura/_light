@@ -6,35 +6,36 @@ set notification-bg             "#fbf1c7" # bg
 set notification-fg             "#98971a" # green
 
 set completion-bg               "#e4d3b5" # light bg
-set completion-fg               "#3c3836" # fg
+set completion-fg               "#4E4B42" # fg
 set completion-group-bg         "#d5c5a9" # light bg1
 set completion-group-fg         "#7c6f64" # gray
 set completion-highlight-bg     "#458588" # blue
 set completion-highlight-fg     "#e4d3b5" # light bg
 
 # Define the color in index mode
-set index-bg                    "#e4d3b5" # light bg2
-set index-fg                    "#3c3836" # fg
-set index-active-bg             "#458588" # blue
-set index-active-fg             "#e4d3b5" # light bg2
+set index-bg                    "#504945" # bg2
+set index-fg                    "#ebdbb2" # fg
+set index-active-bg             "#83a598" # bright:blue
+set index-active-fg             "#504945" # bg2
+
 
 set inputbar-bg                 "#fbf1c7" # bg
-set inputbar-fg                 "#3c3836" # fg
+set inputbar-fg                 "#4E4B42" # fg
 
 set statusbar-bg                "#e4d3b5" # light bg2
-set statusbar-fg                "#3c3836" # fg
+set statusbar-fg                "#4E4B42" # fg
 
 set highlight-color             "#d79921" # yellow
 set highlight-active-color      "#d65d0e" # orange
 
 set default-bg                  "#fbf1c7" # bg
-set default-fg                  "#3c3836" # fg
+set default-fg                  "#4E4B42" # fg
 set render-loading              true
 set render-loading-bg           "#fbf1c7" # bg
-set render-loading-fg           "#3c3836" # fg
+set render-loading-fg           "#4E4B42" # fg
 
 # Recolor book content's color
 set recolor-lightcolor          "#fbf1c7" # bg
-set recolor-darkcolor           "#3c3836" # fg
+set recolor-darkcolor           "#4E4B42" # fg
 set recolor                     "true"
 set recolor-keephue             "true"    # keep original color
