@@ -23,7 +23,7 @@ window#waybar {
 #waybar > box {
     margin: 4px 7px 5px 7px;
     background-color: @fg;
-    box-shadow: 3px 3px 0px @bg-1;
+    box-shadow: 3px 3px 0px @aqua;
 }
 
 #window {
@@ -41,8 +41,8 @@ window#waybar {
 }
 
 #workspaces button:hover {
-    color: @bg;
-    background-color: @red;
+    color: @fg;
+    background-color: @gray;
 }
 #workspaces button.active {
     color: @fg;
@@ -151,12 +151,12 @@ window#waybar {
 }
 
 #custom-power {
-    color: @white;
-    background-color: @red;
+    color: @bg;
+    background-color: @yellow;
 }
 #custom-power:hover {
-    color: @black;
-    background-color: @red;
+    color: @fg;
+    background-color: @gray;
 }
 
 #custom-arch {
@@ -165,7 +165,7 @@ window#waybar {
 }
 #custom-arch:hover {
     color: @fg;
-    background-color: @bg;
+    background-color: @gray;
     
     animation-name: blink;
     animation-duration: 0.5s;
@@ -189,8 +189,8 @@ window#waybar {
     border: none;
     font-weight: bold;
     background-color: @fg;
-    border-left: 6px solid @bg-9;
-    border-right: 2px solid @bg;
+    border-left: 6px solid @red;
+    border-right: 2px solid @gray;
     margin-right: 10px;
 }
 

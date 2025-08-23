@@ -22,7 +22,7 @@
 
   ```bash
     # Installing essential packages
-    sudo pacman -S wget unzip polkit-gnome pacman-contrib git neovim
+    sudo pacman -S git neovim wget unzip polkit-gnome pacman-contrib
     sudo pacman -S udiskie
     sudo pacman -S brightnessctl 
     sudo pacman -S pavucontrol pamixer
@@ -36,28 +36,26 @@
     makepkg -si
 
     # Installing hyprland & fonts, themes
-    yay -S  bibata-cursor-theme-bin ttf-maple
+    yay -S  bibata-cursor-theme-bin nordic-theme nordic-polar-theme ttf-maple 
     sudo pacman -S hyprland hyprlock hyprpaper kitty ttf-jetbrains-mono-nerd xdg-desktop-portal-hyprland
   ```
 
 <h2 id="setting-up-essential">2. Setting up essential packages & softwares</h2>
 
 
-  ```bash
-    sudo pacman -S lazygit
-    
+  ```bash    
     sudo pacman -S fastfetch imagemagick
     
-    sudo pacman -S thunar gvfs tumbler ffmpegthumbnailer
-    
     yay -S visual-studio-code-bin
-    code --install-extension jdinhlife.gruvbox
     
     sudo pacman -S firefox #https://github.com/MrOtherGuy/firefox-csshacks/blob/master/chrome/autohide_bookmarks_and_main_toolbars.css
 
     sudo pacman -S waybar
 
-    yay -S rofi-lbonn-wayland-git
+    sudo pacman -S rofi-wayland
+    
+    sudo pacman -S imv mpv
+    sudo pacman -S fcitx5 fcitx5-qt fcitx5-gtk kcm-fcitx5 #fcitx5-unikey 
 
     sudo pacman -S starship
     echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
@@ -78,8 +76,10 @@
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     
     yay -S  zathura-git zathura-pdf-mupdf-git
+
+    sudo pacman -S swaync
     
-    sudo pacman -S imv mpv
+    sudo pacman -S thunar gvfs tumbler ffmpegthumbnailer
   ```
 
 <details>

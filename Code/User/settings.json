@@ -12,7 +12,6 @@
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Gruvbox Dark Soft",
     "extensions.ignoreRecommendations": true,
     "editor.minimap.enabled": false,
     "explorer.confirmPasteNative": false,
@@ -29,4 +28,5 @@
             "path": "fish"
         },
     },
+    "workbench.colorTheme": "Default Dark Modern",
 }

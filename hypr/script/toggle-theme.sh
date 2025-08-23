@@ -9,9 +9,9 @@ if [ $current = "light" ]; then
     new="dark"
     current_zellij_theme="gruvbox-light"
     new_zellij_theme="gruvbox-dark"
-    vscode_theme="Gruvbox Dark Soft"
-    hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_black.png"
-    gsettings set org.gnome.desktop.interface gtk-theme 'Gruvbox-Dark'
+    vscode_theme="Default Dark Modern"
+    hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_dark.png"
+    gsettings set org.gnome.desktop.interface gtk-theme 'Nordic'
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'
     rm -rf ~/.local/share/icons/default
     ln -s /usr/share/icons/Bibata-Modern-Ice/ ~/.local/share/icons/default
@@ -19,9 +19,9 @@ else
     new="light"
     current_zellij_theme="gruvbox-dark"
     new_zellij_theme="gruvbox-light"
-    vscode_theme="Gruvbox Light Hard"
-    hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_white.png"
-    gsettings set org.gnome.desktop.interface gtk-theme 'Gruvbox-Light'
+    vscode_theme="Default Light Modern"
+    hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_light.png"
+    gsettings set org.gnome.desktop.interface gtk-theme 'Nordic-Polar'
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
     rm -rf ~/.local/share/icons/default
     ln -s /usr/share/icons/Bibata-Modern-Clasic/ ~/.local/share/icons/default

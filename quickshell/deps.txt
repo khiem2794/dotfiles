@@ -1,0 +1,8 @@
+-- quickshell build + run
+yay -S google-breakpad
+pacman -S qt6-shadertools cli11 spirv-tools jemalloc qt6-base qt6-wayland qt6-svg qt6-declarative
+
+-- extra deps
+pacman -Rns  qt6-5compat syntax-highlighting qt6-positioning
+yay -S ttf-material-symbols-variable-git
+

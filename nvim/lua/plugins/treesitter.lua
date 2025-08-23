@@ -4,15 +4,12 @@ return {
     opts = {
       ensure_installed = {
         "rust",
-        "css",
         "gitignore",
         "python",
         "regex",
         "vim",
         "bash",
-        "vimdoc",
         "html",
-        "http",
       },
     },
     config = function(_, opts)
