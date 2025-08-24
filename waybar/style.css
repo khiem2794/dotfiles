@@ -23,7 +23,7 @@ window#waybar {
 #waybar > box {
     margin: 4px 7px 5px 7px;
     background-color: @fg;
-    box-shadow: 3px 3px 0px @aqua;
+    box-shadow: 3px 3px 0px @gray;
 }
 
 #window {
@@ -152,7 +152,7 @@ window#waybar {
 
 #custom-power {
     color: @bg;
-    background-color: @yellow;
+    background-color: @red;
 }
 #custom-power:hover {
     color: @fg;
@@ -189,8 +189,8 @@ window#waybar {
     border: none;
     font-weight: bold;
     background-color: @fg;
-    border-left: 6px solid @red;
-    border-right: 2px solid @gray;
+    border-left: 6px solid @bg;
+    border-right: 2px solid @bg;
     margin-right: 10px;
 }
 
