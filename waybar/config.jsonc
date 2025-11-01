@@ -2,7 +2,7 @@
     "layer": "top",
     "position": "top",
     "mod": "dock",
-    "margin-top": 5,
+    "margin-top": 1,
     "margin-bottom": 0,
     "exclusive": true,
     "passthrough": false,
@@ -19,13 +19,14 @@
     "modules-center": [
         "custom/clock_start", "clock", "custom/empty_space",
         // "custom/warp_start", 
+        "battery",
         "custom/nordvpn"
     ],
     
     "modules-right": [
         "custom/notification", "custom/empty_space",
         "custom/group_start", "backlight", "pulseaudio", "pulseaudio#microphone", "custom/group_end", "custom/empty_space",
-        "custom/group_start", "cpu", "memory", "battery", "custom/group_end", "custom/empty_space",
+        "custom/group_start", "cpu", "custom/empty_space", "memory", "custom/group_end", "custom/empty_space",
         "tray", "custom/empty_space",
         "custom/power"
         // "custom/bar_end"
@@ -181,7 +182,7 @@
         "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB "
     },
     "battery": {
-        "format": "{icon} {capacity}%",
+        "format": "[\u2002{icon}\u2002{capacity}%\u2002]",
         "format-charging": " {capacity}% ",
         "format-plugged": " {capacity}% ",
         "format-alt": "{time} {icon} ",

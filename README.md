@@ -55,7 +55,6 @@
     sudo pacman -S rofi-wayland
     
     sudo pacman -S imv mpv
-    sudo pacman -S fcitx5 fcitx5-qt fcitx5-gtk kcm-fcitx5 #fcitx5-unikey 
 
     sudo pacman -S starship
     echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
@@ -80,6 +79,8 @@
     sudo pacman -S swaync
     
     sudo pacman -S thunar gvfs tumbler ffmpegthumbnailer
+
+    sudo pacman -S fcitx5 fcitx5-qt fcitx5-gtk kcm-fcitx5 #fcitx5-unikey 
   ```
 
 <details>
