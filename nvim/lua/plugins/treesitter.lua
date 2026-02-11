@@ -13,15 +13,16 @@ return {
       },
     },
     config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+			local TS = require("nvim-treesitter")
+			TS.setup(opts)
 
-      -- MDX
-      vim.filetype.add({
-        extension = {
-          mdx = "mdx",
-        },
-      })
-      vim.treesitter.language.register("markdown", "mdx")
+			-- MDX
+			vim.filetype.add({
+				extension = {
+					mdx = "mdx",
+				},
+			})
+			vim.treesitter.language.register("markdown", "mdx")
     end,
   },
 }

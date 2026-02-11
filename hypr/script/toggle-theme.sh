@@ -12,6 +12,7 @@ if [ $current = "light" ]; then
     vscode_theme="Default Dark Modern"
     hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_dark.png"
     gsettings set org.gnome.desktop.interface gtk-theme 'Nordic'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'
     rm -rf ~/.local/share/icons/default
     ln -s /usr/share/icons/Bibata-Modern-Ice/ ~/.local/share/icons/default
@@ -22,6 +23,7 @@ else
     vscode_theme="Default Light Modern"
     hyprctl hyprpaper wallpaper ",~/.config/hypr/assets/_light.png"
     gsettings set org.gnome.desktop.interface gtk-theme 'Nordic-Polar'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
     rm -rf ~/.local/share/icons/default
     ln -s /usr/share/icons/Bibata-Modern-Clasic/ ~/.local/share/icons/default
