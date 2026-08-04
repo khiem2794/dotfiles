@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "この名前のファイルは既に存在します。上書きしてもよろしいですか?"
+  },
+  "Actions": {
+    "Actions": "アクション"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: 戻る • F1/I: ファイル情報 • F10: ヘルプ • Esc: 閉じる"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "キャンセル"
+  },
+  "Choose icon": {
+    "Choose icon": "アイコンを選ぶ"
+  },
+  "Communication": {
+    "Communication": "コミュニケーション"
+  },
+  "Copy path": {
+    "Copy path": "パスをコピー"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "デスクトップ"
+  },
+  "Development": {
+    "Development": "開発"
+  },
+  "Documents": {
+    "Documents": "ドキュメント"
+  },
+  "Downloads": {
+    "Downloads": "ダウンロード"
+  },
+  "Enter filename...": {
+    "Enter filename...": "ファイル名を入力してください..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: 切り替え • F10: ヘルプ"
+  },
+  "File Already Exists": {
+    "File Already Exists": "ファイルが既に存在します"
+  },
+  "File Information": {
+    "File Information": "ファイル情報"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "娯楽"
+  },
+  "Hibernate": {
+    "Hibernate": "休止状態"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "確認するにはさらに長く押してください"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "長押しで確認（%1 ms）"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "長押しで確認（%1秒）"
+  },
+  "Home": {
+    "Home": "ホーム"
+  },
+  "Log Out": {
+    "Log Out": "ログアウト"
+  },
+  "Media": {
+    "Media": "メディア"
+  },
+  "Modified": {
+    "Modified": "変更済み"
+  },
+  "Move to Trash": {
+    "Move to Trash": "ゴミ箱へ移動"
+  },
+  "Music": {
+    "Music": "音楽"
+  },
+  "Name": {
+    "Name": "名称"
+  },
+  "Navigation": {
+    "Navigation": "ナビゲーション"
+  },
+  "Numbers": {
+    "Numbers": "数字"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "上書き"
+  },
+  "Pictures": {
+    "Pictures": "画像"
+  },
+  "Power Off": {
+    "Power Off": "電源オフ"
+  },
+  "Power Options": {
+    "Power Options": "電源オプション"
+  },
+  "Quick Access": {
+    "Quick Access": "クイックアクセス"
+  },
+  "Reboot": {
+    "Reboot": "再起動"
+  },
+  "Save": {
+    "Save": "保存"
+  },
+  "Search for a location...": {
+    "Search for a location...": "ロケーションを検索..."
+  },
+  "Search...": {
+    "Search...": "検索..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "サイズ"
+  },
+  "Sort By": {
+    "Sort By": "並べ替え方法"
+  },
+  "Status": {
+    "Status": "状態"
+  },
+  "Suspend": {
+    "Suspend": "スリープ"
+  },
+  "Switch User": {
+    "Switch User": "ユーザーを切り替える"
+  },
+  "System": {
+    "System": "システム"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: ナビゲーション • ←→↑↓: グリッドナビゲーション • Enter/Space: 選択"
+  },
+  "Type": {
+    "Type": "種類"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "動画"
+  },
+  "Workspace": {
+    "Workspace": "ワークスペース"
+  }
+}

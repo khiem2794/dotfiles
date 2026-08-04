@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Файл з такою назвою вже існує. Бажаєте його замінити?"
+  },
+  "Actions": {
+    "Actions": "Дії"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: Назад • F1/I: Інформація про файл • F10: Довідка • Esc: Закрити"
+  },
+  "Ascending": {
+    "Ascending": "За зростанням"
+  },
+  "Cancel": {
+    "Cancel": "Скасувати"
+  },
+  "Choose icon": {
+    "Choose icon": "Вибрати іконку"
+  },
+  "Communication": {
+    "Communication": "Зв'язок"
+  },
+  "Copy path": {
+    "Copy path": "Копіювати шлях"
+  },
+  "Descending": {
+    "Descending": "За спаданням"
+  },
+  "Desktop": {
+    "Desktop": "Робочий стіл"
+  },
+  "Development": {
+    "Development": "Розробка"
+  },
+  "Documents": {
+    "Documents": "Документи"
+  },
+  "Downloads": {
+    "Downloads": "Завантаження"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Введіть ім'я файлу..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Перемкнути • F10: Довідка"
+  },
+  "File Already Exists": {
+    "File Already Exists": "Файл вже існує"
+  },
+  "File Information": {
+    "File Information": "Інформація про файл"
+  },
+  "Files - %1": {
+    "Files - %1": "Файли — %1"
+  },
+  "Fun": {
+    "Fun": "Розваги"
+  },
+  "Hibernate": {
+    "Hibernate": "Гібернація"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Утримуйте довше для підтвердження"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Утримуйте для підтвердження (%1 мс)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Утримуйте для підтвердження (%1 с)"
+  },
+  "Home": {
+    "Home": "Головна"
+  },
+  "Log Out": {
+    "Log Out": "Вийти"
+  },
+  "Media": {
+    "Media": "Медіа"
+  },
+  "Modified": {
+    "Modified": "Змінено"
+  },
+  "Move to Trash": {
+    "Move to Trash": "Перемістити в кошик"
+  },
+  "Music": {
+    "Music": "Музика"
+  },
+  "Name": {
+    "Name": "Назва"
+  },
+  "Navigation": {
+    "Navigation": "Навігація"
+  },
+  "Numbers": {
+    "Numbers": "Числа"
+  },
+  "Order": {
+    "Order": "Порядок"
+  },
+  "Overwrite": {
+    "Overwrite": "Перезаписати"
+  },
+  "Pictures": {
+    "Pictures": "Зображення"
+  },
+  "Power Off": {
+    "Power Off": "Вимкнути живлення"
+  },
+  "Power Options": {
+    "Power Options": "Параметри живлення"
+  },
+  "Quick Access": {
+    "Quick Access": "Швидкий доступ"
+  },
+  "Reboot": {
+    "Reboot": "Перезавантажити"
+  },
+  "Save": {
+    "Save": "Зберегти"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Пошук місця..."
+  },
+  "Search...": {
+    "Search...": "Пошук..."
+  },
+  "Select File": {
+    "Select File": "Вибрати файл"
+  },
+  "Size": {
+    "Size": "Розмір"
+  },
+  "Sort By": {
+    "Sort By": "Сортувати за"
+  },
+  "Status": {
+    "Status": "Статус"
+  },
+  "Suspend": {
+    "Suspend": "Призупинити"
+  },
+  "Switch User": {
+    "Switch User": "Змінити користувача"
+  },
+  "System": {
+    "System": "Система"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Навігація • ←→↑↓: Навігація сіткою • Enter/Space: Вибрати"
+  },
+  "Type": {
+    "Type": "Тип"
+  },
+  "Use this folder": {
+    "Use this folder": "Використовувати цю папку"
+  },
+  "Videos": {
+    "Videos": "Відео"
+  },
+  "Workspace": {
+    "Workspace": "Робочий простір"
+  }
+}

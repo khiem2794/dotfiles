@@ -1,0 +1,424 @@
+import QtQuick
+import QtQuick.Controls
+import Quickshell
+import Quickshell.Wayland
+import qs.Common
+import qs.Modals.DankLauncherV2
+import qs.Services
+import qs.Widgets
+
+Scope {
+    id: niriOverviewScope
+
+    property bool searchActive: false
+    property string searchActiveScreen: ""
+    property bool isClosing: false
+    property bool releaseKeyboard: false
+    readonly property bool spotlightModalOpen: PopoutService.dankLauncherV2Modal?.spotlightOpen ?? false
+    property bool overlayActive: NiriService.inOverview || searchActive
+
+    function showSpotlight(screenName) {
+        isClosing = false;
+        releaseKeyboard = false;
+        searchActive = true;
+        searchActiveScreen = screenName;
+    }
+
+    function hideSpotlight() {
+        if (!searchActive)
+            return;
+        isClosing = true;
+    }
+
+    function hideAndReleaseKeyboard() {
+        releaseKeyboard = true;
+        hideSpotlight();
+    }
+
+    function resetState() {
+        searchActive = false;
+        searchActiveScreen = "";
+        isClosing = false;
+        releaseKeyboard = false;
+    }
+
+    Connections {
+        target: NiriService
+        function onInOverviewChanged() {
+            if (NiriService.inOverview) {
+                resetState();
+                return;
+            }
+            if (!searchActive) {
+                resetState();
+                return;
+            }
+            isClosing = true;
+        }
+
+        function onCurrentOutputChanged() {
+            if (!NiriService.inOverview || !searchActive || searchActiveScreen === "" || searchActiveScreen === NiriService.currentOutput)
+                return;
+            hideSpotlight();
+        }
+    }
+
+    onSpotlightModalOpenChanged: {
+        if (spotlightModalOpen && searchActive)
+            hideSpotlight();
+    }
+
+    onIsClosingChanged: {
+        if (!isClosing) {
+            closeTimer.stop();
+            return;
+        }
+        closeTimer.restart();
+    }
+
+    Timer {
+        id: closeTimer
+        interval: Theme.expressiveDurations.fast
+        onTriggered: niriOverviewScope.resetState()
+    }
+
+    Loader {
+        id: niriOverlayLoader
+        active: overlayActive || isClosing
+        asynchronous: false
+        sourceComponent: Variants {
+            id: overlayVariants
+            model: Quickshell.screens
+
+            PanelWindow {
+                id: overlayWindow
+                required property var modelData
+
+                readonly property real dpr: CompositorService.getScreenScale(screen)
+                readonly property bool isActiveScreen: screen.name === NiriService.currentOutput
+                readonly property bool shouldShowSpotlight: niriOverviewScope.searchActive && screen.name === niriOverviewScope.searchActiveScreen && !niriOverviewScope.isClosing
+                readonly property bool isSpotlightScreen: screen.name === niriOverviewScope.searchActiveScreen
+                readonly property bool overlayVisible: NiriService.inOverview || niriOverviewScope.isClosing
+                property bool hasActivePopout: !!PopoutManager.currentPopoutsByScreen[screen.name]
+                property bool hasActiveModal: !!ModalManager.currentModalsByScreen[screen.name]
+                readonly property bool useSpotlightStyle: SettingsData.niriOverviewLauncherStyle === "spotlight"
+                readonly property var launcherContent: useSpotlightStyle ? spotlightLauncherLoader.item : fullLauncherLoader.item
+
+                readonly property QtObject fakeParentModal: QtObject {
+                    readonly property bool spotlightOpen: spotlightContainer.visible
+                    readonly property bool isClosing: niriOverviewScope.isClosing
+                    readonly property real alignedX: spotlightContainer.x
+                    readonly property real alignedY: spotlightContainer.y
+                    readonly property real screenHeight: overlayWindow.screen?.height ?? 1080
+                    function hide() {
+                        if (niriOverviewScope.searchActive) {
+                            niriOverviewScope.hideSpotlight();
+                            return;
+                        }
+                        NiriService.toggleOverview();
+                    }
+                }
+
+                Connections {
+                    target: PopoutManager
+                    function onPopoutChanged() {
+                        overlayWindow.hasActivePopout = !!PopoutManager.currentPopoutsByScreen[overlayWindow.screen.name];
+                    }
+                }
+
+                Connections {
+                    target: ModalManager
+                    function onModalChanged() {
+                        overlayWindow.hasActiveModal = !!ModalManager.currentModalsByScreen[overlayWindow.screen.name];
+                    }
+                }
+
+                screen: modelData
+                visible: overlayVisible
+                color: "transparent"
+
+                WlrLayershell.namespace: "dms:niri-overview-spotlight"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.exclusiveZone: -1
+                WlrLayershell.keyboardFocus: {
+                    if (PopoutManager.screenshotActive)
+                        return WlrKeyboardFocus.None;
+                    if (!NiriService.inOverview)
+                        return WlrKeyboardFocus.None;
+                    if (!isActiveScreen)
+                        return WlrKeyboardFocus.None;
+                    if (niriOverviewScope.releaseKeyboard)
+                        return WlrKeyboardFocus.None;
+                    if (hasActivePopout || hasActiveModal)
+                        return WlrKeyboardFocus.None;
+                    return WlrKeyboardFocus.Exclusive;
+                }
+
+                mask: Region {
+                    item: overlayVisible && spotlightContainer.visible ? spotlightContainer : null
+                }
+
+                WindowBlur {
+                    targetWindow: overlayWindow
+                    // Track the container's scale so blur shrinks with the content
+                    // during exit — otherwise blur pops away one frame after content.
+                    readonly property real s: Math.min(1, spotlightContainer.scale)
+                    readonly property bool active: overlayWindow.shouldShowSpotlight && spotlightContainer.opacity > 0
+                    blurX: spotlightContainer.x + spotlightContainer.width * (1 - s) * 0.5
+                    blurY: spotlightContainer.y + spotlightContainer.height * (1 - s) * 0.5
+                    blurWidth: active ? spotlightContainer.width * s : 0
+                    blurHeight: active ? spotlightContainer.height * s : 0
+                    blurRadius: Theme.cornerRadius
+                }
+
+                onShouldShowSpotlightChanged: {
+                    if (shouldShowSpotlight) {
+                        if (launcherContent?.controller) {
+                            launcherContent.controller.searchMode = SessionData.niriOverviewLastMode || "apps";
+                            launcherContent.controller.performSearch();
+                        }
+                        return;
+                    }
+                    if (!isActiveScreen)
+                        return;
+                    Qt.callLater(() => keyboardFocusScope.forceActiveFocus());
+                }
+
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
+
+                FocusScope {
+                    id: keyboardFocusScope
+                    anchors.fill: parent
+                    focus: true
+
+                    Keys.onPressed: event => {
+                        if (overlayWindow.shouldShowSpotlight || niriOverviewScope.isClosing)
+                            return;
+                        if ([Qt.Key_Escape, Qt.Key_Return].includes(event.key)) {
+                            NiriService.toggleOverview();
+                            event.accepted = true;
+                            return;
+                        }
+
+                        if (event.key === Qt.Key_Left) {
+                            NiriService.moveColumnLeft();
+                            event.accepted = true;
+                            return;
+                        }
+
+                        if (event.key === Qt.Key_Right) {
+                            NiriService.moveColumnRight();
+                            event.accepted = true;
+                            return;
+                        }
+
+                        if (event.key === Qt.Key_Up) {
+                            NiriService.send({
+                                "Action": {
+                                    "FocusWorkspaceUp": {}
+                                }
+                            });
+                            event.accepted = true;
+                            return;
+                        }
+
+                        if (event.key === Qt.Key_Down) {
+                            NiriService.send({
+                                "Action": {
+                                    "FocusWorkspaceDown": {}
+                                }
+                            });
+                            event.accepted = true;
+                            return;
+                        }
+
+                        if (event.modifiers & (Qt.ControlModifier | Qt.MetaModifier) || [Qt.Key_Delete, Qt.Key_Backspace].includes(event.key)) {
+                            event.accepted = false;
+                            return;
+                        }
+
+                        if (event.isAutoRepeat || !event.text)
+                            return;
+                        if (!overlayWindow.launcherContent?.searchField)
+                            return;
+                        const trimmedText = event.text.trim();
+                        overlayWindow.launcherContent.searchField.text = trimmedText;
+                        overlayWindow.launcherContent.controller.setSearchQuery(trimmedText);
+                        niriOverviewScope.showSpotlight(overlayWindow.screen.name);
+                        Qt.callLater(() => overlayWindow.launcherContent.searchField.forceActiveFocus());
+                        event.accepted = true;
+                    }
+                }
+
+                Item {
+                    id: spotlightContainer
+
+                    // Connected-frame mode: dock flush against the emerge-side frame
+                    // edge and slide in from beyond that edge. In any other mode the
+                    // spotlight stays centered — identical to master.
+                    readonly property string connectedEmergeSide: SettingsData.frameLauncherEmergeSide || "bottom"
+                    readonly property real _centerY: overlayWindow.useSpotlightStyle ? Math.max(0, parent.height * 0.33 - 28) : (parent.height - height) / 2
+                    readonly property real _connectedRestY: {
+                        if (!Theme.isConnectedEffect || !overlayWindow.screen)
+                            return _centerY;
+                        const inset = SettingsData.frameEdgeInsetForSide(overlayWindow.screen, connectedEmergeSide);
+                        return connectedEmergeSide === "top" ? inset : parent.height - height - inset;
+                    }
+                    readonly property real _connectedCollapsedY: connectedEmergeSide === "top" ? -height : parent.height
+
+                    x: Theme.snap((parent.width - width) / 2, overlayWindow.dpr)
+                    y: {
+                        if (!Theme.isConnectedEffect)
+                            return Theme.snap(_centerY, overlayWindow.dpr);
+                        return Theme.snap(overlayWindow.shouldShowSpotlight ? _connectedRestY : _connectedCollapsedY, overlayWindow.dpr);
+                    }
+
+                    readonly property int baseWidth: {
+                        switch (SettingsData.dankLauncherV2Size) {
+                        case "micro":
+                            return 500;
+                        case "medium":
+                            return 720;
+                        case "large":
+                            return 860;
+                        default:
+                            return 620;
+                        }
+                    }
+                    readonly property int baseHeight: {
+                        switch (SettingsData.dankLauncherV2Size) {
+                        case "micro":
+                            return 480;
+                        case "medium":
+                            return 720;
+                        case "large":
+                            return 860;
+                        default:
+                            return 600;
+                        }
+                    }
+                    width: overlayWindow.useSpotlightStyle ? Math.min(680, overlayWindow.screen.width - 80) : Math.min(baseWidth, overlayWindow.screen.width - 100)
+                    height: overlayWindow.useSpotlightStyle ? Math.ceil(overlayWindow.launcherContent?.implicitHeight ?? 56) : Math.min(baseHeight, overlayWindow.screen.height - 100)
+
+                    readonly property bool animatingOut: niriOverviewScope.isClosing && overlayWindow.isSpotlightScreen
+
+                    scale: Theme.isConnectedEffect ? 1.0 : (overlayWindow.shouldShowSpotlight ? 1.0 : 0.96)
+                    opacity: Theme.isConnectedEffect ? 1 : (overlayWindow.shouldShowSpotlight ? 1 : 0)
+                    visible: overlayWindow.shouldShowSpotlight || animatingOut
+                    enabled: overlayWindow.shouldShowSpotlight
+
+                    layer.enabled: visible
+                    layer.smooth: false
+                    layer.textureSize: layer.enabled ? Qt.size(Math.round(width * overlayWindow.dpr), Math.round(height * overlayWindow.dpr)) : Qt.size(0, 0)
+
+                    Behavior on scale {
+                        id: scaleAnimation
+                        enabled: !Theme.isConnectedEffect
+                        NumberAnimation {
+                            duration: Theme.expressiveDurations.fast
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: spotlightContainer.visible ? Theme.expressiveCurves.expressiveFastSpatial : Theme.expressiveCurves.standardAccel
+                            onRunningChanged: {
+                                if (running || !spotlightContainer.animatingOut)
+                                    return;
+                                niriOverviewScope.resetState();
+                            }
+                        }
+                    }
+
+                    Behavior on opacity {
+                        enabled: !Theme.isConnectedEffect
+                        NumberAnimation {
+                            duration: Theme.expressiveDurations.fast
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: spotlightContainer.visible ? Theme.expressiveCurves.expressiveFastSpatial : Theme.expressiveCurves.standardAccel
+                        }
+                    }
+
+                    // Connected-mode slide — only animates in full connected-frame mode.
+                    // Drives resetState when the slide-out finishes (scale/opacity are
+                    // static in connected mode so their onRunningChanged never fires).
+                    Behavior on y {
+                        enabled: Theme.isConnectedEffect
+                        NumberAnimation {
+                            duration: Theme.variantDuration(Theme.popoutAnimationDuration, overlayWindow.shouldShowSpotlight)
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: overlayWindow.shouldShowSpotlight ? Theme.variantPopoutEnterCurve : Theme.variantPopoutExitCurve
+                            onRunningChanged: {
+                                if (running || !spotlightContainer.animatingOut)
+                                    return;
+                                niriOverviewScope.resetState();
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: Theme.withAlpha(Theme.surfaceContainer, Theme.popupTransparency)
+                        radius: Theme.cornerRadius
+                        border.color: Theme.outlineMedium
+                        border.width: 1
+                    }
+
+                    FocusScope {
+                        anchors.fill: parent
+                        focus: true
+
+                        Keys.onPressed: event => overlayWindow.launcherContent?.activeContextMenu?.handleKey(event)
+
+                        Keys.onEscapePressed: event => {
+                            overlayWindow.launcherContent?.activeContextMenu?.handleKey(event);
+                            if (!event.accepted)
+                                overlayWindow.launcherContent?.parentModal?.hide();
+                            event.accepted = true;
+                        }
+
+                        Loader {
+                            id: fullLauncherLoader
+                            anchors.fill: parent
+                            active: !overlayWindow.useSpotlightStyle
+                            sourceComponent: LauncherContent {
+                                parentModal: overlayWindow.fakeParentModal
+                            }
+                        }
+
+                        Loader {
+                            id: spotlightLauncherLoader
+                            anchors.fill: parent
+                            active: overlayWindow.useSpotlightStyle
+                            sourceComponent: SpotlightLauncherContent {
+                                parentModal: overlayWindow.fakeParentModal
+                            }
+                        }
+
+                        Connections {
+                            target: overlayWindow.launcherContent?.searchField ?? null
+                            function onTextChanged() {
+                                if (overlayWindow.launcherContent.searchField.text.length > 0 || !niriOverviewScope.searchActive)
+                                    return;
+                                niriOverviewScope.hideSpotlight();
+                            }
+                        }
+
+                        Connections {
+                            target: overlayWindow.launcherContent?.controller ?? null
+                            function onItemExecuted() {
+                                niriOverviewScope.releaseKeyboard = true;
+                            }
+                            function onModeChanged(mode) {
+                                if (overlayWindow.launcherContent.controller.autoSwitchedToFiles)
+                                    return;
+                                SessionData.setNiriOverviewLastMode(mode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

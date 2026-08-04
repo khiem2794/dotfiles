@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "En fil med det här namnet finns redan. Vill du ersätta den?"
+  },
+  "Actions": {
+    "Actions": "Åtgärder"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backsteg: Gå tillbaka • F1/I: Filinformation • F10: Hjälp • Esc: Stäng"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "Avbryt"
+  },
+  "Choose icon": {
+    "Choose icon": "Välj ikon"
+  },
+  "Communication": {
+    "Communication": "Samtal"
+  },
+  "Copy path": {
+    "Copy path": "Kopiera sökväg"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "Skrivbord"
+  },
+  "Development": {
+    "Development": "Utveckling"
+  },
+  "Documents": {
+    "Documents": "Dokument"
+  },
+  "Downloads": {
+    "Downloads": "Hämtningar"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Lägg till filnamn..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Växla • F10: Hjälp"
+  },
+  "File Already Exists": {
+    "File Already Exists": "Filen finns redan"
+  },
+  "File Information": {
+    "File Information": "Filinformation"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "Nöje"
+  },
+  "Hibernate": {
+    "Hibernate": "Viloläge"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Håll längre för att bekräfta"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Håll för att bekräfta (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Håll för att bekräfta (%1 s)"
+  },
+  "Home": {
+    "Home": "Hem"
+  },
+  "Log Out": {
+    "Log Out": "Logga ut"
+  },
+  "Media": {
+    "Media": "Medier"
+  },
+  "Modified": {
+    "Modified": "Ändrad"
+  },
+  "Move to Trash": {
+    "Move to Trash": ""
+  },
+  "Music": {
+    "Music": "Musik"
+  },
+  "Name": {
+    "Name": "Namn"
+  },
+  "Navigation": {
+    "Navigation": "Navigering"
+  },
+  "Numbers": {
+    "Numbers": "Tal"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "Ersätt"
+  },
+  "Pictures": {
+    "Pictures": "Bilder"
+  },
+  "Power Off": {
+    "Power Off": "Stäng av"
+  },
+  "Power Options": {
+    "Power Options": "Inställningar för ström"
+  },
+  "Quick Access": {
+    "Quick Access": "Snabbåtkomst"
+  },
+  "Reboot": {
+    "Reboot": "Starta om"
+  },
+  "Save": {
+    "Save": "Spara"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Sök efter en plats..."
+  },
+  "Search...": {
+    "Search...": "Sök..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "Storlek"
+  },
+  "Sort By": {
+    "Sort By": "Sortera efter"
+  },
+  "Status": {
+    "Status": "Status"
+  },
+  "Suspend": {
+    "Suspend": "Strömsparläge"
+  },
+  "Switch User": {
+    "Switch User": "Byt användare"
+  },
+  "System": {
+    "System": "System"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Skift+Tab: Navigering • ←→↑↓: Rutnätsnavigering • Retur/Blanksteg: Välj"
+  },
+  "Type": {
+    "Type": "Typ"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "Videor"
+  },
+  "Workspace": {
+    "Workspace": "Arbetsyta"
+  }
+}

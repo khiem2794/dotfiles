@@ -1,0 +1,541 @@
+import QtQuick
+import Quickshell
+import Quickshell.Services.Pipewire
+import qs.Common
+import qs.Services
+import qs.Widgets
+import "../../../Common/QmlUtils.js" as QmlUtils
+
+Rectangle {
+    id: root
+
+    LayoutMirroring.enabled: I18n.isRtl
+    LayoutMirroring.childrenInherit: true
+
+    property bool hasVolumeSliderInCC: {
+        const widgets = SettingsData.controlCenterWidgets || [];
+        return widgets.some(widget => widget.id === "volumeSlider");
+    }
+
+    implicitHeight: headerRow.height + (!hasVolumeSliderInCC ? volumeSlider.height : 0) + audioContent.height + Theme.spacingM
+    radius: Theme.cornerRadius
+    color: Theme.nestedSurface
+    border.color: Theme.outlineMedium
+    border.width: Theme.layerOutlineWidth
+
+    Row {
+        id: headerRow
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: Theme.spacingM
+        anchors.rightMargin: Theme.spacingM
+        anchors.topMargin: Theme.spacingS
+        height: 40
+
+        StyledText {
+            id: headerText
+            text: I18n.tr("Audio Devices")
+            font.pixelSize: Theme.fontSizeLarge
+            color: Theme.surfaceText
+            font.weight: Font.Medium
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Item {
+            height: 1
+            width: parent.width - headerText.width - settingsButton.width
+        }
+
+        DankActionButton {
+            id: settingsButton
+            anchors.verticalCenter: parent.verticalCenter
+            iconName: "settings"
+            buttonSize: 28
+            iconSize: 16
+            iconColor: Theme.surfaceVariantText
+            onClicked: {
+                PopoutService.closeControlCenter();
+                PopoutService.openSettingsWithTab("audio");
+            }
+        }
+    }
+
+    Row {
+        id: volumeSlider
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: headerRow.bottom
+        anchors.leftMargin: Theme.spacingM
+        anchors.rightMargin: Theme.spacingM
+        anchors.topMargin: Theme.spacingXS
+        height: 35
+        spacing: 0
+        visible: !hasVolumeSliderInCC
+
+        Rectangle {
+            width: Theme.iconSize + Theme.spacingS * 2
+            height: Theme.iconSize + Theme.spacingS * 2
+            anchors.verticalCenter: parent.verticalCenter
+            radius: (Theme.iconSize + Theme.spacingS * 2) / 2
+            color: iconArea.containsMouse ? Theme.primaryHover : Theme.withAlpha(Theme.primaryHover, 0)
+
+            DankRipple {
+                id: muteRipple
+                cornerRadius: parent.radius
+            }
+
+            MouseArea {
+                id: iconArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onPressed: mouse => muteRipple.trigger(mouse.x, mouse.y)
+                onClicked: {
+                    if (AudioService.sink && AudioService.sink.audio) {
+                        AudioService.sink.audio.muted = !AudioService.sink.audio.muted;
+                    }
+                }
+            }
+
+            DankIcon {
+                anchors.centerIn: parent
+                name: {
+                    if (!AudioService.sink || !AudioService.sink.audio)
+                        return "volume_off";
+                    let muted = AudioService.sink.audio.muted;
+                    let volume = AudioService.sink.audio.volume;
+                    if (muted)
+                        return "volume_off";
+                    if (volume === 0.0)
+                        return "volume_mute";
+                    if (volume <= 0.33)
+                        return "volume_down";
+                    if (volume <= 0.66)
+                        return "volume_up";
+                    return "volume_up";
+                }
+                size: Theme.iconSize
+                color: AudioService.sink && AudioService.sink.audio && !AudioService.sink.audio.muted && AudioService.sink.audio.volume > 0 ? Theme.primary : Theme.surfaceText
+            }
+        }
+
+        DankSlider {
+            readonly property real actualVolumePercent: AudioService.sink && AudioService.sink.audio ? Math.round(AudioService.sink.audio.volume * 100) : 0
+
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - (Theme.iconSize + Theme.spacingS * 2)
+            enabled: AudioService.sink && AudioService.sink.audio
+            minimum: 0
+            maximum: AudioService.sinkMaxVolume
+            value: AudioService.sink && AudioService.sink.audio ? Math.min(AudioService.sinkMaxVolume, Math.round(AudioService.sink.audio.volume * 100)) : 0
+            showValue: true
+            unit: "%"
+            valueOverride: actualVolumePercent
+            thumbOutlineColor: Theme.surfaceVariant
+            trackColor: Theme.ccSliderTrackColor
+            trackOpacity: Theme.ccSliderTrackOpacity
+
+            onSliderValueChanged: function (newValue) {
+                if (AudioService.sink && AudioService.sink.audio) {
+                    AudioService.sink.audio.volume = newValue / 100;
+                    if (newValue > 0 && AudioService.sink.audio.muted) {
+                        AudioService.sink.audio.muted = false;
+                    }
+                    AudioService.volumeChanged();
+                }
+            }
+        }
+    }
+
+    DankFlickable {
+        id: audioContent
+        anchors.top: volumeSlider.visible ? volumeSlider.bottom : headerRow.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: Theme.spacingM
+        anchors.topMargin: volumeSlider.visible ? Theme.spacingS : Theme.spacingM
+        contentHeight: audioColumn.height
+        clip: true
+
+        property int maxPinnedOutputs: 3
+
+        function getPinnedOutputs() {
+            const pins = CacheData.audioOutputDevicePins || {};
+            return QmlUtils.normalizePinList(pins["preferredOutput"]);
+        }
+
+        Column {
+            id: audioColumn
+            width: parent.width
+            spacing: Theme.spacingS
+
+            Repeater {
+                model: ScriptModel {
+                    values: {
+                        const hidden = SessionData.hiddenOutputDeviceNames ?? [];
+                        const nodes = Pipewire.nodes.values.filter(node => {
+                            if (!node.audio || !node.isSink || node.isStream)
+                                return false;
+                            return !hidden.includes(node.name);
+                        });
+                        const pinnedList = audioContent.getPinnedOutputs();
+
+                        let sorted = [...nodes];
+                        sorted.sort((a, b) => {
+                            // Pinned device first
+                            const aPinnedIndex = pinnedList.indexOf(a.name);
+                            const bPinnedIndex = pinnedList.indexOf(b.name);
+                            if (aPinnedIndex !== -1 || bPinnedIndex !== -1) {
+                                if (aPinnedIndex === -1)
+                                    return 1;
+                                if (bPinnedIndex === -1)
+                                    return -1;
+                                return aPinnedIndex - bPinnedIndex;
+                            }
+                            // Then active device
+                            if (a === AudioService.sink && b !== AudioService.sink)
+                                return -1;
+                            if (b === AudioService.sink && a !== AudioService.sink)
+                                return 1;
+                            return 0;
+                        });
+                        return sorted;
+                    }
+                }
+
+                delegate: Rectangle {
+                    id: outputDelegate
+                    required property var modelData
+                    required property int index
+
+                    width: parent.width
+                    height: 50
+                    radius: Theme.cornerRadius
+                    color: deviceMouseArea.containsMouse ? Theme.primaryHoverLight : Theme.surfaceLight
+                    border.color: modelData === AudioService.sink ? Theme.primary : Theme.outlineLight
+                    border.width: modelData === AudioService.sink ? 2 : 1
+
+                    DankRipple {
+                        id: deviceRipple
+                        cornerRadius: outputDelegate.radius
+                    }
+
+                    Row {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: Theme.spacingM
+                        spacing: Theme.spacingS
+
+                        DankIcon {
+                            name: AudioService.sinkIcon(modelData)
+                            size: Theme.iconSize - 4
+                            color: modelData === AudioService.sink ? Theme.primary : Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: {
+                                const iconWidth = Theme.iconSize;
+                                const pinButtonWidth = pinOutputRow.width + Theme.spacingS * 4 + Theme.spacingM;
+                                return parent.parent.width - iconWidth - parent.spacing - pinButtonWidth - Theme.spacingM * 2;
+                            }
+
+                            StyledText {
+                                text: AudioService.displayName(modelData)
+                                font.pixelSize: Theme.fontSizeMedium
+                                color: Theme.surfaceText
+                                font.weight: modelData === AudioService.sink ? Font.Medium : Font.Normal
+                                elide: Text.ElideRight
+                                width: parent.width
+                                wrapMode: Text.NoWrap
+                                horizontalAlignment: Text.AlignLeft
+                            }
+
+                            StyledText {
+                                text: modelData === AudioService.sink ? I18n.tr("Active") : I18n.tr("Available")
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                                elide: Text.ElideRight
+                                width: parent.width
+                                wrapMode: Text.NoWrap
+                                horizontalAlignment: Text.AlignLeft
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: Theme.spacingM
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: pinOutputRow.width + Theme.spacingS * 2
+                        height: 28
+                        radius: height / 2
+                        color: {
+                            const isThisDevicePinned = audioContent.getPinnedOutputs().includes(modelData.name);
+                            return isThisDevicePinned ? Theme.primaryHover : Theme.withAlpha(Theme.surfaceText, 0.05);
+                        }
+
+                        Row {
+                            id: pinOutputRow
+                            anchors.centerIn: parent
+                            spacing: Theme.spacingXS
+
+                            DankIcon {
+                                name: "push_pin"
+                                size: 16
+                                color: {
+                                    const isThisDevicePinned = audioContent.getPinnedOutputs().includes(modelData.name);
+                                    return isThisDevicePinned ? Theme.primary : Theme.surfaceText;
+                                }
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            StyledText {
+                                text: {
+                                    const isThisDevicePinned = audioContent.getPinnedOutputs().includes(modelData.name);
+                                    return isThisDevicePinned ? I18n.tr("Pinned") : I18n.tr("Pin");
+                                }
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: {
+                                    const isThisDevicePinned = audioContent.getPinnedOutputs().includes(modelData.name);
+                                    return isThisDevicePinned ? Theme.primary : Theme.surfaceText;
+                                }
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        DankRipple {
+                            id: pinRipple
+                            cornerRadius: parent.radius
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onPressed: mouse => pinRipple.trigger(mouse.x, mouse.y)
+                            onClicked: {
+                                const pins = JSON.parse(JSON.stringify(CacheData.audioOutputDevicePins || {}));
+                                let pinnedList = QmlUtils.normalizePinList(pins["preferredOutput"]);
+                                const pinIndex = pinnedList.indexOf(modelData.name);
+
+                                if (pinIndex !== -1) {
+                                    pinnedList.splice(pinIndex, 1);
+                                } else {
+                                    pinnedList.unshift(modelData.name);
+                                    if (pinnedList.length > audioContent.maxPinnedOutputs)
+                                        pinnedList = pinnedList.slice(0, audioContent.maxPinnedOutputs);
+                                }
+
+                                if (pinnedList.length > 0)
+                                    pins["preferredOutput"] = pinnedList;
+                                else
+                                    delete pins["preferredOutput"];
+
+                                CacheData.set("audioOutputDevicePins", pins);
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        id: deviceMouseArea
+                        anchors.fill: parent
+                        anchors.rightMargin: pinOutputRow.width + Theme.spacingS * 4
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onPressed: mouse => {
+                            let mapped = deviceMouseArea.mapToItem(outputDelegate, mouse.x, mouse.y);
+                            deviceRipple.trigger(mapped.x, mapped.y);
+                        }
+                        onClicked: {
+                            if (modelData && modelData.name) {
+                                AudioService.setDefaultSinkByName(modelData.name);
+                            }
+                        }
+                    }
+                }
+            }
+            Row {
+                id: playbackHeaderRow
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: Theme.spacingM
+                anchors.rightMargin: Theme.spacingM
+                height: 28
+
+                StyledText {
+                    id: playbackHeaderText
+                    text: I18n.tr("Playback")
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    font.weight: Font.Medium
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Repeater {
+                model: ScriptModel {
+                    values: {
+                        const nodes = Pipewire.nodes.values.filter(node => {
+                            return node.audio && node.isSink && node.isStream;
+                        });
+                        return nodes;
+                    }
+                }
+
+                delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+
+                    width: parent.width
+                    height: 50
+                    radius: Theme.cornerRadius
+                    color: Theme.surfaceLight
+                    border.color: modelData === AudioService.sink ? Theme.primary : Theme.outlineLight
+                    border.width: modelData === AudioService.sink ? 2 : 1
+
+                    Row {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: Theme.spacingM
+                        spacing: Theme.spacingS
+
+                        DankIcon {
+                            name: "album"
+                            size: Theme.iconSize - 4
+                            color: !modelData.audio.muted ? Theme.primary : Theme.surfaceText
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: {
+                                const iconWidth = Theme.iconSize;
+                                return parent.parent.width - iconWidth - parent.spacing - Theme.spacingM * 2;
+                            }
+
+                            StyledText {
+                                text: {
+                                    const modelDataMediaName = modelData && modelData.properties ? (modelData.properties["media.name"] || "") : "";
+                                    const mediaName = AudioService.displayName(modelData) + ": " + modelDataMediaName;
+                                    const max = 35;
+                                    return mediaName.length > max ? mediaName.substring(0, max) + "..." : mediaName;
+                                }
+                                font.pixelSize: Theme.fontSizeMedium
+                                color: Theme.surfaceText
+                                font.weight: modelData === AudioService.sink ? Font.Medium : Font.Normal
+                                elide: Text.ElideRight
+                                width: parent.width
+                                wrapMode: Text.NoWrap
+                            }
+                        }
+                    }
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 120
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: appVolumeRow.width
+                        height: 28
+                        radius: height / 2
+
+                        Item {
+                            id: appVolumeRow
+                            property color sliderTrackColor: "transparent"
+                            property real sliderTrackOpacity: Theme.ccSliderTrackOpacity
+                            anchors.centerIn: parent
+
+                            height: 40
+                            width: parent.width
+
+                            Rectangle {
+                                anchors.right: parent.right
+                                anchors.rightMargin: Theme.spacingM
+                                width: Theme.iconSize + Theme.spacingS * 2
+                                height: Theme.iconSize + Theme.spacingS * 2
+                                anchors.verticalCenter: parent.verticalCenter
+                                radius: Theme.cornerRadius
+                                color: appIconArea.containsMouse ? Theme.primaryHover : Theme.withAlpha(Theme.primary, 0)
+
+                                DankRipple {
+                                    id: appMuteRipple
+                                    cornerRadius: parent.radius
+                                }
+
+                                MouseArea {
+                                    id: appIconArea
+                                    anchors.fill: parent
+                                    visible: modelData !== null
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onPressed: mouse => appMuteRipple.trigger(mouse.x, mouse.y)
+                                    onClicked: {
+                                        if (modelData) {
+                                            SessionData.suppressOSDTemporarily();
+                                            modelData.audio.muted = !modelData.audio.muted;
+                                        }
+                                    }
+                                }
+
+                                DankIcon {
+                                    anchors.centerIn: parent
+                                    name: {
+                                        if (!modelData)
+                                            return "volume_off";
+
+                                        let volume = modelData.audio.volume;
+                                        let muted = modelData.audio.muted;
+
+                                        if (muted)
+                                            return "volume_off";
+                                        if (volume === 0.0)
+                                            return "volume_mute";
+                                        if (volume <= 0.33)
+                                            return "volume_down";
+                                        if (volume <= 0.66)
+                                            return "volume_up";
+                                        return "volume_up";
+                                    }
+                                    size: Theme.iconSize
+                                    color: modelData && !modelData.audio.muted && modelData.audio.volume > 0 ? Theme.primary : Theme.surfaceText
+                                }
+                            }
+
+                            DankSlider {
+                                readonly property real actualVolumePercent: modelData ? Math.round(modelData.audio.volume * 100) : 0
+
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 100
+                                enabled: modelData !== null
+                                minimum: 0
+                                maximum: 100
+                                value: modelData ? Math.min(100, Math.round(modelData.audio.volume * 100)) : 0
+                                showValue: true
+                                unit: "%"
+                                valueOverride: actualVolumePercent
+                                thumbOutlineColor: Theme.surfaceContainer
+                                trackColor: appVolumeRow.sliderTrackColor.a > 0 ? appVolumeRow.sliderTrackColor : Theme.ccSliderTrackColor
+                                trackOpacity: appVolumeRow.sliderTrackOpacity
+
+                                onSliderValueChanged: function (newValue) {
+                                    if (modelData) {
+                                        SessionData.suppressOSDTemporarily();
+                                        modelData.audio.volume = newValue / 100.0;
+                                        if (newValue > 0 && modelData.audio.muted) {
+                                            modelData.audio.muted = false;
+                                        }
+                                        AudioService.playVolumeChangeSoundIfEnabled();
+                                    }
+                                }
+                            }
+                        }
+                        PwObjectTracker {
+                            objects: [modelData]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

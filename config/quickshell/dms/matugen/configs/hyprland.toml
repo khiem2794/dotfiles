@@ -1,0 +1,3 @@
+[templates.dmshyprland]
+input_path = 'SHELL_DIR/matugen/templates/hypr-colors.lua'
+output_path = 'CONFIG_DIR/hypr/dms/colors.lua'

@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "فایلی با این نام از قبل وجود دارد. آیا می‌خواهید آن را بازنویسی کنید؟"
+  },
+  "Actions": {
+    "Actions": "اقدام‌ها"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: بازگشت • F1/I: اطلاعات فایل • F10: راهنما • Esc: بستن"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "لغو"
+  },
+  "Choose icon": {
+    "Choose icon": "انتخاب آیکون"
+  },
+  "Communication": {
+    "Communication": "ارتباطات"
+  },
+  "Copy path": {
+    "Copy path": "کپی مسیر"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "دسکتاپ"
+  },
+  "Development": {
+    "Development": "توسعه"
+  },
+  "Documents": {
+    "Documents": "اسناد"
+  },
+  "Downloads": {
+    "Downloads": "بارگیری‌ها"
+  },
+  "Enter filename...": {
+    "Enter filename...": "نام فایل را وارد کنید..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: تغییر حالت • F10: راهنما"
+  },
+  "File Already Exists": {
+    "File Already Exists": "فایل از قبل وجود دارد"
+  },
+  "File Information": {
+    "File Information": "اطلاعات فایل"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "سرگرمی"
+  },
+  "Hibernate": {
+    "Hibernate": "هایبرنیت"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "برای تأیید بیشتر نگه‌دارید"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "برای تأیید نگه‌دارید (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "برای تأیید نگه‌دارید (%1s)"
+  },
+  "Home": {
+    "Home": "خانه"
+  },
+  "Log Out": {
+    "Log Out": "خروج"
+  },
+  "Media": {
+    "Media": "رسانه"
+  },
+  "Modified": {
+    "Modified": "اصلاح شده"
+  },
+  "Move to Trash": {
+    "Move to Trash": "انتقال به زباله‌دان"
+  },
+  "Music": {
+    "Music": "موسیقی"
+  },
+  "Name": {
+    "Name": "نام"
+  },
+  "Navigation": {
+    "Navigation": "پیمایش"
+  },
+  "Numbers": {
+    "Numbers": "شماره‌ها"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "بازنویسی"
+  },
+  "Pictures": {
+    "Pictures": "تصاویر"
+  },
+  "Power Off": {
+    "Power Off": "خاموش"
+  },
+  "Power Options": {
+    "Power Options": "گزینه‌های پاور"
+  },
+  "Quick Access": {
+    "Quick Access": "دسترسی سریع"
+  },
+  "Reboot": {
+    "Reboot": "راه‌اندازی مجدد"
+  },
+  "Save": {
+    "Save": "ذخیره"
+  },
+  "Search for a location...": {
+    "Search for a location...": "جستجو برای موقعیت مکانی..."
+  },
+  "Search...": {
+    "Search...": "جستجو..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "اندازه"
+  },
+  "Sort By": {
+    "Sort By": "مرتب‌سازی براساس"
+  },
+  "Status": {
+    "Status": "وضعیت"
+  },
+  "Suspend": {
+    "Suspend": "تعلیق"
+  },
+  "Switch User": {
+    "Switch User": "تغییر کاربر"
+  },
+  "System": {
+    "System": "سیستم"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: پیمایش • ←→↑↓: پیمایش جدولی • Enter/Space: انتخاب"
+  },
+  "Type": {
+    "Type": "نوع"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "ویدئوها"
+  },
+  "Workspace": {
+    "Workspace": "محیط‌کار"
+  }
+}

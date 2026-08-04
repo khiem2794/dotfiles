@@ -1,0 +1,2035 @@
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import QtQuick.Effects
+import QtQuick.Layouts
+import QtQuick.Window
+import Quickshell
+import Quickshell.Hyprland
+import Quickshell.Io
+import Quickshell.Services.Mpris
+import qs.Common
+import qs.Modals
+import qs.Services
+import qs.Widgets
+import qs.DankCommon.Session
+import "../../DankCommon/Common/LayoutCodes.js" as LayoutCodes
+import "../../Common/KeyUtils.js" as KeyUtils
+
+Item {
+    id: root
+    readonly property var log: Log.scoped("LockScreenContent")
+
+    function encodeFileUrl(path) {
+        if (!path)
+            return "";
+        return "file://" + path.split('/').map(s => encodeURIComponent(s)).join('/');
+    }
+
+    property string passwordBuffer: ""
+    property bool demoMode: false
+    property var pam: demoPam
+    property string screenName: ""
+    property bool unlocking: false
+    property string pamState: ""
+    property string hyprlandCurrentLayout: ""
+    property string hyprlandKeyboard: ""
+    property int hyprlandLayoutCount: 0
+    property bool lockerReadySent: false
+    property bool lockerReadyArmed: false
+    property var sessionLock: null
+    readonly property bool hasCustomWallpaper: SettingsData.lockScreenWallpaperPath !== ""
+    readonly property string lockFontFamily: SettingsData.lockScreenFontFamily
+
+    component ClockDigitText: StyledText {
+        font.pixelSize: 120
+        font.weight: Font.Light
+        color: "white"
+        horizontalAlignment: Text.AlignHCenter
+        font.family: root.lockFontFamily !== "" ? root.lockFontFamily : resolvedFontFamily
+    }
+
+    signal unlockRequested
+    signal passwordEdited(string text)
+
+    function resetLockState() {
+        lockerReadySent = false;
+        lockerReadyArmed = true;
+        unlocking = false;
+        pamState = "";
+        if (pam)
+            pam.lockMessage = "";
+    }
+
+    function focusPasswordField() {
+        if (demoMode || !passwordField)
+            return;
+        passwordField.forceActiveFocus();
+    }
+
+    function currentAuthFeedbackText() {
+        if (!pam)
+            return "";
+        if (pam.u2fState === "insert" && !pam.u2fPending)
+            return I18n.tr("Insert your security key...");
+        if (pam.u2fState === "waiting" && !pam.u2fPending)
+            return I18n.tr("Touch your security key...");
+        if (pam.lockMessage && pam.lockMessage.length > 0)
+            return pam.lockMessage;
+        if (root.pamState === "error")
+            return I18n.tr("Authentication error - try again");
+        if (root.pamState === "max")
+            return I18n.tr("Too many attempts - locked out");
+        if (root.pamState === "fail")
+            return I18n.tr("Incorrect password - try again");
+        if (pam.fprintState === "error")
+            return I18n.tr("Fingerprint error");
+        if (pam.fprintState === "max")
+            return I18n.tr("Maximum fingerprint attempts reached. Please use password.");
+        if (pam.fprintState === "fail")
+            return I18n.tr("Fingerprint not recognized (%1/%2). Please try again or use password.").arg(pam.fprint.tries).arg(SettingsData.maxFprintTries);
+        return "";
+    }
+
+    function authFeedbackIsHint() {
+        return pam && (pam.u2fState === "waiting" || pam.u2fState === "insert") && !pam.u2fPending;
+    }
+
+    function canStartSecurityKeyUnlock() {
+        return !demoMode && pam && pam.u2f && pam.u2f.available && SettingsData.enableU2f && SettingsData.u2fMode === "or" && !pam.passwd.active && !pam.u2f.active && !pam.u2fPending && !root.unlocking;
+    }
+
+    function triggerSecurityKeyUnlock() {
+        if (!canStartSecurityKeyUnlock())
+            return;
+        passwordField.clear();
+        pam.u2f.startForAlternativeAuth();
+    }
+
+    function securityKeyShortcutMatches(event) {
+        return SettingsData.lockScreenSecurityKeyShortcutEnabled
+            && KeyUtils.eventMatchesCombo(event, SettingsData.lockScreenSecurityKeyShortcut);
+    }
+
+    Component.onCompleted: {
+        WeatherService.addRef();
+        UserInfoService.getUserInfo();
+
+        if (CompositorService.isHyprland)
+            updateHyprlandLayout();
+
+        lockerReadyArmed = true;
+    }
+
+    Component.onDestruction: {
+        WeatherService.removeRef();
+    }
+
+    function sendLockerReadyOnce() {
+        if (root.demoMode)
+            return;
+        if (lockerReadySent)
+            return;
+        if (root.unlocking)
+            return;
+        lockerReadySent = true;
+        if (SessionService.loginctlAvailable && DMSService.apiVersion >= 2) {
+            DMSService.sendRequest("loginctl.lockerReady", null, resp => {
+                if (resp?.error)
+                    log.warn("lockerReady failed:", resp.error);
+                else
+                    log.debug("lockerReady sent (afterAnimating/afterRendering)");
+            });
+        }
+    }
+
+    function maybeSend() {
+        if (!lockerReadyArmed)
+            return;
+        if (root.unlocking)
+            return;
+        if (!root.visible || root.opacity <= 0)
+            return;
+        // Don't report ready until the compositor has confirmed the session is
+        // locked (ext-session-lock `locked` event). Qt's afterRendering fires
+        // before the lock surface is committed/presented, so releasing the sleep
+        // inhibitor on it lets the machine freeze with the desktop still on screen,
+        // which then flashes on resume. secure=true guarantees the desktop is hidden.
+        if (root.sessionLock && !root.sessionLock.secure)
+            return;
+        Qt.callLater(() => {
+            if (root.visible && root.opacity > 0 && !root.unlocking)
+                sendLockerReadyOnce();
+        });
+    }
+
+    Connections {
+        target: root.sessionLock
+        enabled: target !== null
+        function onSecureChanged() {
+            root.maybeSend();
+        }
+    }
+
+    Connections {
+        target: root.Window.window
+        enabled: target !== null
+
+        function onAfterAnimating() {
+            maybeSend();
+        }
+        function onAfterRendering() {
+            maybeSend();
+        }
+    }
+
+    onVisibleChanged: maybeSend()
+    onOpacityChanged: maybeSend()
+
+    function updateHyprlandLayout() {
+        if (CompositorService.isHyprland) {
+            hyprlandLayoutProcess.running = true;
+        }
+    }
+
+    Process {
+        id: hyprlandLayoutProcess
+        running: false
+        command: ["hyprctl", "-j", "devices"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const data = JSON.parse(text);
+                    const mainKeyboard = data.keyboards.find(kb => kb.main === true);
+                    if (!mainKeyboard) {
+                        hyprlandCurrentLayout = "";
+                        hyprlandLayoutCount = 0;
+                        return;
+                    }
+                    hyprlandKeyboard = mainKeyboard.name;
+                    if (mainKeyboard.active_keymap) {
+                        hyprlandCurrentLayout = LayoutCodes.layoutCode(mainKeyboard.active_keymap);
+                    } else {
+                        hyprlandCurrentLayout = "";
+                    }
+                    hyprlandLayoutCount = mainKeyboard.layout ? mainKeyboard.layout.split(",").length : 0;
+                } catch (e) {
+                    hyprlandCurrentLayout = "";
+                    hyprlandLayoutCount = 0;
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: CompositorService.isHyprland ? Hyprland : null
+        enabled: CompositorService.isHyprland
+
+        function onRawEvent(event) {
+            if (event.name === "activelayout")
+                updateHyprlandLayout();
+        }
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: SettingsData.effectiveWallpaperBackgroundColor
+    }
+
+    Loader {
+        anchors.fill: parent
+        active: {
+            if (root.hasCustomWallpaper)
+                return false;
+            var currentWallpaper = SessionData.getMonitorWallpaper(screenName);
+            return !currentWallpaper || (currentWallpaper && currentWallpaper.startsWith("#"));
+        }
+        asynchronous: true
+
+        sourceComponent: DankBackdrop {
+            screenName: root.screenName
+        }
+    }
+
+    Loader {
+        id: wallpaperBackground
+        anchors.fill: parent
+
+        readonly property string wallpaperSource: {
+            if (root.hasCustomWallpaper)
+                return root.encodeFileUrl(SettingsData.lockScreenWallpaperPath);
+            var w = SessionData.getMonitorWallpaper(screenName);
+            return (w && !w.startsWith("#")) ? encodeFileUrl(w) : "";
+        }
+        readonly property string fillModeName: {
+            if (SettingsData.lockScreenWallpaperFillMode !== "")
+                return SettingsData.lockScreenWallpaperFillMode;
+            return root.hasCustomWallpaper ? "Fill" : SessionData.getMonitorWallpaperFillMode(root.screenName);
+        }
+
+        active: wallpaperSource !== ""
+        asynchronous: false
+
+        sourceComponent: fillModeName === "Scrolling" ? scrollWallpaperComp : plainWallpaperComp
+
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            autoPaddingEnabled: false
+            blurEnabled: true
+            blur: 0.8
+            blurMax: 32
+            blurMultiplier: 1
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.mediumDuration
+                easing.type: Theme.standardEasing
+            }
+        }
+    }
+
+    Component {
+        id: plainWallpaperComp
+        Image {
+            source: wallpaperBackground.wallpaperSource
+            fillMode: Theme.getFillMode(wallpaperBackground.fillModeName)
+            smooth: true
+            cache: true
+            asynchronous: false
+        }
+    }
+
+    Component {
+        id: scrollWallpaperComp
+        Item {
+            Image {
+                id: scrollSource
+                anchors.fill: parent
+                visible: false
+                source: wallpaperBackground.wallpaperSource
+                asynchronous: false
+                cache: true
+            }
+
+            ShaderEffectSource {
+                id: scrollSrc
+                sourceItem: scrollSource
+                hideSource: true
+                live: false
+            }
+
+            ShaderEffect {
+                anchors.fill: parent
+
+                readonly property var scrollPos: SessionData.getMonitorScrollPosition(screenName)
+
+                property variant source1: scrollSrc
+                property variant source2: scrollSrc
+                property real progress: 0.0
+                property real fillMode: Theme.getShaderFillMode(wallpaperBackground.fillModeName)
+                property real scrollX: scrollPos.scrollX
+                property real scrollY: scrollPos.scrollY
+                property real imageWidth1: scrollSource.implicitWidth > 0 ? scrollSource.implicitWidth : 1
+                property real imageHeight1: scrollSource.implicitHeight > 0 ? scrollSource.implicitHeight : 1
+                property real imageWidth2: imageWidth1
+                property real imageHeight2: imageHeight1
+                property real screenWidth: width > 0 ? width : 1
+                property real screenHeight: height > 0 ? height : 1
+                property vector4d fillColor: Qt.vector4d(0, 0, 0, 1)
+
+                fragmentShader: Qt.resolvedUrl("../../Shaders/qsb/wp_fade.frag.qsb")
+            }
+        }
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.4
+    }
+
+    SystemClock {
+        id: systemClock
+
+        precision: SystemClock.Seconds
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "transparent"
+
+        Item {
+            id: clockContainer
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.verticalCenter
+            anchors.bottomMargin: 60
+            width: parent.width
+            height: clockText.implicitHeight
+            visible: SettingsData.lockScreenShowTime
+
+            Row {
+                id: clockText
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                spacing: 0
+
+                property string fullTimeStr: {
+                    const format = SettingsData.getEffectiveTimeFormat();
+                    return systemClock.date.toLocaleTimeString(Qt.locale(), format);
+                }
+                property var timeParts: fullTimeStr.split(':')
+                property string hours: timeParts[0] || ""
+                property string minutes: timeParts[1] || ""
+                property string secondsWithAmPm: timeParts.length > 2 ? timeParts[2] : ""
+                property string seconds: secondsWithAmPm.replace(/\s*(AM|PM|am|pm)$/i, '')
+                property string ampm: {
+                    const match = fullTimeStr.match(/\s*(AM|PM|am|pm)$/i);
+                    return match ? match[0].trim() : "";
+                }
+                property bool hasSeconds: timeParts.length > 2
+
+                ClockDigitText {
+                    width: clockText.hours.length > 1 ? 75 : 0
+                    text: clockText.hours.length > 1 ? clockText.hours[0] : ""
+                }
+
+                ClockDigitText {
+                    width: 75
+                    text: clockText.hours.length > 1 ? clockText.hours[1] : clockText.hours.length > 0 ? clockText.hours[0] : ""
+                }
+
+                ClockDigitText {
+                    text: ":"
+                }
+
+                ClockDigitText {
+                    width: 75
+                    text: clockText.minutes.length > 0 ? clockText.minutes[0] : ""
+                }
+
+                ClockDigitText {
+                    width: 75
+                    text: clockText.minutes.length > 1 ? clockText.minutes[1] : ""
+                }
+
+                ClockDigitText {
+                    text: clockText.hasSeconds ? ":" : ""
+                    visible: clockText.hasSeconds
+                }
+
+                ClockDigitText {
+                    width: 75
+                    text: clockText.hasSeconds && clockText.seconds.length > 0 ? clockText.seconds[0] : ""
+                    visible: clockText.hasSeconds
+                }
+
+                ClockDigitText {
+                    width: 75
+                    text: clockText.hasSeconds && clockText.seconds.length > 1 ? clockText.seconds[1] : ""
+                    visible: clockText.hasSeconds
+                }
+
+                ClockDigitText {
+                    width: 20
+                    text: " "
+                    visible: clockText.ampm !== ""
+                }
+
+                ClockDigitText {
+                    text: clockText.ampm
+                    visible: clockText.ampm !== ""
+                }
+            }
+        }
+
+        StyledText {
+            id: dateText
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: clockContainer.bottom
+            anchors.topMargin: 4
+            visible: SettingsData.lockScreenShowDate
+            text: {
+                if (SettingsData.lockDateFormat && SettingsData.lockDateFormat.length > 0) {
+                    return systemClock.date.toLocaleDateString(I18n.locale(), SettingsData.lockDateFormat);
+                }
+                return systemClock.date.toLocaleDateString(I18n.locale(), Locale.LongFormat);
+            }
+            font.pixelSize: Theme.fontSizeXLarge
+            font.family: root.lockFontFamily !== "" ? root.lockFontFamily : resolvedFontFamily
+            color: "white"
+            opacity: 0.9
+        }
+
+        Item {
+            id: lockNotificationPanel
+
+            readonly property int notificationMode: SettingsData.lockScreenNotificationMode
+            readonly property var notifications: NotificationService.groupedNotifications
+            readonly property int totalCount: {
+                let count = 0;
+                for (const group of notifications) {
+                    count += group.count || 0;
+                }
+                return count;
+            }
+            readonly property bool hasNotifications: totalCount > 0
+            readonly property var appNameGroups: {
+                const groups = {};
+                for (const group of notifications) {
+                    const appName = (group.appName || "Unknown").toLowerCase();
+                    if (!groups[appName]) {
+                        groups[appName] = {
+                            appName: group.appName || I18n.tr("Unknown"),
+                            count: 0,
+                            latestNotification: group.latestNotification
+                        };
+                    }
+                    groups[appName].count += group.count || 0;
+                    if (group.latestNotification && (!groups[appName].latestNotification || group.latestNotification.time > groups[appName].latestNotification.time)) {
+                        groups[appName].latestNotification = group.latestNotification;
+                    }
+                }
+                return Object.values(groups).sort((a, b) => b.count - a.count);
+            }
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dateText.visible ? dateText.bottom : clockContainer.bottom
+            anchors.topMargin: Theme.spacingM
+            width: Math.min(380, parent.width - Theme.spacingXL * 2)
+            height: notificationMode === 0 || !hasNotifications ? 0 : contentLoader.height
+            visible: notificationMode > 0 && hasNotifications
+            clip: true
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: Theme.mediumDuration
+                    easing.type: Theme.standardEasing
+                }
+            }
+
+            Loader {
+                id: contentLoader
+                anchors.left: parent.left
+                anchors.right: parent.right
+                active: lockNotificationPanel.notificationMode > 0 && lockNotificationPanel.hasNotifications
+                sourceComponent: {
+                    switch (lockNotificationPanel.notificationMode) {
+                    case 1:
+                        return countOnlyComponent;
+                    case 2:
+                        return appNamesComponent;
+                    case 3:
+                        return fullContentComponent;
+                    default:
+                        return null;
+                    }
+                }
+            }
+
+            Component {
+                id: countOnlyComponent
+
+                Rectangle {
+                    width: parent.width
+                    height: 44
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(0, 0, 0, 0.3)
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                    border.width: 1
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: Theme.spacingS
+
+                        DankIcon {
+                            name: "notifications"
+                            size: Theme.iconSize
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        StyledText {
+                            text: lockNotificationPanel.totalCount === 1 ? I18n.tr("1 notification") : I18n.tr("%1 notifications").arg(lockNotificationPanel.totalCount)
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+            }
+
+            Component {
+                id: appNamesComponent
+
+                Rectangle {
+                    width: parent.width
+                    height: Math.min(appNamesColumn.implicitHeight + Theme.spacingM * 2, 200)
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(0, 0, 0, 0.3)
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                    border.width: 1
+                    clip: true
+
+                    Flickable {
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingM
+                        contentHeight: appNamesColumn.implicitHeight
+                        clip: true
+                        boundsBehavior: Flickable.StopAtBounds
+
+                        Column {
+                            id: appNamesColumn
+                            width: parent.width
+                            spacing: Theme.spacingS
+
+                            Repeater {
+                                model: lockNotificationPanel.appNameGroups.slice(0, 5)
+
+                                Row {
+                                    required property var modelData
+                                    width: parent.width
+                                    spacing: Theme.spacingS
+
+                                    DankIcon {
+                                        name: "notifications"
+                                        size: Theme.iconSize - 4
+                                        color: "white"
+                                        opacity: 0.8
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    StyledText {
+                                        text: modelData.appName || I18n.tr("Unknown")
+                                        font.pixelSize: Theme.fontSizeMedium
+                                        color: "white"
+                                        elide: Text.ElideRight
+                                        width: parent.width - Theme.iconSize - countBadge.width - Theme.spacingS * 2
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Rectangle {
+                                        id: countBadge
+                                        width: countText.implicitWidth + Theme.spacingS * 2
+                                        height: 20
+                                        radius: 10
+                                        color: Qt.rgba(1, 1, 1, 0.2)
+                                        visible: modelData.count > 1
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        StyledText {
+                                            id: countText
+                                            anchors.centerIn: parent
+                                            text: modelData.count > 99 ? "99+" : modelData.count.toString()
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: "white"
+                                        }
+                                    }
+                                }
+                            }
+
+                            StyledText {
+                                visible: lockNotificationPanel.appNameGroups.length > 5
+                                text: I18n.tr("+ %1 more").arg(lockNotificationPanel.appNameGroups.length - 5)
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: "white"
+                                opacity: 0.7
+                            }
+                        }
+                    }
+                }
+            }
+
+            Component {
+                id: fullContentComponent
+
+                Rectangle {
+                    width: parent.width
+                    height: Math.min(fullContentColumn.implicitHeight + Theme.spacingM * 2, 280)
+                    radius: Theme.cornerRadius
+                    color: Qt.rgba(0, 0, 0, 0.3)
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                    border.width: 1
+                    clip: true
+
+                    Flickable {
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingM
+                        contentHeight: fullContentColumn.implicitHeight
+                        clip: true
+                        boundsBehavior: Flickable.StopAtBounds
+
+                        Column {
+                            id: fullContentColumn
+                            width: parent.width
+                            spacing: Theme.spacingM
+
+                            Repeater {
+                                model: {
+                                    const items = [];
+                                    for (const group of lockNotificationPanel.appNameGroups) {
+                                        if (group.latestNotification && items.length < 5) {
+                                            items.push(group.latestNotification);
+                                        }
+                                    }
+                                    return items;
+                                }
+
+                                Rectangle {
+                                    required property var modelData
+                                    required property int index
+                                    width: parent.width
+                                    height: notifContent.implicitHeight + Theme.spacingS * 2
+                                    radius: Theme.cornerRadius - 4
+                                    color: Qt.rgba(1, 1, 1, 0.05)
+
+                                    Column {
+                                        id: notifContent
+                                        anchors.left: parent.left
+                                        anchors.right: parent.right
+                                        anchors.top: parent.top
+                                        anchors.margins: Theme.spacingS
+                                        spacing: Theme.spacingXXS
+
+                                        Row {
+                                            width: parent.width
+                                            spacing: Theme.spacingXS
+
+                                            StyledText {
+                                                text: modelData.appName || I18n.tr("Unknown")
+                                                font.pixelSize: Theme.fontSizeSmall
+                                                font.weight: Font.Medium
+                                                color: "white"
+                                                opacity: 0.7
+                                                elide: Text.ElideRight
+                                                width: parent.width - timeText.implicitWidth - Theme.spacingXS
+                                            }
+
+                                            StyledText {
+                                                id: timeText
+                                                text: modelData.timeStr || ""
+                                                font.pixelSize: Theme.fontSizeSmall
+                                                color: "white"
+                                                opacity: 0.5
+                                            }
+                                        }
+
+                                        StyledText {
+                                            width: parent.width
+                                            text: modelData.summary || ""
+                                            font.pixelSize: Theme.fontSizeMedium
+                                            font.weight: Font.Medium
+                                            color: "white"
+                                            elide: Text.ElideRight
+                                            maximumLineCount: 1
+                                            visible: text.length > 0
+                                        }
+
+                                        StyledText {
+                                            width: parent.width
+                                            text: {
+                                                const body = modelData.body || "";
+                                                return body.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+                                            }
+                                            font.pixelSize: Theme.fontSizeSmall
+                                            color: "white"
+                                            opacity: 0.8
+                                            elide: Text.ElideRight
+                                            maximumLineCount: 2
+                                            wrapMode: Text.WordWrap
+                                            visible: text.length > 0
+                                        }
+                                    }
+                                }
+                            }
+
+                            StyledText {
+                                visible: lockNotificationPanel.appNameGroups.length > 5
+                                text: I18n.tr("+ %1 more").arg(lockNotificationPanel.appNameGroups.length - 5)
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: "white"
+                                opacity: 0.7
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ColumnLayout {
+            id: passwordLayout
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: lockNotificationPanel.visible ? lockNotificationPanel.bottom : (dateText.visible ? dateText.bottom : clockContainer.bottom)
+            anchors.topMargin: Theme.spacingL
+            spacing: Theme.spacingM
+            width: 380
+
+            RowLayout {
+                spacing: Theme.spacingL
+                Layout.fillWidth: true
+
+                DankCircularImage {
+                    Layout.preferredWidth: 60
+                    Layout.preferredHeight: 60
+                    imageSource: {
+                        if (PortalService.profileImage === "")
+                            return "";
+                        if (PortalService.profileImage.startsWith("/"))
+                            return encodeFileUrl(PortalService.profileImage);
+                        return PortalService.profileImage;
+                    }
+                    fallbackIcon: "person"
+                    visible: SettingsData.lockScreenShowProfileImage
+                }
+
+                Rectangle {
+                    property bool showPassword: false
+
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 60
+                    radius: Theme.cornerRadius
+                    color: Theme.withAlpha(Theme.surfaceContainer, 0.9)
+                    border.color: passwordField.activeFocus ? Theme.primary : Qt.rgba(1, 1, 1, 0.3)
+                    border.width: passwordField.activeFocus ? 2 : 1
+                    visible: SettingsData.lockScreenShowPasswordField || root.passwordBuffer.length > 0
+
+                    Item {
+                        id: lockIconContainer
+                        anchors.left: parent.left
+                        anchors.leftMargin: Theme.spacingM
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 20
+                        height: 20
+
+                        DankIcon {
+                            id: lockIcon
+
+                            anchors.centerIn: parent
+                            name: {
+                                if (pam.u2fPending)
+                                    return "passkey";
+                                if (pam.fprint.tries >= SettingsData.maxFprintTries)
+                                    return "fingerprint_off";
+                                if (pam.fprint.active || pam.fprint.retrying)
+                                    return "fingerprint";
+                                if (pam.u2f.active)
+                                    return "passkey";
+                                return "lock";
+                            }
+                            size: 20
+                            color: {
+                                if (pam.fprint.tries >= SettingsData.maxFprintTries)
+                                    return Theme.error;
+                                if (pam.u2fState !== "")
+                                    return Theme.tertiary;
+                                return passwordField.activeFocus ? Theme.primary : Theme.surfaceVariantText;
+                            }
+                            opacity: pam.passwd.active ? 0 : 1
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: Theme.mediumDuration
+                                    easing.type: Theme.standardEasing
+                                }
+                            }
+                        }
+                    }
+
+                    FocusScope {
+                        id: passwordField
+
+                        readonly property string text: root.passwordBuffer
+                        property int cursorPosition: text.length
+
+                        signal accepted
+
+                        function clampCursorPosition() {
+                            cursorPosition = Math.max(0, Math.min(cursorPosition, text.length));
+                        }
+
+                        function clear() {
+                            root.passwordEdited("");
+                            cursorPosition = 0;
+                        }
+
+                        function insertText(value) {
+                            if (value.length === 0)
+                                return;
+                            clampCursorPosition();
+                            const pos = cursorPosition;
+                            root.passwordEdited(text.slice(0, pos) + value + text.slice(pos));
+                            cursorPosition = pos + value.length;
+                        }
+
+                        function backspace() {
+                            clampCursorPosition();
+                            if (cursorPosition === 0)
+                                return;
+                            const pos = cursorPosition;
+                            root.passwordEdited(text.slice(0, pos - 1) + text.slice(pos));
+                            cursorPosition = pos - 1;
+                        }
+
+                        function deleteForward() {
+                            clampCursorPosition();
+                            if (cursorPosition === text.length)
+                                return;
+                            const pos = cursorPosition;
+                            root.passwordEdited(text.slice(0, pos) + text.slice(pos + 1));
+                            cursorPosition = pos;
+                        }
+
+                        function deleteToLineStart() {
+                            clampCursorPosition();
+                            if (cursorPosition === 0)
+                                return;
+                            root.passwordEdited(text.slice(cursorPosition));
+                            cursorPosition = 0;
+                        }
+
+                        function deleteToLineEnd() {
+                            clampCursorPosition();
+                            if (cursorPosition === text.length)
+                                return;
+                            root.passwordEdited(text.slice(0, cursorPosition));
+                        }
+
+                        function deleteWordBackward() {
+                            clampCursorPosition();
+                            if (cursorPosition === 0)
+                                return;
+                            let pos = cursorPosition;
+                            while (pos > 0 && text.charAt(pos - 1) === " ")
+                                pos--;
+                            while (pos > 0 && text.charAt(pos - 1) !== " ")
+                                pos--;
+                            root.passwordEdited(text.slice(0, pos) + text.slice(cursorPosition));
+                            cursorPosition = pos;
+                        }
+
+                        function isPrintableText(value) {
+                            if (value.length === 0)
+                                return false;
+                            const code = value.charCodeAt(0);
+                            return code >= 0x20 && code !== 0x7f;
+                        }
+
+                        anchors.fill: parent
+                        anchors.leftMargin: lockIconContainer.width + Theme.spacingM * 2
+                        anchors.rightMargin: {
+                            let margin = Theme.spacingM;
+                            if (loadingSpinner.visible) {
+                                margin += loadingSpinner.width;
+                            }
+                            if (enterButton.visible) {
+                                margin += enterButton.width + 2;
+                            }
+                            if (securityKeyButton.visible) {
+                                margin += securityKeyButton.width;
+                            }
+                            if (virtualKeyboardButton.visible) {
+                                margin += virtualKeyboardButton.width;
+                            }
+                            if (revealButton.visible) {
+                                margin += revealButton.width;
+                            }
+                            return margin;
+                        }
+                        opacity: 0
+                        focus: true
+                        enabled: !demoMode
+                        activeFocusOnTab: !demoMode
+                        onTextChanged: cursorPosition = text.length
+                        onAccepted: {
+                            if (!demoMode && !root.unlocking && !pam.passwd.active && !pam.u2fPending) {
+                                pam.passwd.start();
+                            }
+                        }
+                        Keys.onPressed: event => handleKey(event)
+
+                        function handleKey(event) {
+                            if (demoMode) {
+                                return;
+                            }
+
+                            if (root.unlocking) {
+                                event.accepted = true;
+                                return;
+                            }
+
+                            if (event.key === Qt.Key_Escape) {
+                                if (pam.u2fPending) {
+                                    pam.cancelU2fPending();
+                                    event.accepted = true;
+                                    return;
+                                }
+                                clear();
+                                event.accepted = true;
+                                return;
+                            }
+
+                            if (pam.passwd.active) {
+                                log.debug("PAM is active, ignoring input");
+                                event.accepted = true;
+                                return;
+                            }
+
+                            if ((event.modifiers & Qt.ControlModifier) && !(event.modifiers & (Qt.AltModifier | Qt.MetaModifier))) {
+                                if (securityKeyShortcutMatches(event) && canStartSecurityKeyUnlock()) {
+                                    triggerSecurityKeyUnlock();
+                                    event.accepted = true;
+                                    return;
+                                }
+
+                                switch (event.key) {
+                                case Qt.Key_A:
+                                    cursorPosition = 0;
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_E:
+                                    cursorPosition = text.length;
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_B:
+                                    clampCursorPosition();
+                                    cursorPosition = Math.max(0, cursorPosition - 1);
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_F:
+                                    clampCursorPosition();
+                                    cursorPosition = Math.min(text.length, cursorPosition + 1);
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_U:
+                                    deleteToLineStart();
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_K:
+                                    deleteToLineEnd();
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_W:
+                                    deleteWordBackward();
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_H:
+                                    backspace();
+                                    event.accepted = true;
+                                    return;
+                                case Qt.Key_D:
+                                    deleteForward();
+                                    event.accepted = true;
+                                    return;
+                                }
+                            }
+
+                            switch (event.key) {
+                            case Qt.Key_Return:
+                            case Qt.Key_Enter:
+                                accepted();
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_Backspace:
+                                backspace();
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_Delete:
+                                deleteForward();
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_Left:
+                                clampCursorPosition();
+                                cursorPosition = Math.max(0, cursorPosition - 1);
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_Right:
+                                clampCursorPosition();
+                                cursorPosition = Math.min(text.length, cursorPosition + 1);
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_Home:
+                                cursorPosition = 0;
+                                event.accepted = true;
+                                return;
+                            case Qt.Key_End:
+                                cursorPosition = text.length;
+                                event.accepted = true;
+                                return;
+                            }
+
+                            if (isPrintableText(event.text)) {
+                                insertText(event.text);
+                                event.accepted = true;
+                            }
+                        }
+
+                        // Wayland IMEs commit unconsumed printable keys as text-input text
+                        // (ibus ibuswaylandim.c) instead of forwarding raw keys, so an active
+                        // text input must exist to receive them; the hidden-text hints put
+                        // fcitx5 into plain keyboard passthrough (CapabilityFlag::Password).
+                        // Raw keys stay in handleKey (#2950).
+                        TextInput {
+                            id: imeCommitSink
+
+                            focus: true
+                            width: 1
+                            height: 1
+                            opacity: 0
+                            echoMode: TextInput.Password
+                            inputMethodHints: Qt.ImhHiddenText | Qt.ImhSensitiveData | Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
+                            Keys.onPressed: event => {
+                                passwordField.handleKey(event);
+                                if (!event.accepted && (event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier)))
+                                    event.accepted = true;
+                            }
+                            onTextChanged: {
+                                if (text.length === 0)
+                                    return;
+                                const committed = text;
+                                text = "";
+                                if (demoMode || root.unlocking || pam.passwd.active)
+                                    return;
+                                passwordField.insertText(committed);
+                            }
+                        }
+
+                        Component.onCompleted: {
+                            if (!demoMode) {
+                                forceActiveFocus();
+                            }
+                        }
+
+                        onVisibleChanged: {
+                            if (visible && !demoMode) {
+                                forceActiveFocus();
+                            }
+                        }
+
+                        onActiveFocusChanged: {
+                            if (!activeFocus && !demoMode && passwordField && !powerMenu.isVisible) {
+                                Qt.callLater(() => {
+                                    if (passwordField && passwordField.forceActiveFocus) {
+                                        passwordField.forceActiveFocus();
+                                    }
+                                });
+                            }
+                        }
+
+                        onEnabledChanged: {
+                            if (enabled && !demoMode && passwordField && !powerMenu.isVisible) {
+                                Qt.callLater(() => {
+                                    if (passwordField && passwordField.forceActiveFocus) {
+                                        passwordField.forceActiveFocus();
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    KeyboardController {
+                        id: keyboardController
+                        target: passwordField
+                        rootObject: root
+                    }
+
+                    StyledText {
+                        id: placeholder
+
+                        anchors.left: lockIconContainer.right
+                        anchors.leftMargin: Theme.spacingM
+                        anchors.right: (revealButton.visible ? revealButton.left : (virtualKeyboardButton.visible ? virtualKeyboardButton.left : (securityKeyButton.visible ? securityKeyButton.left : (enterButton.visible ? enterButton.left : (loadingSpinner.visible ? loadingSpinner.left : parent.right)))))
+                        anchors.rightMargin: 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: {
+                            if (demoMode) {
+                                return "";
+                            }
+                            if (root.unlocking) {
+                                return "Unlocking...";
+                            }
+                            if (pam.u2fPending) {
+                                if (pam.u2fState === "insert")
+                                    return "Insert your security key...";
+                                return "Touch your security key...";
+                            }
+                            if (pam.passwd.active) {
+                                return "Authenticating...";
+                            }
+                            return "Password...";
+                        }
+                        color: root.unlocking ? Theme.primary : (pam.passwd.active ? Theme.primary : Theme.outline)
+                        font.pixelSize: Theme.fontSizeMedium
+                        opacity: (demoMode || root.passwordBuffer.length === 0) ? 1 : 0
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.mediumDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.shortDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+                    }
+
+                    StyledText {
+                        id: passwordDisplay
+
+                        anchors.left: lockIconContainer.right
+                        anchors.leftMargin: Theme.spacingM
+                        anchors.right: (revealButton.visible ? revealButton.left : (virtualKeyboardButton.visible ? virtualKeyboardButton.left : (securityKeyButton.visible ? securityKeyButton.left : (enterButton.visible ? enterButton.left : (loadingSpinner.visible ? loadingSpinner.left : parent.right)))))
+                        anchors.rightMargin: 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: {
+                            if (demoMode) {
+                                return "••••••••";
+                            }
+                            if (parent.showPassword) {
+                                return root.passwordBuffer;
+                            }
+                            return "•".repeat(root.passwordBuffer.length);
+                        }
+                        color: Theme.surfaceText
+                        font.pixelSize: parent.showPassword ? Theme.fontSizeMedium : Theme.fontSizeLarge
+                        opacity: (demoMode || root.passwordBuffer.length > 0) ? 1 : 0
+                        clip: true
+                        elide: Text.ElideNone
+                        horizontalAlignment: implicitWidth > width ? Text.AlignRight : Text.AlignLeft
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.mediumDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+                    }
+
+                    TextMetrics {
+                        id: passwordCursorMetrics
+                        font: passwordDisplay.font
+                        text: passwordDisplay.text.slice(0, passwordField.cursorPosition)
+                    }
+
+                    DankTextCursor {
+                        id: passwordCursor
+
+                        x: passwordDisplay.x + passwordCursorMetrics.advanceWidth + Math.min(0, passwordDisplay.width - passwordDisplay.implicitWidth)
+                        anchors.verticalCenter: parent.verticalCenter
+                        height: passwordDisplay.font.pixelSize + 4
+                        shown: !demoMode && passwordField.activeFocus && !pam.passwd.active && !pam.u2fPending && !root.unlocking
+
+                        Connections {
+                            target: passwordField
+
+                            function onCursorPositionChanged() {
+                                passwordCursor.resetBlink();
+                            }
+
+                            function onTextChanged() {
+                                passwordCursor.resetBlink();
+                            }
+                        }
+                    }
+
+                    DankActionButton {
+                        id: revealButton
+
+                        anchors.right: virtualKeyboardButton.visible ? virtualKeyboardButton.left : (securityKeyButton.visible ? securityKeyButton.left : (enterButton.visible ? enterButton.left : (loadingSpinner.visible ? loadingSpinner.left : parent.right)))
+                        anchors.rightMargin: 0
+                        anchors.verticalCenter: parent.verticalCenter
+                        iconName: parent.showPassword ? "visibility_off" : "visibility"
+                        buttonSize: 32
+                        visible: !demoMode && root.passwordBuffer.length > 0 && !pam.passwd.active && !root.unlocking
+                        enabled: visible
+                        onClicked: parent.showPassword = !parent.showPassword
+                    }
+                    DankActionButton {
+                        id: securityKeyButton
+
+                        anchors.right: enterButton.visible ? enterButton.left : (loadingSpinner.visible ? loadingSpinner.left : parent.right)
+                        anchors.rightMargin: 0
+                        anchors.verticalCenter: parent.verticalCenter
+                        iconName: "passkey"
+                        buttonSize: 32
+                        visible: root.canStartSecurityKeyUnlock()
+                        enabled: visible
+                        tooltipText: SettingsData.lockScreenSecurityKeyShortcutEnabled ? I18n.tr("Security key (%1)", "lock screen security key button tooltip with shortcut").arg(SettingsData.lockScreenSecurityKeyShortcut) : I18n.tr("Security key", "lock screen security key button tooltip")
+                        onClicked: root.triggerSecurityKeyUnlock()
+                    }
+                    DankActionButton {
+                        id: virtualKeyboardButton
+
+                        anchors.right: securityKeyButton.visible ? securityKeyButton.left : (enterButton.visible ? enterButton.left : (loadingSpinner.visible ? loadingSpinner.left : parent.right))
+                        anchors.rightMargin: securityKeyButton.visible || enterButton.visible ? 0 : Theme.spacingS
+                        anchors.verticalCenter: parent.verticalCenter
+                        iconName: "keyboard"
+                        buttonSize: 32
+                        visible: !demoMode && !pam.passwd.active && !root.unlocking && !pam.u2fPending
+                        enabled: visible
+                        onClicked: {
+                            if (keyboardController.isKeyboardActive) {
+                                keyboardController.hide();
+                            } else {
+                                keyboardController.show();
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: loadingSpinner
+
+                        anchors.right: enterButton.visible ? enterButton.left : parent.right
+                        anchors.rightMargin: Theme.spacingM
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 24
+                        height: 24
+                        radius: 12
+                        color: "transparent"
+                        visible: !demoMode && (pam.passwd.active || root.unlocking)
+
+                        DankIcon {
+                            anchors.centerIn: parent
+                            name: "check_circle"
+                            size: 20
+                            color: Theme.primary
+                            visible: root.unlocking
+
+                            SequentialAnimation on scale {
+                                running: root.unlocking
+
+                                NumberAnimation {
+                                    from: 0
+                                    to: 1.2
+                                    duration: Anims.durShort
+                                    easing.type: Easing.BezierSpline
+                                    easing.bezierCurve: Anims.emphasizedDecel
+                                }
+
+                                NumberAnimation {
+                                    from: 1.2
+                                    to: 1
+                                    duration: Anims.durShort
+                                    easing.type: Easing.BezierSpline
+                                    easing.bezierCurve: Anims.emphasizedAccel
+                                }
+                            }
+                        }
+
+                        Item {
+                            anchors.fill: parent
+                            visible: pam.passwd.active && !root.unlocking
+
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                radius: 10
+                                anchors.centerIn: parent
+                                color: "transparent"
+                                border.color: Theme.primarySelected
+                                border.width: 2
+                            }
+
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                radius: 10
+                                anchors.centerIn: parent
+                                color: "transparent"
+                                border.color: Theme.primary
+                                border.width: 2
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: parent.height / 2
+                                    anchors.top: parent.top
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    color: Theme.withAlpha(Theme.surfaceContainer, 0.9)
+                                }
+
+                                RotationAnimator on rotation {
+                                    running: pam.passwd.active && !root.unlocking
+                                    loops: Animation.Infinite
+                                    duration: Anims.durLong
+                                    from: 0
+                                    to: 360
+                                }
+                            }
+                        }
+                    }
+
+                    DankActionButton {
+                        id: enterButton
+
+                        anchors.right: parent.right
+                        anchors.rightMargin: 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        iconName: "keyboard_return"
+                        buttonSize: 36
+                        visible: (demoMode || (!pam.passwd.active && !root.unlocking && !pam.u2fPending))
+                        enabled: !demoMode
+                        onClicked: {
+                            if (!demoMode && !root.unlocking && !pam.u2fPending) {
+                                pam.passwd.start();
+                            }
+                        }
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.shortDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+                    }
+
+                    Behavior on border.color {
+                        ColorAnimation {
+                            duration: Theme.shortDuration
+                            easing.type: Theme.standardEasing
+                        }
+                    }
+                }
+            }
+
+            StyledText {
+                id: authFeedbackText
+
+                Layout.fillWidth: true
+                Layout.preferredHeight: text.length > 0 ? Math.min(implicitHeight, Math.ceil(Theme.fontSizeSmall * 4.5)) : 0
+                text: root.currentAuthFeedbackText()
+                color: root.authFeedbackIsHint() ? Theme.outline : Theme.error
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                maximumLineCount: 3
+                elide: Text.ElideRight
+                opacity: text.length > 0 ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.shortDuration
+                        easing.type: Theme.standardEasing
+                    }
+                }
+            }
+        }
+
+        Row {
+            anchors.top: passwordLayout.bottom
+            anchors.topMargin: Theme.spacingS
+            anchors.horizontalCenter: passwordLayout.horizontalCenter
+            spacing: Theme.spacingXS
+            opacity: DMSService.capsLockState ? 1 : 0
+
+            DankIcon {
+                name: "shift_lock"
+                size: 14
+                color: Theme.error
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            StyledText {
+                text: I18n.tr("Caps Lock is on")
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.error
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.shortDuration
+                    easing.type: Theme.standardEasing
+                }
+            }
+        }
+
+        StyledText {
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: Theme.spacingXL
+            text: I18n.tr("DEMO MODE - Click anywhere to exit")
+            font.pixelSize: Theme.fontSizeSmall
+            color: "white"
+            opacity: 0.7
+            visible: demoMode
+        }
+
+        Row {
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: Theme.spacingXL
+            spacing: Theme.spacingL
+            visible: SettingsData.lockScreenShowSystemIcons
+
+            Item {
+                width: keyboardLayoutRow.width
+                height: keyboardLayoutRow.height
+                anchors.verticalCenter: parent.verticalCenter
+                visible: {
+                    if (CompositorService.isNiri) {
+                        return NiriService.keyboardLayoutNames.length > 1;
+                    } else if (CompositorService.isHyprland) {
+                        return hyprlandLayoutCount > 1;
+                    }
+                    return false;
+                }
+
+                Row {
+                    id: keyboardLayoutRow
+                    spacing: Theme.spacingXS
+
+                    Item {
+                        width: Theme.iconSize
+                        height: Theme.iconSize
+
+                        DankIcon {
+                            name: "keyboard"
+                            size: Theme.iconSize
+                            color: "white"
+                            anchors.centerIn: parent
+                        }
+                    }
+
+                    Item {
+                        width: childrenRect.width
+                        height: Theme.iconSize
+
+                        StyledText {
+                            text: {
+                                if (CompositorService.isNiri) {
+                                    return LayoutCodes.layoutCode(NiriService.getCurrentKeyboardLayoutName());
+                                } else if (CompositorService.isHyprland) {
+                                    return hyprlandCurrentLayout;
+                                }
+                                return "";
+                            }
+                            font.pixelSize: Theme.fontSizeMedium
+                            font.weight: Font.Light
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+
+                MouseArea {
+                    id: keyboardLayoutArea
+                    anchors.fill: parent
+                    enabled: !demoMode
+                    hoverEnabled: enabled
+                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    onClicked: {
+                        if (CompositorService.isNiri) {
+                            NiriService.cycleKeyboardLayout();
+                        } else if (CompositorService.isHyprland) {
+                            Quickshell.execDetached(["hyprctl", "switchxkblayout", hyprlandKeyboard, "next"]);
+                            updateHyprlandLayout();
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                width: 1
+                height: 24
+                color: Qt.rgba(255, 255, 255, 0.2)
+                anchors.verticalCenter: parent.verticalCenter
+                visible: MprisController.activePlayer && SettingsData.lockScreenShowMediaPlayer
+            }
+
+            Row {
+                spacing: Theme.spacingS
+                visible: MprisController.activePlayer && SettingsData.lockScreenShowMediaPlayer
+                anchors.verticalCenter: parent.verticalCenter
+
+                Item {
+                    id: lockVisualizer
+
+                    width: 20
+                    height: Theme.iconSize
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    readonly property bool live: visible && (Window.window?.visible ?? false) && MprisController.activePlayer?.playbackState === MprisPlaybackState.Playing
+
+                    Loader {
+                        active: lockVisualizer.live
+
+                        sourceComponent: Component {
+                            Ref {
+                                service: CavaService
+                            }
+                        }
+                    }
+
+                    Timer {
+                        running: !CavaService.cavaAvailable && lockVisualizer.live
+                        interval: 256
+                        repeat: true
+                        onTriggered: {
+                            CavaService.values = [Math.random() * 40 + 10, Math.random() * 60 + 20, Math.random() * 50 + 15, Math.random() * 35 + 20, Math.random() * 45 + 15, Math.random() * 55 + 25];
+                        }
+                    }
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 1.5
+
+                        Repeater {
+                            model: 6
+                            delegate: Rectangle {
+                                required property int index
+
+                                width: 2
+                                height: {
+                                    if (MprisController.activePlayer?.playbackState === MprisPlaybackState.Playing && CavaService.values.length > index) {
+                                        const rawLevel = CavaService.values[index] || 0;
+                                        const scaledLevel = Math.sqrt(Math.min(Math.max(rawLevel, 0), 100) / 100) * 100;
+                                        const maxHeight = Theme.iconSize - 2;
+                                        const minHeight = 3;
+                                        return minHeight + (scaledLevel / 100) * (maxHeight - minHeight);
+                                    }
+                                    return 3;
+                                }
+                                radius: 1.5
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                Behavior on height {
+                                    NumberAnimation {
+                                        duration: Anims.durShort
+                                        easing.type: Easing.BezierSpline
+                                        easing.bezierCurve: Anims.standardDecel
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                StyledText {
+                    text: {
+                        const player = MprisController.activePlayer;
+                        if (!player?.trackTitle)
+                            return "";
+                        const title = player.trackTitle;
+                        const artist = player.trackArtist || "";
+                        return artist ? title + " • " + artist : title;
+                    }
+                    font.pixelSize: Theme.fontSizeLarge
+                    color: "white"
+                    opacity: 0.9
+                    anchors.verticalCenter: parent.verticalCenter
+                    elide: Text.ElideRight
+                    width: Math.min(implicitWidth, 400)
+                    wrapMode: Text.NoWrap
+                    maximumLineCount: 1
+                }
+
+                Row {
+                    spacing: Theme.spacingXS
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Rectangle {
+                        width: 20
+                        height: 20
+                        radius: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: prevArea.containsMouse ? Qt.rgba(255, 255, 255, 0.2) : Theme.withAlpha(Qt.rgba(255, 255, 255, 0.2), 0)
+                        visible: MprisController.activePlayer
+                        opacity: (MprisController.activePlayer?.canGoPrevious ?? false) ? 1 : 0.3
+
+                        DankIcon {
+                            anchors.centerIn: parent
+                            name: "skip_previous"
+                            size: 12
+                            color: "white"
+                        }
+
+                        MouseArea {
+                            id: prevArea
+                            anchors.fill: parent
+                            enabled: MprisController.activePlayer?.canGoPrevious ?? false
+                            hoverEnabled: enabled
+                            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: MprisController.previousOrRewind()
+                        }
+                    }
+
+                    Rectangle {
+                        width: 24
+                        height: 24
+                        radius: 12
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: MprisController.activePlayer?.playbackState === MprisPlaybackState.Playing ? Qt.rgba(255, 255, 255, 0.9) : Qt.rgba(255, 255, 255, 0.2)
+                        visible: MprisController.activePlayer
+
+                        DankIcon {
+                            anchors.centerIn: parent
+                            name: MprisController.activePlayer?.playbackState === MprisPlaybackState.Playing ? "pause" : "play_arrow"
+                            size: 14
+                            color: MprisController.activePlayer?.playbackState === MprisPlaybackState.Playing ? "black" : "white"
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            enabled: MprisController.activePlayer
+                            hoverEnabled: enabled
+                            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: MprisController.activePlayer?.togglePlaying()
+                        }
+                    }
+
+                    Rectangle {
+                        width: 20
+                        height: 20
+                        radius: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: nextArea.containsMouse ? Qt.rgba(255, 255, 255, 0.2) : Theme.withAlpha(Qt.rgba(255, 255, 255, 0.2), 0)
+                        visible: MprisController.activePlayer
+                        opacity: (MprisController.activePlayer?.canGoNext ?? false) ? 1 : 0.3
+
+                        DankIcon {
+                            anchors.centerIn: parent
+                            name: "skip_next"
+                            size: 12
+                            color: "white"
+                        }
+
+                        MouseArea {
+                            id: nextArea
+                            anchors.fill: parent
+                            enabled: MprisController.activePlayer?.canGoNext ?? false
+                            hoverEnabled: enabled
+                            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: MprisController.next()
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                width: 1
+                height: 24
+                color: Qt.rgba(255, 255, 255, 0.2)
+                anchors.verticalCenter: parent.verticalCenter
+                visible: MprisController.activePlayer && SettingsData.lockScreenShowMediaPlayer && WeatherService.weather.available
+            }
+
+            Row {
+                spacing: Theme.spacingXS
+                visible: WeatherService.weather.available
+                anchors.verticalCenter: parent.verticalCenter
+
+                DankIcon {
+                    name: WeatherService.getWeatherIcon(WeatherService.weather.wCode)
+                    size: Theme.iconSize
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                StyledText {
+                    text: (SettingsData.useFahrenheit ? WeatherService.weather.tempF : WeatherService.weather.temp) + "°"
+                    font.pixelSize: Theme.fontSizeLarge
+                    font.weight: Font.Light
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Rectangle {
+                width: 1
+                height: 24
+                color: Qt.rgba(255, 255, 255, 0.2)
+                anchors.verticalCenter: parent.verticalCenter
+                visible: WeatherService.weather.available && (NetworkService.networkStatus !== "disconnected" || BluetoothService.enabled || (AudioService.sink && AudioService.sink.audio) || BatteryService.batteryAvailable)
+            }
+
+            Row {
+                spacing: Theme.spacingM
+                anchors.verticalCenter: parent.verticalCenter
+                visible: NetworkService.networkAvailable || (BluetoothService.available && BluetoothService.enabled) || (AudioService.sink && AudioService.sink.audio)
+
+                DankIcon {
+                    name: "screen_record"
+                    size: Theme.iconSize - 2
+                    color: NiriService.hasActiveCast ? "white" : Qt.rgba(255, 255, 255, 0.5)
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: NiriService.hasCasts
+                }
+
+                DankIcon {
+                    id: lockNetworkIcon
+                    name: {
+                        if (NetworkService.wifiToggling)
+                            return "sync";
+                        switch (NetworkService.networkStatus) {
+                        case "ethernet":
+                            return "lan";
+                        case "vpn":
+                            return NetworkService.ethernetConnected ? "lan" : NetworkService.wifiSignalIcon;
+                        default:
+                            return NetworkService.wifiSignalIcon;
+                        }
+                    }
+                    size: Theme.iconSize - 2
+                    color: (NetworkService.networkStatus !== "disconnected" || NetworkService.isConnecting) ? "white" : Qt.rgba(255, 255, 255, 0.5)
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: NetworkService.networkAvailable
+
+                    DankBlink {
+                        target: lockNetworkIcon
+                        running: NetworkService.isWifiConnecting
+                    }
+                }
+
+                DankIcon {
+                    name: "vpn_lock"
+                    size: Theme.iconSize - 2
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: NetworkService.vpnAvailable && NetworkService.vpnConnected
+                }
+
+                DankIcon {
+                    id: lockBluetoothIcon
+                    name: "bluetooth"
+                    size: Theme.iconSize - 2
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: BluetoothService.available && BluetoothService.enabled
+
+                    DankBlink {
+                        target: lockBluetoothIcon
+                        running: BluetoothService.connecting
+                    }
+                }
+
+                DankIcon {
+                    name: {
+                        if (!AudioService.sink?.audio) {
+                            return "volume_up";
+                        }
+                        if (AudioService.sink.audio.muted)
+                            return "volume_off";
+                        if (AudioService.sink.audio.volume === 0)
+                            return "volume_mute";
+                        if (AudioService.sink.audio.volume * 100 < 33) {
+                            return "volume_down";
+                        }
+                        return "volume_up";
+                    }
+                    size: Theme.iconSize - 2
+                    color: (AudioService.sink && AudioService.sink.audio && (AudioService.sink.audio.muted || AudioService.sink.audio.volume === 0)) ? Qt.rgba(255, 255, 255, 0.5) : "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: AudioService.sink && AudioService.sink.audio
+                }
+            }
+
+            Rectangle {
+                width: 1
+                height: 24
+                color: Qt.rgba(255, 255, 255, 0.2)
+                anchors.verticalCenter: parent.verticalCenter
+                visible: BatteryService.batteryAvailable && (NetworkService.networkStatus !== "disconnected" || BluetoothService.enabled || (AudioService.sink && AudioService.sink.audio))
+            }
+
+            Row {
+                spacing: Theme.spacingXS
+                visible: BatteryService.batteryAvailable
+                anchors.verticalCenter: parent.verticalCenter
+
+                DankIcon {
+                    name: {
+                        if (BatteryService.isCharging) {
+                            if (BatteryService.batteryLevel >= 90) {
+                                return "battery_charging_full";
+                            }
+
+                            if (BatteryService.batteryLevel >= 80) {
+                                return "battery_charging_90";
+                            }
+
+                            if (BatteryService.batteryLevel >= 60) {
+                                return "battery_charging_80";
+                            }
+
+                            if (BatteryService.batteryLevel >= 50) {
+                                return "battery_charging_60";
+                            }
+
+                            if (BatteryService.batteryLevel >= 30) {
+                                return "battery_charging_50";
+                            }
+
+                            if (BatteryService.batteryLevel >= 20) {
+                                return "battery_charging_30";
+                            }
+
+                            return "battery_charging_20";
+                        }
+                        if (BatteryService.isPluggedIn) {
+                            if (BatteryService.batteryLevel >= 90) {
+                                return "battery_charging_full";
+                            }
+
+                            if (BatteryService.batteryLevel >= 80) {
+                                return "battery_charging_90";
+                            }
+
+                            if (BatteryService.batteryLevel >= 60) {
+                                return "battery_charging_80";
+                            }
+
+                            if (BatteryService.batteryLevel >= 50) {
+                                return "battery_charging_60";
+                            }
+
+                            if (BatteryService.batteryLevel >= 30) {
+                                return "battery_charging_50";
+                            }
+
+                            if (BatteryService.batteryLevel >= 20) {
+                                return "battery_charging_30";
+                            }
+
+                            return "battery_charging_20";
+                        }
+                        if (BatteryService.batteryLevel >= 95) {
+                            return "battery_full";
+                        }
+
+                        if (BatteryService.batteryLevel >= 85) {
+                            return "battery_6_bar";
+                        }
+
+                        if (BatteryService.batteryLevel >= 70) {
+                            return "battery_5_bar";
+                        }
+
+                        if (BatteryService.batteryLevel >= 55) {
+                            return "battery_4_bar";
+                        }
+
+                        if (BatteryService.batteryLevel >= 40) {
+                            return "battery_3_bar";
+                        }
+
+                        if (BatteryService.batteryLevel >= 25) {
+                            return "battery_2_bar";
+                        }
+
+                        return "battery_1_bar";
+                    }
+                    size: Theme.iconSize
+                    color: {
+                        if (BatteryService.isLowBattery && !BatteryService.isCharging) {
+                            return Theme.error;
+                        }
+
+                        if (BatteryService.isCharging || BatteryService.isPluggedIn) {
+                            return Theme.primary;
+                        }
+
+                        return "white";
+                    }
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                StyledText {
+                    text: BatteryService.batteryLevel + "%"
+                    font.pixelSize: Theme.fontSizeLarge
+                    font.weight: Font.Light
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        DankActionButton {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.margins: Theme.spacingXL
+            visible: SettingsData.lockScreenShowPowerActions
+            iconName: "power_settings_new"
+            iconColor: Theme.error
+            buttonSize: 40
+            onClicked: {
+                if (demoMode) {
+                    log.debug("Demo: Power Menu");
+                } else {
+                    powerMenu.show();
+                }
+            }
+        }
+    }
+
+    Pam {
+        id: demoPam
+        lockSecured: false
+    }
+
+    Connections {
+        target: root.pam
+
+        function onUnlockRequested() {
+            root.unlocking = true;
+            lockerReadyArmed = false;
+            passwordField.clear();
+            root.unlockRequested();
+        }
+
+        function onStateChanged() {
+            root.pamState = root.pam.state;
+            if (root.pam.state === "")
+                return;
+            root.unlocking = false;
+            placeholderDelay.restart();
+            passwordField.clear();
+        }
+
+        function onU2fPendingChanged() {
+            if (!root.pam.u2fPending)
+                return;
+            passwordField.clear();
+            if (keyboardController.isKeyboardActive)
+                keyboardController.hide();
+        }
+
+        function onUnlockInProgressChanged() {
+            if (!root.pam.unlockInProgress && root.unlocking)
+                root.unlocking = false;
+        }
+    }
+
+    Timer {
+        id: placeholderDelay
+
+        interval: 4000
+        onTriggered: root.pamState = ""
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: demoMode
+        onClicked: root.unlockRequested()
+    }
+
+    LockPowerMenu {
+        id: powerMenu
+        showLogout: true
+        onClosed: {
+            if (!demoMode && passwordField && passwordField.forceActiveFocus) {
+                Qt.callLater(() => passwordField.forceActiveFocus());
+            }
+        }
+        onSwitchUserRequested: {
+            switchUserPicker.showFromLockScreen();
+        }
+    }
+
+    SwitchUserModal {
+        id: switchUserPicker
+    }
+}

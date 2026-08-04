@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "이 이름의 파일이 이미 있습니다. 덮어쓰시겠습니까?"
+  },
+  "Actions": {
+    "Actions": "작업"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: 뒤로 • F1/I: 파일 정보 • F10: 도움말 • Esc: 닫기"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "취소"
+  },
+  "Choose icon": {
+    "Choose icon": "아이콘 선택"
+  },
+  "Communication": {
+    "Communication": "통신"
+  },
+  "Copy path": {
+    "Copy path": "경로 복사"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "데스크톱"
+  },
+  "Development": {
+    "Development": "개발"
+  },
+  "Documents": {
+    "Documents": "문서"
+  },
+  "Downloads": {
+    "Downloads": "다운로드"
+  },
+  "Enter filename...": {
+    "Enter filename...": "파일 이름 입력..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: 전환 • F10: 도움말"
+  },
+  "File Already Exists": {
+    "File Already Exists": "파일이 이미 존재함"
+  },
+  "File Information": {
+    "File Information": "파일 정보"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "재미"
+  },
+  "Hibernate": {
+    "Hibernate": "최대 절전 모드"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "확인하려면 더 길게 누르세요"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "길게 눌러 확인(%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "길게 눌러 확인(%1s)"
+  },
+  "Home": {
+    "Home": "홈"
+  },
+  "Log Out": {
+    "Log Out": "로그아웃"
+  },
+  "Media": {
+    "Media": "미디어"
+  },
+  "Modified": {
+    "Modified": "수정됨"
+  },
+  "Move to Trash": {
+    "Move to Trash": "휴지통으로 이동"
+  },
+  "Music": {
+    "Music": "음악"
+  },
+  "Name": {
+    "Name": "이름"
+  },
+  "Navigation": {
+    "Navigation": "탐색"
+  },
+  "Numbers": {
+    "Numbers": "숫자"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "덮어쓰기"
+  },
+  "Pictures": {
+    "Pictures": "사진"
+  },
+  "Power Off": {
+    "Power Off": "전원 끄기"
+  },
+  "Power Options": {
+    "Power Options": "전원 옵션"
+  },
+  "Quick Access": {
+    "Quick Access": "빠른 액세스"
+  },
+  "Reboot": {
+    "Reboot": "재부팅"
+  },
+  "Save": {
+    "Save": "저장"
+  },
+  "Search for a location...": {
+    "Search for a location...": "위치 검색..."
+  },
+  "Search...": {
+    "Search...": "검색..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "크기"
+  },
+  "Sort By": {
+    "Sort By": "정렬 기준"
+  },
+  "Status": {
+    "Status": "상태"
+  },
+  "Suspend": {
+    "Suspend": "절전"
+  },
+  "Switch User": {
+    "Switch User": "사용자 전환"
+  },
+  "System": {
+    "System": "시스템"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: 탐색 • ←→↑↓: 그리드 탐색 • Enter/Space: 선택"
+  },
+  "Type": {
+    "Type": "유형"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "비디오"
+  },
+  "Workspace": {
+    "Workspace": "작업 공간"
+  }
+}

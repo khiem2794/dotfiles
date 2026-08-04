@@ -1,0 +1,140 @@
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import qs.Common
+import qs.Services
+import qs.Widgets
+import "../../../Common/QmlUtils.js" as QmlUtils
+
+StyledRect {
+    id: root
+
+    LayoutMirroring.enabled: I18n.isRtl
+    LayoutMirroring.childrenInherit: true
+
+    property string tab: ""
+    property var tags: []
+    property string settingKey: ""
+
+    property string title: ""
+    property string description: ""
+    property string iconName: ""
+    property bool checked: false
+
+    default property alias content: expandedContent.children
+    readonly property bool hasContent: expandedContent.children.length > 0
+
+    signal toggled(bool checked)
+
+    width: parent?.width ?? 0
+    height: Theme.spacingL * 2 + mainColumn.height
+    radius: Theme.cornerRadius
+    color: Theme.surfaceContainerHigh
+
+    Component.onCompleted: {
+        if (!settingKey)
+            return;
+        const key = settingKey;
+        Qt.callLater(() => {
+            if (!root.parent)
+                return;
+            const flickable = QmlUtils.findParentFlickable(root.parent);
+            if (flickable)
+                SettingsSearchService.registerCard(key, root, flickable);
+        });
+    }
+
+    Component.onDestruction: {
+        if (settingKey)
+            SettingsSearchService.unregisterCard(settingKey);
+    }
+
+    Column {
+        id: mainColumn
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: Theme.spacingL
+        anchors.rightMargin: Theme.spacingL
+        spacing: Theme.spacingM
+
+        Item {
+            width: parent.width
+            height: headerColumn.height
+
+            Column {
+                id: headerColumn
+                anchors.left: parent.left
+                anchors.right: toggleSwitch.left
+                anchors.rightMargin: Theme.spacingM
+                spacing: Theme.spacingXS
+
+                Row {
+                    spacing: Theme.spacingM
+                    width: parent.width
+
+                    DankIcon {
+                        id: headerIcon
+                        name: root.iconName
+                        size: Theme.iconSize
+                        color: Theme.primary
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: root.iconName !== ""
+                    }
+
+                    StyledText {
+                        id: headerText
+                        text: root.title
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Medium
+                        color: Theme.surfaceText
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: root.title !== ""
+                        width: parent.width - (headerIcon.visible ? headerIcon.width + parent.spacing : 0)
+                        horizontalAlignment: Text.AlignLeft
+                    }
+                }
+
+                StyledText {
+                    id: descriptionText
+                    text: root.description
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    horizontalAlignment: Text.AlignLeft
+                    visible: root.description !== ""
+                }
+            }
+
+            DankToggle {
+                id: toggleSwitch
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                hideText: true
+                checked: root.checked
+                enabled: root.enabled
+                onToggled: checked => root.toggled(checked)
+            }
+
+            StateLayer {
+                anchors.fill: parent
+                disabled: !root.enabled
+                stateColor: Theme.primary
+                cornerRadius: root.radius
+                onClicked: {
+                    if (!root.enabled)
+                        return;
+                    root.toggled(!root.checked);
+                }
+            }
+        }
+
+        Column {
+            id: expandedContent
+            width: parent.width
+            spacing: Theme.spacingM
+            visible: root.checked && root.hasContent
+        }
+    }
+}

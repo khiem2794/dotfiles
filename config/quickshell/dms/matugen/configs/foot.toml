@@ -1,0 +1,3 @@
+[templates.dmsfoot]
+input_path = 'SHELL_DIR/matugen/templates/foot.ini'
+output_path = 'CONFIG_DIR/foot/dank-colors.ini'

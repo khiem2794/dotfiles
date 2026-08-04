@@ -1,0 +1,17 @@
+{
+    "id": "quickNotesExample",
+    "name": "Quick Notes",
+    "description": "Example launcher plugin demonstrating the plugin state API for persistent data like history and notes",
+    "version": "1.0.0",
+    "author": "DankMaterialShell",
+    "icon": "sticky_note_2",
+    "type": "launcher",
+    "capabilities": ["clipboard"],
+    "component": "./QuickNotesLauncher.qml",
+    "settings": "./QuickNotesSettings.qml",
+    "trigger": "n",
+    "permissions": [
+        "settings_read",
+        "settings_write"
+    ]
+}

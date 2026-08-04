@@ -1,0 +1,12 @@
+{
+    "id": "colorDemo",
+    "name": "Color Demo",
+    "description": "Demonstrates color picker plugin setting",
+    "version": "1.0.0",
+    "author": "DMS",
+    "icon": "palette",
+    "type": "widget",
+    "component": "./ColorDemoWidget.qml",
+    "settings": "./ColorDemoSettings.qml",
+    "permissions": ["settings_read", "settings_write"]
+}

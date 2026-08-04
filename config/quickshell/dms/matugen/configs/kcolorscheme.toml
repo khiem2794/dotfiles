@@ -1,0 +1,11 @@
+[templates.dmskcolorscheme]
+input_path = 'SHELL_DIR/matugen/templates/kcolorscheme.colors'
+output_path = 'DATA_DIR/color-schemes/DankMatugen.colors'
+
+[templates.dmslightkcolorscheme]
+input_path = 'SHELL_DIR/matugen/templates/light-kcolorscheme.colors'
+output_path = 'DATA_DIR/color-schemes/DankMatugenLight.colors'
+
+[templates.dmsdarkkcolorscheme]
+input_path = 'SHELL_DIR/matugen/templates/dark-kcolorscheme.colors'
+output_path = 'DATA_DIR/color-schemes/DankMatugenDark.colors'

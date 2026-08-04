@@ -1,0 +1,3 @@
+[templates.dmsniri]
+input_path = 'SHELL_DIR/matugen/templates/niri-colors.kdl'
+output_path = 'CONFIG_DIR/niri/dms/colors.kdl'

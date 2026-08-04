@@ -1,0 +1,2145 @@
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import Quickshell.Hyprland
+import Quickshell.Wayland
+import Quickshell.Services.SystemTray
+import Quickshell.Services.UPower
+import qs.Common
+import qs.Services
+import qs.Modules.Settings.DisplayConfig
+
+Item {
+    id: root
+    readonly property var log: Log.scoped("DMSShellIPC")
+
+    required property var powerMenuModalLoader
+    required property var processListModalLoader
+    required property var controlCenterLoader
+    required property var dankDashPopoutLoader
+    required property var notepadSlideoutVariants
+    required property var hyprKeybindsModalLoader
+    required property var dankBarRepeater
+    required property var hyprlandOverviewLoader
+    required property var workspaceRenameModalLoader
+    required property var windowRuleModalLoader
+
+    function getPreferredBar(refPropertyName) {
+        const focusedScreenName = BarWidgetService.getFocusedScreenName();
+
+        const bars = [];
+        if (root.dankBarRepeater) {
+            for (let i = 0; i < root.dankBarRepeater.count; i++)
+                bars.push(...(root.dankBarRepeater.itemAt(i)?.item?.barVariants?.instances || []));
+        }
+        const frameBars = BarWidgetService.frameHostedBars;
+        for (const screenName in frameBars)
+            bars.push(frameBars[screenName]);
+
+        let currentBar = null;
+        for (const bar of bars) {
+            if (!bar)
+                continue;
+
+            const onFocusedScreen = focusedScreenName && bar.modelData?.name === focusedScreenName;
+            const hasRef = !refPropertyName || !!bar[refPropertyName];
+
+            if (hasRef) {
+                currentBar = bar;
+
+                if (onFocusedScreen)
+                    break;
+            }
+        }
+
+        return currentBar;
+    }
+
+    readonly property var defaultAppMimeTypes: ({
+            browser: "x-scheme-handler/https",
+            fileManager: "inode/directory",
+            textEditor: "text/plain",
+            imageViewer: "image/png",
+            videoPlayer: "video/mp4",
+            musicPlayer: "audio/mpeg",
+            pdfReader: "application/pdf",
+            mail: "x-scheme-handler/mailto",
+            calendar: "x-scheme-handler/calendar"
+        })
+
+    function launchDesktopId(desktopId, appName) {
+        if (!desktopId || desktopId.length === 0) {
+            log.warn("No default app configured for:", appName);
+            return false;
+        }
+
+        let entry = DesktopEntries.heuristicLookup(desktopId);
+        if (!entry && desktopId.endsWith(".desktop")) {
+            entry = DesktopEntries.heuristicLookup(desktopId.slice(0, -8));
+        }
+        if (!entry) {
+            log.warn("Default app desktop entry not found:", desktopId, "for:", appName);
+            return false;
+        }
+
+        SessionService.launchDesktopEntry(entry);
+        AppUsageHistoryData.addAppUsage(entry);
+        return true;
+    }
+
+    function launchDefaultMimeApp(appName, mimeType) {
+        DMSService.sendRequest("mime.getDefault", {
+            "mimeType": mimeType
+        }, response => {
+            if (response.error) {
+                log.warn("Failed to resolve default app:", appName, response.error);
+                return;
+            }
+            const result = response.result || {};
+            root.launchDesktopId(result.desktopId || "", appName);
+        });
+
+        return `DEFAULTAPP_LAUNCH_REQUESTED: ${appName}`;
+    }
+
+    IpcHandler {
+        function browser(): string {
+            return root.launchDefaultMimeApp("browser", root.defaultAppMimeTypes.browser);
+        }
+
+        function fileManager(): string {
+            return root.launchDefaultMimeApp("fileManager", root.defaultAppMimeTypes.fileManager);
+        }
+
+        function textEditor(): string {
+            return root.launchDefaultMimeApp("textEditor", root.defaultAppMimeTypes.textEditor);
+        }
+
+        function imageViewer(): string {
+            return root.launchDefaultMimeApp("imageViewer", root.defaultAppMimeTypes.imageViewer);
+        }
+
+        function videoPlayer(): string {
+            return root.launchDefaultMimeApp("videoPlayer", root.defaultAppMimeTypes.videoPlayer);
+        }
+
+        function musicPlayer(): string {
+            return root.launchDefaultMimeApp("musicPlayer", root.defaultAppMimeTypes.musicPlayer);
+        }
+
+        function pdfReader(): string {
+            return root.launchDefaultMimeApp("pdfReader", root.defaultAppMimeTypes.pdfReader);
+        }
+
+        function mail(): string {
+            return root.launchDefaultMimeApp("mail", root.defaultAppMimeTypes.mail);
+        }
+
+        function calendar(): string {
+            return root.launchDefaultMimeApp("calendar", root.defaultAppMimeTypes.calendar);
+        }
+
+        target: "defaultApp"
+    }
+
+    IpcHandler {
+        function open() {
+            root.powerMenuModalLoader.active = true;
+            if (root.powerMenuModalLoader.item)
+                root.powerMenuModalLoader.item.openCentered();
+
+            return "POWERMENU_OPEN_SUCCESS";
+        }
+
+        function close() {
+            if (root.powerMenuModalLoader.item)
+                root.powerMenuModalLoader.item.close();
+
+            return "POWERMENU_CLOSE_SUCCESS";
+        }
+
+        function toggle() {
+            root.powerMenuModalLoader.active = true;
+            if (root.powerMenuModalLoader.item) {
+                if (root.powerMenuModalLoader.item.shouldBeVisible) {
+                    root.powerMenuModalLoader.item.close();
+                } else {
+                    root.powerMenuModalLoader.item.openCentered();
+                }
+            }
+
+            return "POWERMENU_TOGGLE_SUCCESS";
+        }
+
+        target: "powermenu"
+    }
+
+    IpcHandler {
+        function open(): string {
+            root.processListModalLoader.active = true;
+            Qt.callLater(() => {
+                if (root.processListModalLoader.item)
+                    root.processListModalLoader.item.show();
+            });
+
+            return "PROCESSLIST_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            if (root.processListModalLoader.item)
+                root.processListModalLoader.item.hide();
+
+            return "PROCESSLIST_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            root.processListModalLoader.active = true;
+            Qt.callLater(() => {
+                if (root.processListModalLoader.item)
+                    root.processListModalLoader.item.toggle();
+            });
+
+            return "PROCESSLIST_TOGGLE_SUCCESS";
+        }
+
+        function focusOrToggle(): string {
+            root.processListModalLoader.active = true;
+            Qt.callLater(() => {
+                if (root.processListModalLoader.item)
+                    root.processListModalLoader.item.focusOrToggle();
+            });
+
+            return "PROCESSLIST_FOCUS_OR_TOGGLE_SUCCESS";
+        }
+
+        target: "processlist"
+    }
+
+    IpcHandler {
+        function open(): string {
+            const bar = root.getPreferredBar("controlCenterButtonRef");
+            if (bar) {
+                bar.triggerControlCenter();
+                return "CONTROL_CENTER_OPEN_SUCCESS";
+            }
+            return "CONTROL_CENTER_OPEN_FAILED";
+        }
+
+        function hide(): string {
+            if (root.controlCenterLoader.item && root.controlCenterLoader.item.shouldBeVisible) {
+                root.controlCenterLoader.item.close();
+                return "CONTROL_CENTER_HIDE_SUCCESS";
+            }
+            return "CONTROL_CENTER_HIDE_FAILED";
+        }
+
+        function toggle(): string {
+            if (root.controlCenterLoader.item?.shouldBeVisible) {
+                root.controlCenterLoader.item.close();
+                return "CONTROL_CENTER_TOGGLE_SUCCESS";
+            }
+
+            const bar = root.getPreferredBar("controlCenterButtonRef");
+            if (bar) {
+                bar.triggerControlCenter();
+                return "CONTROL_CENTER_TOGGLE_SUCCESS";
+            }
+            return "CONTROL_CENTER_TOGGLE_FAILED";
+        }
+
+        function status(): string {
+            return (root.controlCenterLoader.item && root.controlCenterLoader.item.shouldBeVisible) ? "visible" : "hidden";
+        }
+
+        target: "control-center"
+    }
+
+    IpcHandler {
+        // Screenshot region-select handshake
+        function begin(): string {
+            PopoutManager.screenshotActive = true;
+            return "SCREENSHOT_MODE_ON";
+        }
+
+        function end(): string {
+            PopoutManager.screenshotActive = false;
+            return "SCREENSHOT_MODE_OFF";
+        }
+
+        target: "screenshot"
+    }
+
+    IpcHandler {
+        function _resolveTabId(tab) {
+            switch ((tab || "").toLowerCase()) {
+            case "media":
+                return "media";
+            case "wallpaper":
+                return "wallpaper";
+            case "weather":
+                return "weather";
+            default:
+                return "overview";
+            }
+        }
+
+        function _resolvePosition(position) {
+            switch ((position || "").toLowerCase()) {
+            case "left":
+                return "left";
+            case "center":
+                return "center";
+            case "right":
+                return "right";
+            default:
+                return "";
+            }
+        }
+
+        function _dashBar(position) {
+            if (position)
+                return root.getPreferredBar();
+            return root.getPreferredBar("clockButtonRef") || root.getPreferredBar();
+        }
+
+        function _openDash(tab, position) {
+            const bar = _dashBar(position);
+            if (!bar)
+                return false;
+
+            const tabId = _resolveTabId(tab);
+            const dash = root.dankDashPopoutLoader.item;
+            if (dash && dash.shouldBeVisible && dash.triggerScreen?.name === bar.screen?.name) {
+                if (position && bar.positionDash)
+                    bar.positionDash(dash, position);
+                dash.requestTab(tabId);
+                if (dash.updateSurfacePosition)
+                    dash.updateSurfacePosition();
+                return true;
+            }
+
+            return bar.triggerDashTab(tabId, position);
+        }
+
+        function _toggleDash(tab, position) {
+            if (root.dankDashPopoutLoader.item?.dashVisible) {
+                root.dankDashPopoutLoader.item.dashVisible = false;
+                return true;
+            }
+
+            const bar = _dashBar(position);
+            if (!bar)
+                return false;
+            return bar.triggerDashTab(_resolveTabId(tab), position);
+        }
+
+        function resolveTabIndex(tab: string): int {
+            return SettingsData.dashTabIndexForId(_resolveTabId(tab));
+        }
+
+        function open(tab: string): string {
+            return _openDash(tab, "") ? "DASH_OPEN_SUCCESS" : "DASH_OPEN_FAILED";
+        }
+
+        function openAt(tab: string, position: string): string {
+            return _openDash(tab, _resolvePosition(position)) ? "DASH_OPEN_SUCCESS" : "DASH_OPEN_FAILED";
+        }
+
+        function close(): string {
+            if (root.dankDashPopoutLoader.item) {
+                root.dankDashPopoutLoader.item.dashVisible = false;
+                return "DASH_CLOSE_SUCCESS";
+            }
+            return "DASH_CLOSE_FAILED";
+        }
+
+        function toggle(tab: string): string {
+            return _toggleDash(tab, "") ? "DASH_TOGGLE_SUCCESS" : "DASH_TOGGLE_FAILED";
+        }
+
+        function toggleAt(tab: string, position: string): string {
+            return _toggleDash(tab, _resolvePosition(position)) ? "DASH_TOGGLE_SUCCESS" : "DASH_TOGGLE_FAILED";
+        }
+
+        target: "dash"
+    }
+
+    IpcHandler {
+        function getFocusedScreenName() {
+            if (CompositorService.isHyprland && Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.monitor) {
+                return Hyprland.focusedWorkspace.monitor.name;
+            }
+            if (CompositorService.isNiri && NiriService.currentOutput) {
+                return NiriService.currentOutput;
+            }
+            if ((CompositorService.isSway || CompositorService.isScroll || CompositorService.isMiracle) && I3.workspaces?.values) {
+                const focusedWs = I3.workspaces.values.find(ws => ws.focused === true);
+                return focusedWs?.monitor?.name || "";
+            }
+            if (CompositorService.isMango && MangoService.activeOutput) {
+                return MangoService.activeOutput;
+            }
+            return "";
+        }
+
+        function getActiveNotepadInstance() {
+            if (root.notepadSlideoutVariants.instances.length === 0) {
+                return null;
+            }
+
+            if (root.notepadSlideoutVariants.instances.length === 1) {
+                return root.notepadSlideoutVariants.instances[0];
+            }
+
+            var focusedScreen = getFocusedScreenName();
+            if (focusedScreen && root.notepadSlideoutVariants.instances.length > 0) {
+                for (var i = 0; i < root.notepadSlideoutVariants.instances.length; i++) {
+                    var slideout = root.notepadSlideoutVariants.instances[i];
+                    if (slideout.modelData && slideout.modelData.name === focusedScreen) {
+                        return slideout;
+                    }
+                }
+            }
+
+            for (var i = 0; i < root.notepadSlideoutVariants.instances.length; i++) {
+                var slideout = root.notepadSlideoutVariants.instances[i];
+                if (slideout.isVisible) {
+                    return slideout;
+                }
+            }
+
+            return root.notepadSlideoutVariants.instances[0];
+        }
+
+        function open(): string {
+            if (PopoutService.notepadResolvedMode === "popout") {
+                PopoutService.openNotepadPopout();
+                return "NOTEPAD_OPEN_SUCCESS";
+            }
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.show();
+                return "NOTEPAD_OPEN_SUCCESS";
+            }
+            return "NOTEPAD_OPEN_FAILED";
+        }
+
+        function openFile(path: string): string {
+            if (!path)
+                return open();
+            if (PopoutService.notepadResolvedMode === "popout") {
+                PopoutService.openNotepadPopoutWithFile(path);
+                return "NOTEPAD_OPEN_FILE_SUCCESS";
+            }
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.show();
+                instance.loadedItem?.openExternalFile(path);
+                return "NOTEPAD_OPEN_FILE_SUCCESS";
+            }
+            return "NOTEPAD_OPEN_FILE_FAILED";
+        }
+
+        function close(): string {
+            if (PopoutService.notepadResolvedMode === "popout") {
+                PopoutService.notepadPopout?.hide();
+                return "NOTEPAD_CLOSE_SUCCESS";
+            }
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.hide();
+                return "NOTEPAD_CLOSE_SUCCESS";
+            }
+            return "NOTEPAD_CLOSE_FAILED";
+        }
+
+        function toggle(): string {
+            if (PopoutService.notepadResolvedMode === "popout") {
+                PopoutService.toggleNotepadPopout();
+                return "NOTEPAD_TOGGLE_SUCCESS";
+            }
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.toggle();
+                return "NOTEPAD_TOGGLE_SUCCESS";
+            }
+            return "NOTEPAD_TOGGLE_FAILED";
+        }
+
+        function expand(): string {
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.expandedWidth = true;
+                if (!instance.isVisible)
+                    instance.show();
+                return "NOTEPAD_EXPAND_SUCCESS";
+            }
+            return "NOTEPAD_EXPAND_FAILED";
+        }
+
+        function collapse(): string {
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.expandedWidth = false;
+                if (!instance.isVisible)
+                    instance.show();
+                return "NOTEPAD_COLLAPSE_SUCCESS";
+            }
+            return "NOTEPAD_COLLAPSE_FAILED";
+        }
+
+        function toggleExpand(): string {
+            var instance = getActiveNotepadInstance();
+            if (instance) {
+                instance.expandedWidth = !instance.expandedWidth;
+                return "NOTEPAD_TOGGLE_EXPAND_SUCCESS";
+            }
+            return "NOTEPAD_TOGGLE_EXPAND_FAILED";
+        }
+
+        target: "notepad"
+    }
+
+    IpcHandler {
+        function toggle(): string {
+            SessionService.toggleIdleInhibit();
+            return SessionService.idleInhibited ? "Idle inhibit enabled" : "Idle inhibit disabled";
+        }
+
+        function enable(): string {
+            SessionService.enableIdleInhibit();
+            return "Idle inhibit enabled";
+        }
+
+        function disable(): string {
+            SessionService.disableIdleInhibit();
+            return "Idle inhibit disabled";
+        }
+
+        function status(): string {
+            return SessionService.idleInhibited ? "Idle inhibit is enabled" : "Idle inhibit is disabled";
+        }
+
+        function reason(newReason: string): string {
+            if (!newReason) {
+                return `Current reason: ${SessionService.inhibitReason}`;
+            }
+
+            SessionService.setInhibitReason(newReason);
+            return `Inhibit reason set to: ${newReason}`;
+        }
+
+        target: "inhibit"
+    }
+
+    IpcHandler {
+        function list(): string {
+            return MprisController.availablePlayers.map(p => p.identity).join("\n");
+        }
+
+        function play(): void {
+            if (MprisController.activePlayer && MprisController.activePlayer.canPlay) {
+                MprisController.activePlayer.play();
+            }
+        }
+
+        function pause(): void {
+            if (MprisController.activePlayer && MprisController.activePlayer.canPause) {
+                MprisController.activePlayer.pause();
+            }
+        }
+
+        function playPause(): void {
+            if (MprisController.activePlayer && MprisController.activePlayer.canTogglePlaying) {
+                MprisController.activePlayer.togglePlaying();
+            }
+        }
+
+        function previous(): void {
+            MprisController.previousOrRewind();
+        }
+
+        function next(): void {
+            MprisController.next();
+        }
+
+        function stop(): void {
+            if (MprisController.activePlayer) {
+                MprisController.activePlayer.stop();
+            }
+        }
+
+        function increment(step: string): string {
+            if (MprisController.activePlayer && MprisController.activePlayer.volumeSupported) {
+                const currentVolume = Math.round(MprisController.activePlayer.volume * 100);
+                const stepValue = parseInt(step || "5");
+                const newVolume = Math.max(0, Math.min(100, currentVolume + stepValue));
+
+                MprisController.activePlayer.volume = newVolume / 100;
+                return `Player volume increased to ${newVolume}%`;
+            }
+        }
+
+        function decrement(step: string): string {
+            if (MprisController.activePlayer && MprisController.activePlayer.volumeSupported) {
+                const currentVolume = Math.round(MprisController.activePlayer.volume * 100);
+                const stepValue = parseInt(step || "5");
+                const newVolume = Math.max(0, Math.min(100, currentVolume - stepValue));
+
+                MprisController.activePlayer.volume = newVolume / 100;
+                return `Player volume decreased to ${newVolume}%`;
+            }
+        }
+
+        function setvolume(percentage: string): string {
+            if (MprisController.activePlayer && MprisController.activePlayer.volumeSupported) {
+                const clampedVolume = Math.max(0, Math.min(100, percentage));
+                MprisController.activePlayer.volume = clampedVolume / 100;
+                return `Player volume set to ${clampedVolume}%`;
+            }
+        }
+
+        target: "mpris"
+    }
+
+    IpcHandler {
+        function toggle(provider: string): string {
+            if (!provider)
+                return "ERROR: No provider specified";
+
+            KeybindsService.loadCheatsheet(provider);
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return `KEYBINDS_TOGGLE_FAILED: ${provider}`;
+
+            if (root.hyprKeybindsModalLoader.item.shouldBeVisible)
+                root.hyprKeybindsModalLoader.item.close();
+            else
+                root.hyprKeybindsModalLoader.item.open();
+            return `KEYBINDS_TOGGLE_SUCCESS: ${provider}`;
+        }
+
+        function toggleWithPath(provider: string, path: string): string {
+            if (!provider)
+                return "ERROR: No provider specified";
+
+            KeybindsService.loadCheatsheet(provider);
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return `KEYBINDS_TOGGLE_FAILED: ${provider}`;
+
+            if (root.hyprKeybindsModalLoader.item.shouldBeVisible)
+                root.hyprKeybindsModalLoader.item.close();
+            else
+                root.hyprKeybindsModalLoader.item.open();
+            return `KEYBINDS_TOGGLE_SUCCESS: ${provider} (${path})`;
+        }
+
+        function open(provider: string): string {
+            if (!provider)
+                return "ERROR: No provider specified";
+
+            KeybindsService.loadCheatsheet(provider);
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return `KEYBINDS_OPEN_FAILED: ${provider}`;
+
+            root.hyprKeybindsModalLoader.item.open();
+            return `KEYBINDS_OPEN_SUCCESS: ${provider}`;
+        }
+
+        function openWithPath(provider: string, path: string): string {
+            if (!provider)
+                return "ERROR: No provider specified";
+
+            KeybindsService.loadCheatsheet(provider);
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return `KEYBINDS_OPEN_FAILED: ${provider}`;
+
+            root.hyprKeybindsModalLoader.item.open();
+            return `KEYBINDS_OPEN_SUCCESS: ${provider} (${path})`;
+        }
+
+        function close(): string {
+            if (!root.hyprKeybindsModalLoader.item)
+                return "KEYBINDS_CLOSE_FAILED";
+
+            root.hyprKeybindsModalLoader.item.close();
+            return "KEYBINDS_CLOSE_SUCCESS";
+        }
+
+        target: "keybinds"
+    }
+
+    IpcHandler {
+        function openBinds(): string {
+            if (!CompositorService.isHyprland)
+                return "HYPR_NOT_AVAILABLE";
+
+            KeybindsService.currentProvider = "hyprland";
+            KeybindsService.loadBinds();
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return "HYPR_KEYBINDS_OPEN_FAILED";
+
+            root.hyprKeybindsModalLoader.item.open();
+            return "HYPR_KEYBINDS_OPEN_SUCCESS";
+        }
+
+        function closeBinds(): string {
+            if (!CompositorService.isHyprland)
+                return "HYPR_NOT_AVAILABLE";
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return "HYPR_KEYBINDS_CLOSE_FAILED";
+
+            root.hyprKeybindsModalLoader.item.close();
+            return "HYPR_KEYBINDS_CLOSE_SUCCESS";
+        }
+
+        function toggleBinds(): string {
+            if (!CompositorService.isHyprland)
+                return "HYPR_NOT_AVAILABLE";
+
+            KeybindsService.currentProvider = "hyprland";
+            KeybindsService.loadBinds();
+            root.hyprKeybindsModalLoader.active = true;
+
+            if (!root.hyprKeybindsModalLoader.item)
+                return "HYPR_KEYBINDS_TOGGLE_FAILED";
+
+            if (root.hyprKeybindsModalLoader.item.shouldBeVisible) {
+                root.hyprKeybindsModalLoader.item.close();
+            } else {
+                root.hyprKeybindsModalLoader.item.open();
+            }
+            return "HYPR_KEYBINDS_TOGGLE_SUCCESS";
+        }
+
+        function toggleOverview(): string {
+            if (!CompositorService.isHyprland || !root.hyprlandOverviewLoader.item) {
+                return "HYPR_NOT_AVAILABLE";
+            }
+            root.hyprlandOverviewLoader.item.overviewOpen = !root.hyprlandOverviewLoader.item.overviewOpen;
+            return root.hyprlandOverviewLoader.item.overviewOpen ? "OVERVIEW_OPEN_SUCCESS" : "OVERVIEW_CLOSE_SUCCESS";
+        }
+
+        function closeOverview(): string {
+            if (!CompositorService.isHyprland || !root.hyprlandOverviewLoader.item) {
+                return "HYPR_NOT_AVAILABLE";
+            }
+            root.hyprlandOverviewLoader.item.overviewOpen = false;
+            return "OVERVIEW_CLOSE_SUCCESS";
+        }
+
+        function openOverview(): string {
+            if (!CompositorService.isHyprland || !root.hyprlandOverviewLoader.item) {
+                return "HYPR_NOT_AVAILABLE";
+            }
+            root.hyprlandOverviewLoader.item.overviewOpen = true;
+            return "OVERVIEW_OPEN_SUCCESS";
+        }
+
+        target: "hypr"
+    }
+
+    // ! TODO - remove for v1.6
+    IpcHandler {
+        function wallpaper(): string {
+            const bar = root.getPreferredBar("clockButtonRef") || root.getPreferredBar();
+            if (bar) {
+                bar.triggerWallpaperBrowser();
+                return "WARN; deprecated, use dms ipc call dash toggle wallpaper instead";
+            }
+            return "ERROR: Failed to toggle wallpaper browser";
+        }
+
+        target: "dankdash"
+    }
+
+    function getBarConfig(selector: string, value: string): var {
+        const barSelectors = ["id", "name", "index"];
+        if (!barSelectors.includes(selector))
+            return {
+                error: "BAR_INVALID_SELECTOR"
+            };
+        const index = selector === "index" ? Number(value) : SettingsData.barConfigs.findIndex(bar => bar[selector] == value);
+        const barConfig = SettingsData.barConfigs?.[index];
+        if (!barConfig)
+            return {
+                error: "BAR_NOT_FOUND"
+            };
+        return {
+            barConfig
+        };
+    }
+
+    IpcHandler {
+        function reveal(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                visible: true
+            });
+            return "BAR_SHOW_SUCCESS";
+        }
+
+        function hide(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                visible: false
+            });
+            return "BAR_HIDE_SUCCESS";
+        }
+
+        function toggle(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                visible: !barConfig.visible
+            });
+            return !barConfig.visible ? "BAR_SHOW_SUCCESS" : "BAR_HIDE_SUCCESS";
+        }
+
+        function status(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            return barConfig.visible ? "visible" : "hidden";
+        }
+
+        function autoHide(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                autoHide: true
+            });
+            return "BAR_AUTO_HIDE_SUCCESS";
+        }
+
+        function manualHide(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                autoHide: false
+            });
+            return "BAR_MANUAL_HIDE_SUCCESS";
+        }
+
+        function toggleAutoHide(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            SettingsData.updateBarConfig(barConfig.id, {
+                autoHide: !barConfig.autoHide
+            });
+            return barConfig.autoHide ? "BAR_MANUAL_HIDE_SUCCESS" : "BAR_AUTO_HIDE_SUCCESS";
+        }
+
+        function toggleReveal(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            if (!barConfig.autoHide)
+                return "BAR_AUTO_HIDE_DISABLED";
+            if (!(barConfig.visible ?? true)) {
+                SettingsData.updateBarConfig(barConfig.id, {
+                    visible: true
+                });
+                SettingsData.setBarIpcReveal(barConfig.id, true);
+                return "BAR_REVEAL_SUCCESS";
+            }
+            const revealed = SettingsData.toggleBarIpcReveal(barConfig.id);
+            return revealed ? "BAR_REVEAL_SUCCESS" : "BAR_TUCK_SUCCESS";
+        }
+
+        function getPosition(selector: string, value: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            const positions = ["top", "bottom", "left", "right"];
+            return positions[barConfig.position] || "unknown";
+        }
+
+        function setPosition(selector: string, value: string, position: string): string {
+            const {
+                barConfig,
+                error
+            } = getBarConfig(selector, value);
+            if (error)
+                return error;
+            const positionMap = {
+                "top": SettingsData.Position.Top,
+                "bottom": SettingsData.Position.Bottom,
+                "left": SettingsData.Position.Left,
+                "right": SettingsData.Position.Right
+            };
+            const posValue = positionMap[position.toLowerCase()];
+            if (posValue === undefined)
+                return "BAR_INVALID_POSITION";
+            SettingsData.updateBarConfig(barConfig.id, {
+                position: posValue
+            });
+            return "BAR_POSITION_SET_SUCCESS";
+        }
+
+        target: "bar"
+    }
+
+    IpcHandler {
+        function reveal(): string {
+            SettingsData.setShowDock(true);
+            return "DOCK_SHOW_SUCCESS";
+        }
+
+        function hide(): string {
+            SettingsData.setShowDock(false);
+            return "DOCK_HIDE_SUCCESS";
+        }
+
+        function toggle(): string {
+            SettingsData.toggleShowDock();
+            return SettingsData.showDock ? "DOCK_SHOW_SUCCESS" : "DOCK_HIDE_SUCCESS";
+        }
+
+        function status(): string {
+            return SettingsData.showDock ? "visible" : "hidden";
+        }
+
+        function autoHide(): string {
+            SettingsData.dockAutoHide = true;
+            SettingsData.saveSettings();
+            return "BAR_AUTO_HIDE_SUCCESS";
+        }
+
+        function manualHide(): string {
+            SettingsData.dockAutoHide = false;
+            SettingsData.saveSettings();
+            return "BAR_MANUAL_HIDE_SUCCESS";
+        }
+
+        function toggleAutoHide(): string {
+            SettingsData.dockAutoHide = !SettingsData.dockAutoHide;
+            SettingsData.saveSettings();
+            return SettingsData.dockAutoHide ? "BAR_AUTO_HIDE_SUCCESS" : "BAR_MANUAL_HIDE_SUCCESS";
+        }
+
+        target: "dock"
+    }
+
+    IpcHandler {
+        function open(): string {
+            PopoutService.openSettings();
+            return "SETTINGS_OPEN_SUCCESS";
+        }
+
+        function openWith(tab: string): string {
+            if (!tab)
+                return "SETTINGS_OPEN_FAILED: No tab specified";
+            PopoutService.openSettingsWithTab(tab);
+            return `SETTINGS_OPEN_SUCCESS: ${tab}`;
+        }
+
+        function close(): string {
+            PopoutService.closeSettings();
+            return "SETTINGS_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            PopoutService.toggleSettings();
+            return "SETTINGS_TOGGLE_SUCCESS";
+        }
+
+        function toggleWith(tab: string): string {
+            if (!tab)
+                return "SETTINGS_TOGGLE_FAILED: No tab specified";
+            PopoutService.toggleSettingsWithTab(tab);
+            return `SETTINGS_TOGGLE_SUCCESS: ${tab}`;
+        }
+
+        function focusOrToggle(): string {
+            PopoutService.focusOrToggleSettings();
+            return "SETTINGS_FOCUS_OR_TOGGLE_SUCCESS";
+        }
+
+        function focusOrToggleWith(tab: string): string {
+            if (!tab)
+                return "SETTINGS_FOCUS_OR_TOGGLE_FAILED: No tab specified";
+            PopoutService.focusOrToggleSettingsWithTab(tab);
+            return `SETTINGS_FOCUS_OR_TOGGLE_SUCCESS: ${tab}`;
+        }
+
+        function tabs(): string {
+            if (!PopoutService.settingsModal)
+                return "wallpaper\ntheme\ntypography\ntime_weather\nsounds\ndankbar\ndankbar_settings\ndankbar_appearance\ndankbar_widgets\nframe\nworkspaces\ncompositor\nmedia_player\nnotifications\nosd\nrunning_apps\nupdater\ndock\nlauncher\nkeybinds\ndisplays\nnetwork\nnetwork_status\nnetwork_ethernet\nnetwork_wifi\nnetwork_vpn\nprinters\nlock_screen\npower_sleep\nplugins\nabout";
+            var modal = PopoutService.settingsModal;
+            var ids = [];
+            var structure = modal.sidebar?.categoryStructure ?? [];
+            for (var i = 0; i < structure.length; i++) {
+                var cat = structure[i];
+                if (cat.separator)
+                    continue;
+                if (cat.id)
+                    ids.push(cat.id);
+                if (cat.children) {
+                    for (var j = 0; j < cat.children.length; j++) {
+                        if (cat.children[j].id)
+                            ids.push(cat.children[j].id);
+                    }
+                }
+            }
+            return ids.join("\n");
+        }
+
+        function get(key: string): string {
+            return JSON.stringify(SettingsData?.[key]);
+        }
+
+        function dump(): string {
+            return SettingsData.getCurrentSettingsJson();
+        }
+
+        function set(key: string, value: string): string {
+            if (!(key in SettingsData)) {
+                log.warn("Cannot set property, not found:", key);
+                return "SETTINGS_INVALID_KEY";
+            }
+
+            const typeName = typeof SettingsData?.[key];
+
+            try {
+                switch (typeName) {
+                case "boolean":
+                    if (value === "true" || value === "false")
+                        value = (value === "true");
+                    else
+                        throw `${value} is not a Boolean`;
+                    break;
+                case "number":
+                    value = Number(value);
+                    if (isNaN(value))
+                        throw `${value} is not a Number`;
+                    break;
+                case "string":
+                    value = String(value);
+                    break;
+                case "object":
+                    // NOTE: Parsing lists is messed up upstream and not sure if we want
+                    // to make sure objects are well structured or just let people set
+                    // whatever they want but risking messed up settings.
+                    // Objects & Arrays are disabled for now
+                    // https://github.com/quickshell-mirror/quickshell/pull/22
+                    throw "Setting Objects and Arrays not supported";
+                default:
+                    throw "Unsupported type";
+                }
+
+                log.warn("Setting:", key, value);
+                SettingsData[key] = value;
+                SettingsData.saveSettings();
+                return "SETTINGS_SET_SUCCESS";
+            } catch (e) {
+                log.warn("Failed to set property:", key, "error:", e);
+                return "SETTINGS_SET_FAILURE";
+            }
+        }
+
+        target: "settings"
+    }
+
+    IpcHandler {
+        function browse(type: string) {
+            const modal = PopoutService.settingsModal;
+            if (modal) {
+                if (type === "wallpaper") {
+                    modal.openWallpaperBrowser(false);
+                } else if (type === "profile") {
+                    modal.openProfileBrowser(false);
+                }
+            } else {
+                PopoutService.openSettings();
+            }
+        }
+
+        target: "file"
+    }
+
+    IpcHandler {
+        function toggle(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const success = BarWidgetService.triggerWidgetPopout(widgetId);
+            return success ? `WIDGET_TOGGLE_SUCCESS: ${widgetId}` : `WIDGET_TOGGLE_FAILED: ${widgetId}`;
+        }
+
+        function openWith(widgetId: string, mode: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+            if (typeof widget.openWithMode !== "function")
+                return `WIDGET_OPEN_WITH_NOT_SUPPORTED: ${widgetId}`;
+
+            widget.openWithMode(mode || "all");
+            return `WIDGET_OPEN_WITH_SUCCESS: ${widgetId} ${mode}`;
+        }
+
+        function toggleWith(widgetId: string, mode: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+            if (typeof widget.toggleWithMode !== "function")
+                return `WIDGET_TOGGLE_WITH_NOT_SUPPORTED: ${widgetId}`;
+
+            widget.toggleWithMode(mode || "all");
+            return `WIDGET_TOGGLE_WITH_SUCCESS: ${widgetId} ${mode}`;
+        }
+
+        function openQuery(widgetId: string, query: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+            if (typeof widget.openWithQuery !== "function")
+                return `WIDGET_OPEN_QUERY_NOT_SUPPORTED: ${widgetId}`;
+
+            widget.openWithQuery(query || "");
+            return `WIDGET_OPEN_QUERY_SUCCESS: ${widgetId}`;
+        }
+
+        function toggleQuery(widgetId: string, query: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+            if (typeof widget.toggleWithQuery !== "function")
+                return `WIDGET_TOGGLE_QUERY_NOT_SUPPORTED: ${widgetId}`;
+
+            widget.toggleWithQuery(query || "");
+            return `WIDGET_TOGGLE_QUERY_SUCCESS: ${widgetId}`;
+        }
+
+        function list(): string {
+            const widgets = BarWidgetService.getRegisteredWidgetIds();
+            if (widgets.length === 0)
+                return "No widgets registered";
+
+            const lines = [];
+            for (const widgetId of widgets) {
+                const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+                let state = "";
+                if (widget?.effectiveVisible !== undefined)
+                    state = widget.effectiveVisible ? " [visible]" : " [hidden]";
+                lines.push(widgetId + state);
+            }
+            return lines.join("\n");
+        }
+
+        function status(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+
+            if (widget.popoutTarget?.shouldBeVisible)
+                return "visible";
+            return "hidden";
+        }
+
+        function reveal(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+
+            if (typeof widget.setVisibilityOverride === "function") {
+                widget.setVisibilityOverride(true);
+                return `WIDGET_REVEAL_SUCCESS: ${widgetId}`;
+            }
+            return `WIDGET_REVEAL_NOT_SUPPORTED: ${widgetId}`;
+        }
+
+        function hide(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+
+            if (typeof widget.setVisibilityOverride === "function") {
+                widget.setVisibilityOverride(false);
+                return `WIDGET_HIDE_SUCCESS: ${widgetId}`;
+            }
+            return `WIDGET_HIDE_NOT_SUPPORTED: ${widgetId}`;
+        }
+
+        function reset(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+
+            if (typeof widget.clearVisibilityOverride === "function") {
+                widget.clearVisibilityOverride();
+                return `WIDGET_RESET_SUCCESS: ${widgetId}`;
+            }
+            return `WIDGET_RESET_NOT_SUPPORTED: ${widgetId}`;
+        }
+
+        function visibility(widgetId: string): string {
+            if (!widgetId)
+                return "ERROR: No widget ID specified";
+
+            if (!BarWidgetService.hasWidget(widgetId))
+                return `WIDGET_NOT_FOUND: ${widgetId}`;
+
+            const widget = BarWidgetService.getWidgetOnFocusedScreen(widgetId);
+            if (!widget)
+                return `WIDGET_NOT_AVAILABLE: ${widgetId}`;
+
+            if (widget.effectiveVisible !== undefined)
+                return widget.effectiveVisible ? "visible" : "hidden";
+            return "unknown";
+        }
+
+        target: "widget"
+    }
+
+    IpcHandler {
+        function reload(pluginId: string): string {
+            if (!pluginId)
+                return "ERROR: No plugin ID specified";
+
+            if (!PluginService.availablePlugins[pluginId])
+                return `PLUGIN_NOT_FOUND: ${pluginId}`;
+
+            if (!PluginService.isPluginLoaded(pluginId)) {
+                const success = PluginService.enablePlugin(pluginId);
+                return success ? `PLUGIN_RELOAD_SUCCESS: ${pluginId}` : `PLUGIN_RELOAD_FAILED: ${pluginId}`;
+            }
+
+            const success = PluginService.reloadPlugin(pluginId);
+            return success ? `PLUGIN_RELOAD_SUCCESS: ${pluginId}` : `PLUGIN_RELOAD_FAILED: ${pluginId}`;
+        }
+
+        function enable(pluginId: string): string {
+            if (!pluginId)
+                return "ERROR: No plugin ID specified";
+
+            if (!PluginService.availablePlugins[pluginId])
+                return `PLUGIN_NOT_FOUND: ${pluginId}`;
+
+            const success = PluginService.enablePlugin(pluginId);
+            return success ? `PLUGIN_ENABLE_SUCCESS: ${pluginId}` : `PLUGIN_ENABLE_FAILED: ${pluginId}`;
+        }
+
+        function disable(pluginId: string): string {
+            if (!pluginId)
+                return "ERROR: No plugin ID specified";
+
+            if (!PluginService.availablePlugins[pluginId])
+                return `PLUGIN_NOT_FOUND: ${pluginId}`;
+
+            const success = PluginService.disablePlugin(pluginId);
+            return success ? `PLUGIN_DISABLE_SUCCESS: ${pluginId}` : `PLUGIN_DISABLE_FAILED: ${pluginId}`;
+        }
+
+        function toggle(pluginId: string): string {
+            if (!pluginId)
+                return "ERROR: No plugin ID specified";
+
+            if (!PluginService.availablePlugins[pluginId])
+                return `PLUGIN_NOT_FOUND: ${pluginId}`;
+
+            const success = PluginService.togglePlugin(pluginId);
+            return success ? `PLUGIN_TOGGLE_SUCCESS: ${pluginId}` : `PLUGIN_TOGGLE_FAILED: ${pluginId}`;
+        }
+
+        function list(): string {
+            const plugins = PluginService.getAvailablePlugins();
+            if (plugins.length === 0)
+                return "No plugins available";
+            return plugins.map(p => `${p.id} [${p.loaded ? "loaded" : "disabled"}]`).join("\n");
+        }
+
+        function status(pluginId: string): string {
+            if (!pluginId)
+                return "ERROR: No plugin ID specified";
+
+            if (!PluginService.availablePlugins[pluginId])
+                return `PLUGIN_NOT_FOUND: ${pluginId}`;
+
+            return PluginService.isPluginLoaded(pluginId) ? "loaded" : "disabled";
+        }
+
+        target: "plugins"
+    }
+
+    IpcHandler {
+        function toggle(): string {
+            if (PopoutService.systemUpdatePopout?.shouldBeVisible) {
+                PopoutService.systemUpdatePopout.close();
+                return "SYSTEMUPDATER_TOGGLE_SUCCESS";
+            }
+            const bar = root.getPreferredBar("systemUpdateButtonRef");
+            if (bar) {
+                bar.triggerSystemUpdate();
+                return "SYSTEMUPDATER_TOGGLE_SUCCESS";
+            }
+            return "SYSTEMUPDATER_TOGGLE_FAILED";
+        }
+
+        function open(): string {
+            if (PopoutService.systemUpdatePopout?.shouldBeVisible)
+                return "SYSTEMUPDATER_ALREADY_OPEN";
+            const bar = root.getPreferredBar("systemUpdateButtonRef");
+            if (bar) {
+                bar.triggerSystemUpdate();
+                return "SYSTEMUPDATER_OPEN_SUCCESS";
+            }
+            return "SYSTEMUPDATER_OPEN_FAILED";
+        }
+
+        function close(): string {
+            PopoutService.closeSystemUpdate();
+            return "SYSTEMUPDATER_CLOSE_SUCCESS";
+        }
+
+        function updatestatus(): string {
+            if (SystemUpdateService.isChecking) {
+                return "ERROR: already checking";
+            }
+            if (SystemUpdateService.backends.length === 0) {
+                return "ERROR: no package manager available";
+            }
+            SystemUpdateService.checkForUpdates();
+            return "SUCCESS: Now checking...";
+        }
+
+        target: "systemupdater"
+    }
+
+    IpcHandler {
+        function open(): string {
+            if (!PopoutService.clipboardHistoryModal) {
+                return "CLIPBOARD_NOT_AVAILABLE";
+            }
+            PopoutService.clipboardHistoryModal.show();
+            return "CLIPBOARD_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            if (!PopoutService.clipboardHistoryModal) {
+                return "CLIPBOARD_NOT_AVAILABLE";
+            }
+            PopoutService.clipboardHistoryModal.hide();
+            return "CLIPBOARD_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            if (!PopoutService.clipboardHistoryModal) {
+                return "CLIPBOARD_NOT_AVAILABLE";
+            }
+            PopoutService.clipboardHistoryModal.toggle();
+            return "CLIPBOARD_TOGGLE_SUCCESS";
+        }
+
+        target: "clipboard"
+    }
+
+    // ! spotlight and launcher should be synonymous for backwards compat
+    IpcHandler {
+        function open(): string {
+            PopoutService.openDankLauncherV2();
+            return "LAUNCHER_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            PopoutService.closeDankLauncherV2();
+            return "LAUNCHER_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            PopoutService.toggleDankLauncherV2();
+            return "LAUNCHER_TOGGLE_SUCCESS";
+        }
+
+        function openWith(mode: string): string {
+            if (!mode)
+                return "LAUNCHER_OPEN_FAILED: No mode specified";
+            PopoutService.openDankLauncherV2WithMode(mode);
+            return `LAUNCHER_OPEN_SUCCESS: ${mode}`;
+        }
+
+        function toggleWith(mode: string): string {
+            if (!mode)
+                return "LAUNCHER_TOGGLE_FAILED: No mode specified";
+            PopoutService.toggleDankLauncherV2WithMode(mode);
+            return `LAUNCHER_TOGGLE_SUCCESS: ${mode}`;
+        }
+
+        function openQuery(query: string): string {
+            PopoutService.openDankLauncherV2WithQuery(query);
+            return "LAUNCHER_OPEN_QUERY_SUCCESS";
+        }
+
+        function toggleQuery(query: string): string {
+            PopoutService.toggleDankLauncherV2WithQuery(query);
+            return "LAUNCHER_TOGGLE_QUERY_SUCCESS";
+        }
+
+        target: "launcher"
+    }
+
+    // ! spotlight and launcher should be synonymous for backwards compat
+    IpcHandler {
+        function open(): string {
+            PopoutService.openDankLauncherV2();
+            return "SPOTLIGHT_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            PopoutService.closeDankLauncherV2();
+            return "SPOTLIGHT_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            PopoutService.toggleDankLauncherV2();
+            return "SPOTLIGHT_TOGGLE_SUCCESS";
+        }
+
+        function openWith(mode: string): string {
+            if (!mode)
+                return "SPOTLIGHT_OPEN_FAILED: No mode specified";
+            PopoutService.openDankLauncherV2WithMode(mode);
+            return `SPOTLIGHT_OPEN_SUCCESS: ${mode}`;
+        }
+
+        function toggleWith(mode: string): string {
+            if (!mode)
+                return "SPOTLIGHT_TOGGLE_FAILED: No mode specified";
+            PopoutService.toggleDankLauncherV2WithMode(mode);
+            return `SPOTLIGHT_TOGGLE_SUCCESS: ${mode}`;
+        }
+
+        function openQuery(query: string): string {
+            PopoutService.openDankLauncherV2WithQuery(query);
+            return "SPOTLIGHT_OPEN_QUERY_SUCCESS";
+        }
+
+        function toggleQuery(query: string): string {
+            PopoutService.toggleDankLauncherV2WithQuery(query);
+            return "SPOTLIGHT_TOGGLE_QUERY_SUCCESS";
+        }
+
+        target: "spotlight"
+    }
+
+    IpcHandler {
+        function open(): string {
+            PopoutService.openSpotlightBar();
+            return "SPOTLIGHT_BAR_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            PopoutService.closeSpotlightBar();
+            return "SPOTLIGHT_BAR_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            PopoutService.toggleSpotlightBar();
+            return "SPOTLIGHT_BAR_TOGGLE_SUCCESS";
+        }
+
+        function openWith(mode: string): string {
+            if (!mode)
+                return "SPOTLIGHT_BAR_OPEN_FAILED: No mode specified";
+            PopoutService.openSpotlightBarWithMode(mode);
+            return `SPOTLIGHT_BAR_OPEN_SUCCESS: ${mode}`;
+        }
+
+        function toggleWith(mode: string): string {
+            if (!mode)
+                return "SPOTLIGHT_BAR_TOGGLE_FAILED: No mode specified";
+            PopoutService.toggleSpotlightBarWithMode(mode);
+            return `SPOTLIGHT_BAR_TOGGLE_SUCCESS: ${mode}`;
+        }
+
+        function openQuery(query: string): string {
+            PopoutService.openSpotlightBarWithQuery(query);
+            return "SPOTLIGHT_BAR_OPEN_QUERY_SUCCESS";
+        }
+
+        function toggleQuery(query: string): string {
+            PopoutService.toggleSpotlightBarWithQuery(query);
+            return "SPOTLIGHT_BAR_TOGGLE_QUERY_SUCCESS";
+        }
+
+        target: "spotlight-bar"
+    }
+
+    IpcHandler {
+        function info(message: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showInfo(message);
+            return "TOAST_INFO_SUCCESS";
+        }
+
+        function infoWith(message: string, details: string, command: string, category: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showInfo(message, details, command, category);
+            return "TOAST_INFO_SUCCESS";
+        }
+
+        function warn(message: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showWarning(message);
+            return "TOAST_WARN_SUCCESS";
+        }
+
+        function warnWith(message: string, details: string, command: string, category: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showWarning(message, details, command, category);
+            return "TOAST_WARN_SUCCESS";
+        }
+
+        function error(message: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showError(message);
+            return "TOAST_ERROR_SUCCESS";
+        }
+
+        function errorWith(message: string, details: string, command: string, category: string): string {
+            if (!message)
+                return "ERROR: No message specified";
+
+            ToastService.showError(message, details, command, category);
+            return "TOAST_ERROR_SUCCESS";
+        }
+
+        function hide(): string {
+            ToastService.hideToast();
+            return "TOAST_HIDE_SUCCESS";
+        }
+
+        function dismiss(category: string): string {
+            if (!category)
+                return "ERROR: No category specified";
+
+            ToastService.dismissCategory(category);
+            return "TOAST_DISMISS_SUCCESS";
+        }
+
+        function status(): string {
+            if (!ToastService.toastVisible)
+                return "hidden";
+
+            const levels = ["info", "warn", "error"];
+            return `visible:${levels[ToastService.currentLevel]}:${ToastService.currentMessage}`;
+        }
+
+        target: "toast"
+    }
+
+    IpcHandler {
+        function open(): string {
+            FirstLaunchService.showWelcome();
+            return "WELCOME_OPEN_SUCCESS";
+        }
+
+        function doctor(): string {
+            FirstLaunchService.showDoctor();
+            return "WELCOME_DOCTOR_SUCCESS";
+        }
+
+        function page(pageNum: string): string {
+            const num = parseInt(pageNum) || 0;
+            FirstLaunchService.showGreeter(num);
+            return `WELCOME_PAGE_SUCCESS: ${num}`;
+        }
+
+        target: "welcome"
+    }
+
+    IpcHandler {
+        function toggleOverlay(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const currentValue = instance.config?.showOnOverlay ?? false;
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                showOnOverlay: !currentValue
+            });
+            return !currentValue ? `DESKTOP_WIDGET_OVERLAY_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_OVERLAY_DISABLED: ${instanceId}`;
+        }
+
+        function setOverlay(instanceId: string, enabled: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const enabledBool = enabled === "true" || enabled === "1";
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                showOnOverlay: enabledBool
+            });
+            return enabledBool ? `DESKTOP_WIDGET_OVERLAY_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_OVERLAY_DISABLED: ${instanceId}`;
+        }
+
+        function list(): string {
+            const instances = SettingsData.desktopWidgetInstances || [];
+            if (instances.length === 0)
+                return "No desktop widgets configured";
+            return instances.map(i => `${i.id} [${i.widgetType}] ${i.name || i.widgetType} ${i.enabled ? "[enabled]" : "[disabled]"}`).join("\n");
+        }
+
+        function status(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const enabled = instance.enabled ?? true;
+            const overlay = instance.config?.showOnOverlay ?? false;
+            const overview = instance.config?.showOnOverview ?? false;
+            const clickThrough = instance.config?.clickThrough ?? false;
+            const syncPosition = instance.config?.syncPositionAcrossScreens ?? false;
+            return `enabled: ${enabled}, overlay: ${overlay}, overview: ${overview}, clickThrough: ${clickThrough}, syncPosition: ${syncPosition}`;
+        }
+
+        function enable(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            SettingsData.updateDesktopWidgetInstance(instanceId, {
+                enabled: true
+            });
+            return `DESKTOP_WIDGET_ENABLED: ${instanceId}`;
+        }
+
+        function disable(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            SettingsData.updateDesktopWidgetInstance(instanceId, {
+                enabled: false
+            });
+            return `DESKTOP_WIDGET_DISABLED: ${instanceId}`;
+        }
+
+        function toggleEnabled(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const currentValue = instance.enabled ?? true;
+            SettingsData.updateDesktopWidgetInstance(instanceId, {
+                enabled: !currentValue
+            });
+            return !currentValue ? `DESKTOP_WIDGET_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_DISABLED: ${instanceId}`;
+        }
+
+        function toggleClickThrough(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const currentValue = instance.config?.clickThrough ?? false;
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                clickThrough: !currentValue
+            });
+            return !currentValue ? `DESKTOP_WIDGET_CLICK_THROUGH_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_CLICK_THROUGH_DISABLED: ${instanceId}`;
+        }
+
+        function setClickThrough(instanceId: string, enabled: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const enabledBool = enabled === "true" || enabled === "1";
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                clickThrough: enabledBool
+            });
+            return enabledBool ? `DESKTOP_WIDGET_CLICK_THROUGH_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_CLICK_THROUGH_DISABLED: ${instanceId}`;
+        }
+
+        function toggleSyncPosition(instanceId: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const currentValue = instance.config?.syncPositionAcrossScreens ?? false;
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                syncPositionAcrossScreens: !currentValue
+            });
+            return !currentValue ? `DESKTOP_WIDGET_SYNC_POSITION_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_SYNC_POSITION_DISABLED: ${instanceId}`;
+        }
+
+        function setSyncPosition(instanceId: string, enabled: string): string {
+            if (!instanceId)
+                return "ERROR: No instance ID specified";
+
+            const instance = SettingsData.getDesktopWidgetInstance(instanceId);
+            if (!instance)
+                return `DESKTOP_WIDGET_NOT_FOUND: ${instanceId}`;
+
+            const enabledBool = enabled === "true" || enabled === "1";
+            SettingsData.updateDesktopWidgetInstanceConfig(instanceId, {
+                syncPositionAcrossScreens: enabledBool
+            });
+            return enabledBool ? `DESKTOP_WIDGET_SYNC_POSITION_ENABLED: ${instanceId}` : `DESKTOP_WIDGET_SYNC_POSITION_DISABLED: ${instanceId}`;
+        }
+
+        target: "desktopWidget"
+    }
+
+    IpcHandler {
+        function open(): string {
+            root.workspaceRenameModalLoader.active = true;
+            if (root.workspaceRenameModalLoader.item) {
+                const ws = NiriService.workspaces[NiriService.focusedWorkspaceId];
+                root.workspaceRenameModalLoader.item.show(ws?.name || "");
+                return "WORKSPACE_RENAME_MODAL_OPENED";
+            }
+            return "WORKSPACE_RENAME_MODAL_NOT_FOUND";
+        }
+
+        function close(): string {
+            if (root.workspaceRenameModalLoader.item) {
+                root.workspaceRenameModalLoader.item.hide();
+                return "WORKSPACE_RENAME_MODAL_CLOSED";
+            }
+            return "WORKSPACE_RENAME_MODAL_NOT_FOUND";
+        }
+
+        function toggle(): string {
+            root.workspaceRenameModalLoader.active = true;
+            if (root.workspaceRenameModalLoader.item) {
+                if (root.workspaceRenameModalLoader.item.visible) {
+                    root.workspaceRenameModalLoader.item.hide();
+                    return "WORKSPACE_RENAME_MODAL_CLOSED";
+                }
+                const ws = NiriService.workspaces[NiriService.focusedWorkspaceId];
+                root.workspaceRenameModalLoader.item.show(ws?.name || "");
+                return "WORKSPACE_RENAME_MODAL_OPENED";
+            }
+            return "WORKSPACE_RENAME_MODAL_NOT_FOUND";
+        }
+
+        target: "workspace-rename"
+    }
+
+    IpcHandler {
+        function getFocusedWindow() {
+            const active = ToplevelManager.activeToplevel;
+            if (!active)
+                return null;
+            return {
+                appId: active.appId || "",
+                title: active.title || ""
+            };
+        }
+
+        function open(): string {
+            if (!CompositorService.isNiri && !CompositorService.isHyprland && !CompositorService.isMango)
+                return "WINDOW_RULES_UNSUPPORTED_COMPOSITOR";
+            root.windowRuleModalLoader.active = true;
+            if (root.windowRuleModalLoader.item) {
+                root.windowRuleModalLoader.item.show(getFocusedWindow());
+                return "WINDOW_RULE_MODAL_OPENED";
+            }
+            return "WINDOW_RULE_MODAL_NOT_FOUND";
+        }
+
+        function close(): string {
+            if (root.windowRuleModalLoader.item) {
+                root.windowRuleModalLoader.item.hide();
+                return "WINDOW_RULE_MODAL_CLOSED";
+            }
+            return "WINDOW_RULE_MODAL_NOT_FOUND";
+        }
+
+        function toggle(): string {
+            if (!CompositorService.isNiri && !CompositorService.isHyprland && !CompositorService.isMango)
+                return "WINDOW_RULES_UNSUPPORTED_COMPOSITOR";
+            root.windowRuleModalLoader.active = true;
+            if (root.windowRuleModalLoader.item) {
+                if (root.windowRuleModalLoader.item.visible) {
+                    root.windowRuleModalLoader.item.hide();
+                    return "WINDOW_RULE_MODAL_CLOSED";
+                }
+                root.windowRuleModalLoader.item.show(getFocusedWindow());
+                return "WINDOW_RULE_MODAL_OPENED";
+            }
+            return "WINDOW_RULE_MODAL_NOT_FOUND";
+        }
+
+        target: "window-rules"
+    }
+
+    IpcHandler {
+        function listProfiles(): string {
+            const profiles = DisplayConfigState.validatedProfiles;
+            const activeId = SettingsData.getActiveDisplayProfile(CompositorService.compositor);
+            const matchedId = DisplayConfigState.matchedProfile;
+            const lines = [];
+
+            for (const id in profiles) {
+                const p = profiles[id];
+                if (!p.name)
+                    continue;
+                const flags = [];
+                if (id === activeId)
+                    flags.push("active");
+                if (id === matchedId)
+                    flags.push("matched");
+                const flagStr = flags.length > 0 ? " [" + flags.join(",") + "]" : "";
+                lines.push(p.name + flagStr + " -> " + JSON.stringify(Object.keys(p.outputs)));
+            }
+
+            if (lines.length === 0)
+                return "No profiles configured";
+            return lines.join("\n");
+        }
+
+        function setProfile(profileName: string): string {
+            if (!profileName)
+                return "ERROR: No profile name specified";
+
+            if (SettingsData.displayProfileAutoSelect)
+                return "ERROR: Auto profile selection is enabled. Use toggleAuto first";
+
+            const profiles = DisplayConfigState.validatedProfiles;
+            let profileId = null;
+
+            for (const id in profiles) {
+                if (profiles[id].name === profileName) {
+                    profileId = id;
+                    break;
+                }
+            }
+
+            if (!profileId)
+                return `ERROR: Profile not found: ${profileName}`;
+
+            DisplayConfigState.activateProfile(profileId);
+            return `PROFILE_SET_SUCCESS: ${profileName}`;
+        }
+
+        function cycleProfile(): string {
+            if (SettingsData.displayProfileAutoSelect)
+                return "ERROR: Auto profile selection is enabled. Use toggleAuto first";
+
+            const profiles = DisplayConfigState.validatedProfiles;
+            const ids = Object.keys(profiles).filter(id => profiles[id].name);
+            if (ids.length === 0)
+                return "ERROR: No profiles configured";
+
+            const activeId = SettingsData.getActiveDisplayProfile(CompositorService.compositor);
+            const idx = ids.indexOf(activeId);
+            const nextId = ids[(idx + 1) % ids.length];
+            DisplayConfigState.activateProfile(nextId);
+            return `PROFILE_SET_SUCCESS: ${profiles[nextId].name}`;
+        }
+
+        function toggleAuto(): string {
+            SettingsData.displayProfileAutoSelect = !SettingsData.displayProfileAutoSelect;
+            SettingsData.saveSettings();
+            if (SettingsData.displayProfileAutoSelect)
+                DisplayConfigState.applyAutoConfig();
+            return `Auto profile selection: ${SettingsData.displayProfileAutoSelect ? "enabled" : "disabled"}`;
+        }
+
+        function status(): string {
+            const auto = SettingsData.displayProfileAutoSelect ? "on" : "off";
+            const activeId = SettingsData.getActiveDisplayProfile(CompositorService.compositor);
+            const matchedId = DisplayConfigState.matchedProfile;
+            const profiles = DisplayConfigState.validatedProfiles;
+            const activeName = profiles[activeId]?.name || "none";
+            const matchedName = profiles[matchedId]?.name || "none";
+            const currentOutputs = JSON.stringify(DisplayConfigState.currentOutputSet);
+
+            return `auto: ${auto}\nactive: ${activeName}\nmatched: ${matchedName}\noutputs: ${currentOutputs}`;
+        }
+
+        function current(): string {
+            return JSON.stringify(DisplayConfigState.currentOutputSet);
+        }
+
+        function refresh(): string {
+            DisplayConfigState.currentOutputSet = DisplayConfigState.buildCurrentOutputSet();
+            DisplayConfigState.validateProfiles();
+            return "Refreshed output state";
+        }
+
+        target: "outputs"
+    }
+
+    IpcHandler {
+        target: "mic"
+
+        function setvolume(percentage: string): string {
+            return AudioService.setMicVolume(parseInt(percentage));
+        }
+
+        function increment(step: string): string {
+            return AudioService.incrementMicVolume(step);
+        }
+
+        function decrement(step: string): string {
+            return AudioService.decrementMicVolume(step);
+        }
+
+        function mute(): string {
+            return AudioService.toggleMicMute();
+        }
+
+        function status(): string {
+            if (!AudioService.source || !AudioService.source.audio) {
+                return "No audio source available";
+            }
+
+            const volume = Math.round(AudioService.source.audio.volume * 100);
+            const muteStatus = AudioService.source.audio.muted ? " (muted)" : "";
+            return `Microphone: ${volume}%${muteStatus}`;
+        }
+    }
+
+    IpcHandler {
+        function findTrayItem(itemId: string): var {
+            if (!itemId)
+                return null;
+
+            return SystemTray.items.values.find(item => {
+                const id = item?.id || "";
+                const title = item?.tooltipTitle || "";
+                const fullKey = title ? `${id}::${title}` : id;
+                return fullKey === itemId || id === itemId;
+            });
+        }
+
+        function list(): string {
+            const items = SystemTray.items.values;
+            if (items.length === 0)
+                return "No tray items available";
+
+            return items.map(item => {
+                const id = item?.id || "";
+                const title = item?.tooltipTitle || "";
+                const fullKey = title ? `${id}::${title}` : id;
+                const hasMenu = item?.hasMenu ? " [menu]" : "";
+                return fullKey + hasMenu;
+            }).join("\n");
+        }
+
+        function activate(itemId: string): string {
+            const item = findTrayItem(itemId);
+            if (!item)
+                return `ERROR: Tray item not found: ${itemId}`;
+
+            item.activate();
+            return `SUCCESS: Activated ${itemId}`;
+        }
+
+        function status(itemId: string): string {
+            const item = findTrayItem(itemId);
+            if (!item)
+                return `ERROR: Tray item not found: ${itemId}`;
+
+            const id = item?.id || "";
+            const title = item?.tooltipTitle || "";
+            const hasMenu = item?.hasMenu || false;
+            const onlyMenu = item?.onlyMenu || false;
+
+            return `id: ${id}\ntitle: ${title}\nhasMenu: ${hasMenu}\nonlyMenu: ${onlyMenu}`;
+        }
+
+        target: "tray"
+    }
+
+    IpcHandler {
+        function open(): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            PopoutService.openPowerProfileModal();
+            return "POWERPROFILE_OPEN_SUCCESS";
+        }
+
+        function close(): string {
+            PopoutService.closePowerProfileModal();
+            return "POWERPROFILE_CLOSE_SUCCESS";
+        }
+
+        function toggle(): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            PopoutService.togglePowerProfileModal();
+            return "POWERPROFILE_TOGGLE_SUCCESS";
+        }
+
+        function list(): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            return PowerProfileWatcher.availableProfiles.map(profile => PowerProfileWatcher.profileSlug(profile)).join("\n");
+        }
+
+        function status(): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            return PowerProfileWatcher.profileSlug(PowerProfiles.profile);
+        }
+
+        function set(profile: string): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            if (!profile)
+                return "ERROR: No profile specified";
+
+            const parsed = PowerProfileWatcher.parseProfileSlug(profile);
+            if (parsed === -1)
+                return "ERROR: Unknown power profile. Supported options: power-saver, balanced, performance";
+
+            if (parsed === PowerProfile.Performance && !PowerProfiles.hasPerformanceProfile)
+                return "ERROR: Performance profile not supported by hardware";
+
+            if (!PowerProfileWatcher.applyProfile(parsed))
+                return "ERROR: Failed to set power profile";
+
+            return "POWERPROFILE_SET_SUCCESS";
+        }
+
+        function cycle(): string {
+            if (!PowerProfileWatcher.available)
+                return "ERROR: power-profiles-daemon not available";
+
+            if (!PowerProfileWatcher.cycleProfile())
+                return "ERROR: Failed to set power profile";
+
+            return "POWERPROFILE_CYCLE_SUCCESS";
+        }
+
+        target: "powerprofile"
+    }
+}

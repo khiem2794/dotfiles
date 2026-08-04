@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "يوجد ملف بهذا الاسم بالفعل. هل تريد استبداله؟"
+  },
+  "Actions": {
+    "Actions": "الإجراءات"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: رجوع • F1/I: معلومات الملف • F10: المساعدة • Esc: اغلاق"
+  },
+  "Ascending": {
+    "Ascending": "تصاعدي"
+  },
+  "Cancel": {
+    "Cancel": "إلغاء"
+  },
+  "Choose icon": {
+    "Choose icon": "اختيار ايقونة"
+  },
+  "Communication": {
+    "Communication": "الاتصالات"
+  },
+  "Copy path": {
+    "Copy path": "نسخ المسار"
+  },
+  "Descending": {
+    "Descending": "تنازلي"
+  },
+  "Desktop": {
+    "Desktop": "سطح المكتب"
+  },
+  "Development": {
+    "Development": "البرمجة"
+  },
+  "Documents": {
+    "Documents": "المستندات"
+  },
+  "Downloads": {
+    "Downloads": "التنزيلات"
+  },
+  "Enter filename...": {
+    "Enter filename...": "أدخل اسم الملف..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: تبديل • F10: مساعدة"
+  },
+  "File Already Exists": {
+    "File Already Exists": "الملف موجود بالفعل"
+  },
+  "File Information": {
+    "File Information": "معلومات الملف"
+  },
+  "Files - %1": {
+    "Files - %1": "الملفات - %1"
+  },
+  "Fun": {
+    "Fun": "ترفيه"
+  },
+  "Hibernate": {
+    "Hibernate": "إسبات"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "اضغط لفترة أطول للتأكيد"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "استمر في الضغط للتأكيد (%1 مللي ثانية)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "اضغط مطولاً للتأكيد (%1 ث)"
+  },
+  "Home": {
+    "Home": "الصفحة الرئيسية"
+  },
+  "Log Out": {
+    "Log Out": "تسجيل الخروج"
+  },
+  "Media": {
+    "Media": "الوسائط"
+  },
+  "Modified": {
+    "Modified": "معدل"
+  },
+  "Move to Trash": {
+    "Move to Trash": "نقل إلى المهملات"
+  },
+  "Music": {
+    "Music": "الموسيقى"
+  },
+  "Name": {
+    "Name": "الاسم"
+  },
+  "Navigation": {
+    "Navigation": "التنقل"
+  },
+  "Numbers": {
+    "Numbers": "ارقام"
+  },
+  "Order": {
+    "Order": "الترتيب"
+  },
+  "Overwrite": {
+    "Overwrite": "استبدال"
+  },
+  "Pictures": {
+    "Pictures": "الصور"
+  },
+  "Power Off": {
+    "Power Off": "إيقاف التشغيل"
+  },
+  "Power Options": {
+    "Power Options": "خيارات الطاقة"
+  },
+  "Quick Access": {
+    "Quick Access": "وصول سريع"
+  },
+  "Reboot": {
+    "Reboot": "اعادة التشغيل"
+  },
+  "Save": {
+    "Save": "حفظ"
+  },
+  "Search for a location...": {
+    "Search for a location...": "ابحث عن موقع..."
+  },
+  "Search...": {
+    "Search...": "ابحث هنا..."
+  },
+  "Select File": {
+    "Select File": "اختيار ملف"
+  },
+  "Size": {
+    "Size": "الحجم"
+  },
+  "Sort By": {
+    "Sort By": "ترتيب حسب"
+  },
+  "Status": {
+    "Status": "الحالة"
+  },
+  "Suspend": {
+    "Suspend": "سكون"
+  },
+  "Switch User": {
+    "Switch User": "تبديل الحساب"
+  },
+  "System": {
+    "System": "النظام"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: تنقل • ←→↑↓: التنقل في الشبكة • Enter/Space: اختيار"
+  },
+  "Type": {
+    "Type": "نوع"
+  },
+  "Use this folder": {
+    "Use this folder": "استخدم هذا المجلد"
+  },
+  "Videos": {
+    "Videos": "الفيديوهات"
+  },
+  "Workspace": {
+    "Workspace": "سطح المكتب"
+  }
+}

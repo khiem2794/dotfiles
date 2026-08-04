@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Un archivo con este nombre ya existe. ¿Quieres reemplazarlo?"
+  },
+  "Actions": {
+    "Actions": "Acciones"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: Atrás • F1/I: Información del archivo • F10: Ayuda • Esc: Cerrar"
+  },
+  "Ascending": {
+    "Ascending": "Ascendente"
+  },
+  "Cancel": {
+    "Cancel": "Cancelar"
+  },
+  "Choose icon": {
+    "Choose icon": "Elegir icono"
+  },
+  "Communication": {
+    "Communication": "Comunicación"
+  },
+  "Copy path": {
+    "Copy path": "Copiar ubicación"
+  },
+  "Descending": {
+    "Descending": "Descendente"
+  },
+  "Desktop": {
+    "Desktop": "Escritorio"
+  },
+  "Development": {
+    "Development": "Desarrollo"
+  },
+  "Documents": {
+    "Documents": "Documentos"
+  },
+  "Downloads": {
+    "Downloads": "Descargas"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Ingrese nombre de archivo..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Alternar • F10: Ayudar"
+  },
+  "File Already Exists": {
+    "File Already Exists": "El archivo ya existe"
+  },
+  "File Information": {
+    "File Information": "Información del archivo"
+  },
+  "Files - %1": {
+    "Files - %1": "Archivos - %1"
+  },
+  "Fun": {
+    "Fun": "Diversión"
+  },
+  "Hibernate": {
+    "Hibernate": "Hibernar"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Mantenga pulsado para confirmar"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Manten para confirmar (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Mantener pulsado para confirmar (%1s)"
+  },
+  "Home": {
+    "Home": "Inicio"
+  },
+  "Log Out": {
+    "Log Out": "Cerrar sesión"
+  },
+  "Media": {
+    "Media": "Multimedia"
+  },
+  "Modified": {
+    "Modified": "Modificado"
+  },
+  "Move to Trash": {
+    "Move to Trash": "Mover a la papelera"
+  },
+  "Music": {
+    "Music": "Música"
+  },
+  "Name": {
+    "Name": "Nombre"
+  },
+  "Navigation": {
+    "Navigation": "Navegación"
+  },
+  "Numbers": {
+    "Numbers": "Números"
+  },
+  "Order": {
+    "Order": "Orden"
+  },
+  "Overwrite": {
+    "Overwrite": "Sobrescribir"
+  },
+  "Pictures": {
+    "Pictures": "Imágenes"
+  },
+  "Power Off": {
+    "Power Off": "Apagar"
+  },
+  "Power Options": {
+    "Power Options": "Opciones de Energía"
+  },
+  "Quick Access": {
+    "Quick Access": "Acceso rápido"
+  },
+  "Reboot": {
+    "Reboot": "Reiniciar"
+  },
+  "Save": {
+    "Save": "Guardar"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Buscar una ubicación..."
+  },
+  "Search...": {
+    "Search...": "Buscar..."
+  },
+  "Select File": {
+    "Select File": "Seleccionar archivo"
+  },
+  "Size": {
+    "Size": "Tamaño"
+  },
+  "Sort By": {
+    "Sort By": "Ordenar por"
+  },
+  "Status": {
+    "Status": "Estado"
+  },
+  "Suspend": {
+    "Suspend": "Suspender"
+  },
+  "Switch User": {
+    "Switch User": "Cambiar usuario"
+  },
+  "System": {
+    "System": "Sistema"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Seleccionar"
+  },
+  "Type": {
+    "Type": "Tipo"
+  },
+  "Use this folder": {
+    "Use this folder": "Usar esta carpeta"
+  },
+  "Videos": {
+    "Videos": "Videos"
+  },
+  "Workspace": {
+    "Workspace": "Espacio de trabajo"
+  }
+}

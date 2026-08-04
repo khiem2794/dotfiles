@@ -1,0 +1,16 @@
+{
+    "id": "exampleVariants",
+    "name": "Example with Variants",
+    "description": "Demonstrates dynamic variant creation for plugins",
+    "version": "1.0.0",
+    "author": "DMS",
+    "type": "widget",
+    "capabilities": ["multiple-usecases", "variants"],
+    "component": "./VariantWidget.qml",
+    "icon": "widgets",
+    "settings": "./VariantSettings.qml",
+    "permissions": [
+        "settings_read",
+        "settings_write"
+    ]
+}

@@ -1,0 +1,56 @@
+import QtQuick
+import qs.Common
+import qs.Widgets
+
+Rectangle {
+    id: keyboardHints
+
+    property bool pasteAvailable: false
+    property bool enterToPaste: false
+    readonly property string hintsText: {
+        if (!pasteAvailable)
+            return I18n.tr("Ctrl+Tab: Switch Tab • Ctrl+S: Pin/Unpin • Shift+Del: Clear All • Esc: Close");
+        return enterToPaste ? I18n.tr("Ctrl+Tab: Switch Tabs • Ctrl+S: Pin/Unpin • Shift+Enter: Copy • Shift+Del: Clear All • F10: Help • Esc: Close", "Keyboard hints when enter-to-paste is enabled") : I18n.tr("Ctrl+Tab: Switch Tabs • Ctrl+S: Pin/Unpin • Shift+Enter: Paste • Shift+Del: Clear All • F10: Help • Esc: Close");
+    }
+
+    height: ClipboardConstants.keyboardHintsHeight
+    radius: Theme.cornerRadius
+    color: Theme.withAlpha(Theme.surfaceContainer, 0.95)
+    border.color: Theme.primary
+    border.width: 2
+    opacity: visible ? 1 : 0
+    z: 100
+
+    Column {
+        width: parent.width - Theme.spacingL * 2
+        anchors.centerIn: parent
+        spacing: Theme.spacingXXS
+
+        StyledText {
+            text: keyboardHints.enterToPaste ? I18n.tr("↑/↓: Navigate • Enter: Paste • Ctrl+C: Copy • Del: Delete • Ctrl+E: Edit • Ctrl+S: Pin/Unpin • F10: Help", "Keyboard hints when enter-to-paste is enabled") : I18n.tr("↑/↓: Navigate • Enter/Ctrl+C: Copy • Del: Delete • Ctrl+E: Edit • Ctrl+S: Pin/Unpin • F10: Help")
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceText
+            width: parent.width
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        StyledText {
+            text: keyboardHints.hintsText
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceText
+            width: parent.width
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: Theme.shortDuration
+            easing.type: Theme.standardEasing
+        }
+    }
+}

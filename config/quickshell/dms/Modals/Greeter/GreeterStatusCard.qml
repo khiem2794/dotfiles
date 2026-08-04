@@ -1,0 +1,75 @@
+import QtQuick
+import qs.Common
+import qs.Widgets
+
+Rectangle {
+    id: root
+
+    property int count: 0
+    property string label: ""
+    property string iconName: ""
+    property color iconColor: Theme.surfaceText
+    property color bgColor: Theme.surfaceContainerHigh
+    property bool selected: false
+
+    signal clicked
+
+    height: Math.round(Theme.fontSizeMedium * 5)
+    radius: Theme.cornerRadius
+    color: bgColor
+    border.width: selected ? 2 : 0
+    border.color: selected ? iconColor : Theme.withAlpha(iconColor, 0)
+    scale: mouseArea.pressed ? 0.97 : 1
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: Theme.shortDuration
+            easing.type: Theme.emphasizedEasing
+        }
+    }
+
+    Behavior on border.width {
+        NumberAnimation {
+            duration: Theme.shortDuration
+        }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
+    }
+
+    Column {
+        anchors.centerIn: parent
+        spacing: Theme.spacingXS
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: Theme.spacingS
+
+            DankIcon {
+                name: root.iconName
+                size: Theme.iconSize - 4
+                color: root.iconColor
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            StyledText {
+                text: root.count.toString()
+                font.pixelSize: Theme.fontSizeXLarge
+                font.weight: Font.Bold
+                color: root.iconColor
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        StyledText {
+            text: root.label
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceText
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+}

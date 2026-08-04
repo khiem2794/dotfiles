@@ -1,0 +1,3 @@
+[templates.dmsghostty]
+input_path = 'SHELL_DIR/matugen/templates/ghostty.conf'
+output_path = 'CONFIG_DIR/ghostty/themes/dankcolors'

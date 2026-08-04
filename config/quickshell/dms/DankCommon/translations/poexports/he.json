@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "קיים כבר קובץ עם השם זה. האם ברצונך לדרוס אותו?"
+  },
+  "Actions": {
+    "Actions": "פעולות"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: חזרה • F1/I: מידע על הקובץ • F10: עזרה • Esc: סגירה"
+  },
+  "Ascending": {
+    "Ascending": "סדר עולה"
+  },
+  "Cancel": {
+    "Cancel": "ביטול"
+  },
+  "Choose icon": {
+    "Choose icon": "בחר/י סמל"
+  },
+  "Communication": {
+    "Communication": "תקשורת"
+  },
+  "Copy path": {
+    "Copy path": "העתק/י נתיב"
+  },
+  "Descending": {
+    "Descending": "סדר יורד"
+  },
+  "Desktop": {
+    "Desktop": "שולחן העבודה"
+  },
+  "Development": {
+    "Development": "פיתוח"
+  },
+  "Documents": {
+    "Documents": "מסמכים"
+  },
+  "Downloads": {
+    "Downloads": "הורדות"
+  },
+  "Enter filename...": {
+    "Enter filename...": "הזן/י שם קובץ..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: החלפה • F10: עזרה"
+  },
+  "File Already Exists": {
+    "File Already Exists": "הקובץ כבר קיים"
+  },
+  "File Information": {
+    "File Information": "פרטי קובץ"
+  },
+  "Files - %1": {
+    "Files - %1": "קבצים - %1"
+  },
+  "Fun": {
+    "Fun": "כיף"
+  },
+  "Hibernate": {
+    "Hibernate": "שינה עמוקה"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "החזק/י לחוץ זמן רב יותר כדי לאשר"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "החזק/י לחוץ לאישור (%1 מילישניות)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "החזק/י לחוץ כדי לאשר (%1 שניות)"
+  },
+  "Home": {
+    "Home": "בית"
+  },
+  "Log Out": {
+    "Log Out": "התנתקות"
+  },
+  "Media": {
+    "Media": "מדיה"
+  },
+  "Modified": {
+    "Modified": "שונה"
+  },
+  "Move to Trash": {
+    "Move to Trash": "העבר/י לאשפה"
+  },
+  "Music": {
+    "Music": "מוסיקה"
+  },
+  "Name": {
+    "Name": "שם"
+  },
+  "Navigation": {
+    "Navigation": "ניווט"
+  },
+  "Numbers": {
+    "Numbers": "מספרים"
+  },
+  "Order": {
+    "Order": "סדר"
+  },
+  "Overwrite": {
+    "Overwrite": "דריסה"
+  },
+  "Pictures": {
+    "Pictures": "תמונות"
+  },
+  "Power Off": {
+    "Power Off": "כיבוי"
+  },
+  "Power Options": {
+    "Power Options": "אפשרויות חשמל"
+  },
+  "Quick Access": {
+    "Quick Access": "גישה מהירה"
+  },
+  "Reboot": {
+    "Reboot": "הפעלה מחדש"
+  },
+  "Save": {
+    "Save": "שמירה"
+  },
+  "Search for a location...": {
+    "Search for a location...": "חפש/י מיקום..."
+  },
+  "Search...": {
+    "Search...": "חיפוש..."
+  },
+  "Select File": {
+    "Select File": "בחר/י קובץ"
+  },
+  "Size": {
+    "Size": "גודל"
+  },
+  "Sort By": {
+    "Sort By": "מיין/י לפי"
+  },
+  "Status": {
+    "Status": "מצב"
+  },
+  "Suspend": {
+    "Suspend": "השהיה"
+  },
+  "Switch User": {
+    "Switch User": "החלף/י משתמש"
+  },
+  "System": {
+    "System": "מערכת"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: ניווט • ←→↑↓: ניווט ברשת • Enter/Space: בחירה"
+  },
+  "Type": {
+    "Type": "סוג"
+  },
+  "Use this folder": {
+    "Use this folder": "השתמש/י בתיקייה זו"
+  },
+  "Videos": {
+    "Videos": "סרטונים"
+  },
+  "Workspace": {
+    "Workspace": "סביבת עבודה"
+  }
+}

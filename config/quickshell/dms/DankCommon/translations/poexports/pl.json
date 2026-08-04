@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Plik o takiej nazwie już istnieje. Czy chcesz go nadpisać?"
+  },
+  "Actions": {
+    "Actions": "Akcje"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: Wstecz • F1/I: Informacje o pliku • F10: Pomoc • Esc: Zamknij"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "Anuluj"
+  },
+  "Choose icon": {
+    "Choose icon": "Wybierz ikonę"
+  },
+  "Communication": {
+    "Communication": "Komunikacja"
+  },
+  "Copy path": {
+    "Copy path": "Skopiuj ścieżkę"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": ""
+  },
+  "Development": {
+    "Development": "Programowanie"
+  },
+  "Documents": {
+    "Documents": ""
+  },
+  "Downloads": {
+    "Downloads": ""
+  },
+  "Enter filename...": {
+    "Enter filename...": "Podaj nazwę pliku..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Przełącz • F10: Pomoc"
+  },
+  "File Already Exists": {
+    "File Already Exists": "Plik już istnieje"
+  },
+  "File Information": {
+    "File Information": "Informacje"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "Zabawa"
+  },
+  "Hibernate": {
+    "Hibernate": "Hibernacja"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Przytrzymaj dłużej, aby potwierdzić"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Przytrzymaj by potwierdzić (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Przytrzymaj, aby potwierdzić (%1s)"
+  },
+  "Home": {
+    "Home": ""
+  },
+  "Log Out": {
+    "Log Out": "Wyloguj"
+  },
+  "Media": {
+    "Media": "Media"
+  },
+  "Modified": {
+    "Modified": "Zmodyfikowane"
+  },
+  "Move to Trash": {
+    "Move to Trash": ""
+  },
+  "Music": {
+    "Music": ""
+  },
+  "Name": {
+    "Name": "Nazwa"
+  },
+  "Navigation": {
+    "Navigation": "Nawigacja"
+  },
+  "Numbers": {
+    "Numbers": "Liczby"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "Nadpisz"
+  },
+  "Pictures": {
+    "Pictures": ""
+  },
+  "Power Off": {
+    "Power Off": "Wyłącz komputer"
+  },
+  "Power Options": {
+    "Power Options": "Opcje zasilania"
+  },
+  "Quick Access": {
+    "Quick Access": ""
+  },
+  "Reboot": {
+    "Reboot": "Uruchom ponownie"
+  },
+  "Save": {
+    "Save": "Zapisz"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Szukaj lokalizacji..."
+  },
+  "Search...": {
+    "Search...": "Szukaj..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "Rozmiar"
+  },
+  "Sort By": {
+    "Sort By": "Sortuj po"
+  },
+  "Status": {
+    "Status": "Status"
+  },
+  "Suspend": {
+    "Suspend": "Wstrzymaj"
+  },
+  "Switch User": {
+    "Switch User": "Przełącz użytkownika"
+  },
+  "System": {
+    "System": "System"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Nawigacja • ←→↑↓: Nawigacja po siatce • Enter/Spacja: Wybierz"
+  },
+  "Type": {
+    "Type": "Typ"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": ""
+  },
+  "Workspace": {
+    "Workspace": "Obszar roboczy"
+  }
+}

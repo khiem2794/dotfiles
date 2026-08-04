@@ -1,0 +1,37 @@
+import QtQuick
+import qs.Common
+import qs.Modules.Plugins
+import qs.Widgets
+
+BasePill {
+    id: root
+
+    property bool isActive: false
+
+    signal colorPickerRequested
+
+    content: Component {
+        Item {
+            implicitWidth: icon.width
+            implicitHeight: root.widgetThickness - root.horizontalPadding * 2
+
+            DankIcon {
+                id: icon
+                anchors.centerIn: parent
+                name: "palette"
+                size: Theme.barIconSize(root.barThickness, -4, root.barConfig?.maximizeWidgetIcons, root.barConfig?.iconScale)
+                color: root.isActive ? Theme.primary : Theme.surfaceText
+            }
+        }
+    }
+
+    MouseArea {
+        z: 1
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onPressed: mouse => {
+            root.triggerRipple(this, mouse.x, mouse.y);
+            root.colorPickerRequested();
+        }
+    }
+}

@@ -1,0 +1,34 @@
+import QtQuick
+import qs.Common
+import qs.Services
+import qs.Widgets
+
+Item {
+    id: root
+
+    width: parent.width
+    height: 200
+    visible: NotificationService.notifications.length === 0
+
+    Column {
+        anchors.centerIn: parent
+        spacing: Theme.spacingXS
+        width: parent.width * 0.8
+
+        DankIcon {
+            anchors.horizontalCenter: parent.horizontalCenter
+            name: "notifications_none"
+            size: Theme.iconSizeLarge + 16
+            color: Theme.surfaceTextAlpha
+        }
+
+        StyledText {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: I18n.tr("Nothing to see here")
+            font.pixelSize: Theme.fontSizeLarge
+            color: Theme.surfaceTextAlpha
+            font.weight: Font.Medium
+            horizontalAlignment: Text.AlignHCenter
+        }
+    }
+}

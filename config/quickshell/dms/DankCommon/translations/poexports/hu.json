@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Már létezik ilyen nevű fájl. Felül szeretnéd írni?"
+  },
+  "Actions": {
+    "Actions": "Műveletek"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: Vissza • F1/I: Fájlinformáció • F10: Súgó • Esc: Bezárás"
+  },
+  "Ascending": {
+    "Ascending": "Növekvő"
+  },
+  "Cancel": {
+    "Cancel": "Mégse"
+  },
+  "Choose icon": {
+    "Choose icon": "Ikon kiválasztása"
+  },
+  "Communication": {
+    "Communication": "Kommunikáció"
+  },
+  "Copy path": {
+    "Copy path": "Útvonal másolása"
+  },
+  "Descending": {
+    "Descending": "Csökkenő"
+  },
+  "Desktop": {
+    "Desktop": "Asztal"
+  },
+  "Development": {
+    "Development": "Fejlesztés"
+  },
+  "Documents": {
+    "Documents": "Dokumentumok"
+  },
+  "Downloads": {
+    "Downloads": "Letöltések"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Adj meg egy fájlnevet…"
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Váltás • F10: Súgó"
+  },
+  "File Already Exists": {
+    "File Already Exists": "A fájl már létezik"
+  },
+  "File Information": {
+    "File Information": "Fájlinformáció"
+  },
+  "Files - %1": {
+    "Files - %1": "Fájlok - %1"
+  },
+  "Fun": {
+    "Fun": "Szórakozás"
+  },
+  "Hibernate": {
+    "Hibernate": "Hibernálás"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Tartsd lenyomva a megerősítéshez"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Tartsd lenyomva a megerősítéshez (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Tartsd lenyomva a megerősítéshez (%1 mp)"
+  },
+  "Home": {
+    "Home": "Saját mappa"
+  },
+  "Log Out": {
+    "Log Out": "Kijelentkezés"
+  },
+  "Media": {
+    "Media": "Média"
+  },
+  "Modified": {
+    "Modified": "Módosítva"
+  },
+  "Move to Trash": {
+    "Move to Trash": "Áthelyezés a kukába"
+  },
+  "Music": {
+    "Music": "Zene"
+  },
+  "Name": {
+    "Name": "Név"
+  },
+  "Navigation": {
+    "Navigation": "Navigáció"
+  },
+  "Numbers": {
+    "Numbers": "Számok"
+  },
+  "Order": {
+    "Order": "Sorrend"
+  },
+  "Overwrite": {
+    "Overwrite": "Felülírás"
+  },
+  "Pictures": {
+    "Pictures": "Képek"
+  },
+  "Power Off": {
+    "Power Off": "Leállítás"
+  },
+  "Power Options": {
+    "Power Options": "Energiabeállítások"
+  },
+  "Quick Access": {
+    "Quick Access": "Gyors elérés"
+  },
+  "Reboot": {
+    "Reboot": "Újraindítás"
+  },
+  "Save": {
+    "Save": "Mentés"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Keress rá egy helyre…"
+  },
+  "Search...": {
+    "Search...": "Keresés…"
+  },
+  "Select File": {
+    "Select File": "Fájl kiválasztása"
+  },
+  "Size": {
+    "Size": "Méret"
+  },
+  "Sort By": {
+    "Sort By": "Rendezés"
+  },
+  "Status": {
+    "Status": "Állapot"
+  },
+  "Suspend": {
+    "Suspend": "Felfüggesztés"
+  },
+  "Switch User": {
+    "Switch User": "Felhasználóváltás"
+  },
+  "System": {
+    "System": "Rendszer"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Nav • ←→↑↓: Rács Nav • Enter/Szóköz: Kiválasztás"
+  },
+  "Type": {
+    "Type": "Típus"
+  },
+  "Use this folder": {
+    "Use this folder": "Ezen mappa használata"
+  },
+  "Videos": {
+    "Videos": "Videók"
+  },
+  "Workspace": {
+    "Workspace": "Munkaterület"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "id": "exampleDesktopClock",
+    "name": "Desktop Clock",
+    "description": "An example desktop widget displaying an analog clock",
+    "version": "1.0.0",
+    "author": "DankMaterialShell",
+    "type": "desktop",
+    "capabilities": ["desktop-widget", "clock"],
+    "component": "./DesktopClock.qml",
+    "icon": "schedule",
+    "settings": "./DesktopClockSettings.qml",
+    "requires_dms": ">=1.2.0",
+    "permissions": [
+        "settings_read",
+        "settings_write"
+    ]
+}

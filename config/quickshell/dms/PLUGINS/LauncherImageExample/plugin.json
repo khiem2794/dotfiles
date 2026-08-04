@@ -1,0 +1,14 @@
+{
+    "id": "launcherImageExample",
+    "name": "Image Gallery Example",
+    "description": "Example launcher plugin demonstrating tile mode with images",
+    "version": "1.0.0",
+    "author": "DMS Team",
+    "icon": "photo_library",
+    "type": "launcher",
+    "trigger": "img",
+    "viewMode": "tile",
+    "viewModeEnforced": true,
+    "component": "./LauncherImageExample.qml",
+    "permissions": []
+}

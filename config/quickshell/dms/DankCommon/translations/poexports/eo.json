@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Dosiero kun tiu nomo jam ekzistas. Ĉu vi volas anstataŭigi ĝin?"
+  },
+  "Actions": {
+    "Actions": "Agoj"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Retropaŝo: Reen • F1/I: Dosierinformoj • F10: Helpo • Esk: Fermi"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "Nuligi"
+  },
+  "Choose icon": {
+    "Choose icon": "Elekti piktogramon"
+  },
+  "Communication": {
+    "Communication": "Komunikado"
+  },
+  "Copy path": {
+    "Copy path": "Kopii vojon"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "Labortablo"
+  },
+  "Development": {
+    "Development": "Evoluigo"
+  },
+  "Documents": {
+    "Documents": "Dokumentoj"
+  },
+  "Downloads": {
+    "Downloads": "Elŝutoj"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Enigu dosiernomon..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Ŝalti • F10: Helpo"
+  },
+  "File Already Exists": {
+    "File Already Exists": "Dosiero jam ekzistas"
+  },
+  "File Information": {
+    "File Information": "Dosier-informoj"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "Amuzo"
+  },
+  "Hibernate": {
+    "Hibernate": "Pasivigi"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Tenu pli longe por konfirmi"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Tenu por konfirmi (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Tenu por konfirmi (%1s)"
+  },
+  "Home": {
+    "Home": "Hejmo"
+  },
+  "Log Out": {
+    "Log Out": "Seancfino"
+  },
+  "Media": {
+    "Media": "Aŭdvidaĵo"
+  },
+  "Modified": {
+    "Modified": "Modifita"
+  },
+  "Move to Trash": {
+    "Move to Trash": "movi rubujen"
+  },
+  "Music": {
+    "Music": "Muziko"
+  },
+  "Name": {
+    "Name": "Nomo"
+  },
+  "Navigation": {
+    "Navigation": "Navigado"
+  },
+  "Numbers": {
+    "Numbers": "Numeroj"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "Anstataŭigi"
+  },
+  "Pictures": {
+    "Pictures": "Bildoj"
+  },
+  "Power Off": {
+    "Power Off": "Malŝalti"
+  },
+  "Power Options": {
+    "Power Options": "Elektraj opcioj"
+  },
+  "Quick Access": {
+    "Quick Access": "Rapida aliro"
+  },
+  "Reboot": {
+    "Reboot": "Restartigi"
+  },
+  "Save": {
+    "Save": "Konservi"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Serĉi lokon..."
+  },
+  "Search...": {
+    "Search...": "Serĉi..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "Grando"
+  },
+  "Sort By": {
+    "Sort By": "Ordigi laŭ"
+  },
+  "Status": {
+    "Status": "Stato"
+  },
+  "Suspend": {
+    "Suspend": "Dormeti"
+  },
+  "Switch User": {
+    "Switch User": "Ŝanĝi uzanton"
+  },
+  "System": {
+    "System": "Sistemo"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Navigi • ←→↑↓: Krada navigado • Enigo/Spaco: Elekti"
+  },
+  "Type": {
+    "Type": "Tipo"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "Videoj"
+  },
+  "Workspace": {
+    "Workspace": "Laborspaco"
+  }
+}

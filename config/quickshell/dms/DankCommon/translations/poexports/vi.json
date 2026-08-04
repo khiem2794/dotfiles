@@ -1,0 +1,164 @@
+{
+  "A file with this name already exists. Do you want to overwrite it?": {
+    "A file with this name already exists. Do you want to overwrite it?": "Đã có tệp trùng tên rồi. Bạn có muốn ghi đè không?"
+  },
+  "Actions": {
+    "Actions": "Thao tác"
+  },
+  "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": {
+    "Alt+←/Backspace: Back • F1/I: File Info • F10: Help • Esc: Close": "Alt+←/Backspace: Quay lại • F1/I: Thông tin tệp • F10: Trợ giúp • Esc: Đóng"
+  },
+  "Ascending": {
+    "Ascending": ""
+  },
+  "Cancel": {
+    "Cancel": "Hủy"
+  },
+  "Choose icon": {
+    "Choose icon": "Chọn biểu tượng"
+  },
+  "Communication": {
+    "Communication": "Liên lạc"
+  },
+  "Copy path": {
+    "Copy path": "Sao chép đường dẫn"
+  },
+  "Descending": {
+    "Descending": ""
+  },
+  "Desktop": {
+    "Desktop": "Máy tính để bàn"
+  },
+  "Development": {
+    "Development": "Phát triển"
+  },
+  "Documents": {
+    "Documents": "Tài liệu"
+  },
+  "Downloads": {
+    "Downloads": "Tải về"
+  },
+  "Enter filename...": {
+    "Enter filename...": "Nhập tên tệp..."
+  },
+  "F1/I: Toggle • F10: Help": {
+    "F1/I: Toggle • F10: Help": "F1/I: Bật/tắt • F10: Trợ giúp"
+  },
+  "File Already Exists": {
+    "File Already Exists": "Tệp đã tồn tại"
+  },
+  "File Information": {
+    "File Information": "Thông tin tệp"
+  },
+  "Files - %1": {
+    "Files - %1": ""
+  },
+  "Fun": {
+    "Fun": "Giải trí"
+  },
+  "Hibernate": {
+    "Hibernate": "Ngủ đông"
+  },
+  "Hold longer to confirm": {
+    "Hold longer to confirm": "Giữ lâu hơn để xác nhận"
+  },
+  "Hold to confirm (%1 ms)": {
+    "Hold to confirm (%1 ms)": "Giữ để xác nhận (%1 ms)"
+  },
+  "Hold to confirm (%1s)": {
+    "Hold to confirm (%1s)": "Giữ để xác nhận (%1s)"
+  },
+  "Home": {
+    "Home": "Nhà / Thư mục cá nhân"
+  },
+  "Log Out": {
+    "Log Out": "Đăng xuất"
+  },
+  "Media": {
+    "Media": "Phương tiện"
+  },
+  "Modified": {
+    "Modified": "Đã sửa đổi"
+  },
+  "Move to Trash": {
+    "Move to Trash": "Di chuyển vào thùng rác"
+  },
+  "Music": {
+    "Music": "Nhạc"
+  },
+  "Name": {
+    "Name": "Tên"
+  },
+  "Navigation": {
+    "Navigation": "Điều hướng"
+  },
+  "Numbers": {
+    "Numbers": "Số"
+  },
+  "Order": {
+    "Order": ""
+  },
+  "Overwrite": {
+    "Overwrite": "Ghi đè"
+  },
+  "Pictures": {
+    "Pictures": "Hình ảnh"
+  },
+  "Power Off": {
+    "Power Off": "Tắt nguồn"
+  },
+  "Power Options": {
+    "Power Options": "Tùy chọn nguồn"
+  },
+  "Quick Access": {
+    "Quick Access": "Truy cập nhanh"
+  },
+  "Reboot": {
+    "Reboot": "Khởi động lại"
+  },
+  "Save": {
+    "Save": "Lưu"
+  },
+  "Search for a location...": {
+    "Search for a location...": "Tìm vị trí..."
+  },
+  "Search...": {
+    "Search...": "Tìm kiếm..."
+  },
+  "Select File": {
+    "Select File": ""
+  },
+  "Size": {
+    "Size": "Kích thước"
+  },
+  "Sort By": {
+    "Sort By": "Sắp xếp theo"
+  },
+  "Status": {
+    "Status": "Trạng thái"
+  },
+  "Suspend": {
+    "Suspend": "Ngủ"
+  },
+  "Switch User": {
+    "Switch User": "Chuyển người dùng"
+  },
+  "System": {
+    "System": "Hệ thống"
+  },
+  "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": {
+    "Tab/Shift+Tab: Nav • ←→↑↓: Grid Nav • Enter/Space: Select": "Tab/Shift+Tab: Điều hướng • ←→↑↓: Điều hướng kiểu lưới • Enter/Space: Chọn"
+  },
+  "Type": {
+    "Type": "Loại"
+  },
+  "Use this folder": {
+    "Use this folder": ""
+  },
+  "Videos": {
+    "Videos": "Video"
+  },
+  "Workspace": {
+    "Workspace": "Không gian làm việc"
+  }
+}
