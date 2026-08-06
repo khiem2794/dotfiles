@@ -10,22 +10,34 @@
 		};
 	};
 
-	outputs = { self, nixpkgs, home-manager, ... }: {
-		nixosConfigurations.t14 = nixpkgs.lib.nixosSystem {
+	outputs = { self, nixpkgs, home-manager, ... }:
+		let
 			system = "x86_64-linux";
-			modules = [
-				./configuration.nix
+			pkgs = import nixpkgs {
+				inherit system;
+				config.allowUnfree = true;
+			};
+		in {
+			nixosConfigurations.t14 = nixpkgs.lib.nixosSystem {
+				inherit system;
+				modules = [
+					./configuration.nix
 
-				home-manager.nixosModules.home-manager
-				{
-					home-manager = {
-						useGlobalPkgs = true;
-						useUserPackages = true;
-						users.khiem2794 = import ./home.nix;
-						backupFileExtension = "backup";
-					};
-				}
-			];
+					home-manager.nixosModules.home-manager
+					{
+						home-manager = {
+							useGlobalPkgs = true;
+							useUserPackages = true;
+							users.khiem2794 = import ./home.nix;
+							backupFileExtension = "backup";
+						};
+					}
+				];
+			};
+
+			homeConfigurations.work = home-manager.lib.homeManagerConfiguration {
+				inherit pkgs;
+				modules = [ ./work.nix ];
+			};
 		};
-	};
 }
