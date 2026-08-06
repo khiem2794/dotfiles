@@ -1,13 +1,19 @@
----- DEFAULT PROGRAMS ----
+---- VARS ----
+local quickshell = require("qs-noctalia")
 local terminal = "kitty"
 local fileManager = "kitty -e yazi"
-local menu = "qs -p ~/.config/quickshell/dms/shell.qml ipc call spotlight toggle"
 local screenshot = "flameshot gui"
-local browser = "brave --enable-blink-features=MiddleClickAutoscroll"
+local browser = "brave"
 local vscode = "code"
-local bar = "qs -p ~/.config/quickshell/dms/shell.qml"
 local books = "kitty -e bookokrat -d ~/Documents/Books"
 local resizeUnit = 25
+local bar = quickshell.bar
+local toggleBar = quickshell.toggleBar
+local toggleNotifications = quickshell.toggleNotifications
+local toggleLauncher = quickshell.toggleLauncher
+local togglePowermenu = quickshell.togglePowermenu
+local toggleNotepad = quickshell.toggleNotepad
+
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function()
@@ -162,7 +168,6 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(vscode))
 hl.bind(mainMod .. " + W", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
@@ -176,13 +181,11 @@ hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ direction = "right" }), { repeatable = true })
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ direction = "left" }), { repeatable = true })
 
-hl.bind("CTRL" .. " + ESCAPE", hl.dsp.exec_cmd("qs -p ~/.config/quickshell/dms/shell.qml ipc call bar toggle index 0"))
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("qs -p ~/.config/quickshell/dms/shell.qml ipc call notifications toggle"))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("qs -p ~/.config/quickshell/dms/shell.qml ipc call notepad toggle"))
-hl.bind(
-	mainMod .. " + BACKSPACE",
-	hl.dsp.exec_cmd("qs -p ~/.config/quickshell/dms/shell.qml ipc call powermenu toggle")
-)
+hl.bind("CTRL" .. " + ESCAPE", hl.dsp.exec_cmd(toggleBar))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(toggleLauncher))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(toggleNotifications))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(toggleNotepad))
+hl.bind(mainMod .. " + BACKSPACE", hl.dsp.exec_cmd(togglePowermenu))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]

@@ -514,77 +514,61 @@ Item {
       "_score": (score !== undefined ? score : 0),
       "provider": root,
       "onActivate": function () {
+        const appName = app.name || "Unknown";
+        const appId = String(app.id || "");
+
+        Logger.i("ApplicationsProvider", `User selected app: ${appName} (id: ${appId || "unknown"})`);
+
         if (Settings.data.appLauncher.sortByMostUsed) {
           root.recordUsage(app);
         }
 
-        // Close the launcher/SmartPanel immediately without any animations.
-        // Ensures we are not preventing the future focusing of the app
+        Logger.i("ApplicationsProvider", `Opening app: ${appName} (id: ${appId || "unknown"})`);
+
+        if (Settings.data.appLauncher.customLaunchPrefixEnabled && Settings.data.appLauncher.customLaunchPrefix) {
+          // Custom launch prefix: must use raw command args
+          const commandArgs = Array.isArray(app.command) ? app.command.slice() : (app.command && app.command.length !== undefined) ? Array.from(app.command) : [];
+          const prefix = Settings.data.appLauncher.customLaunchPrefix.split(" ");
+          Logger.i("ApplicationsProvider", `Using custom launch prefix: ${Settings.data.appLauncher.customLaunchPrefix} for ${appName}`);
+          if (app.runInTerminal) {
+            const terminal = Settings.data.appLauncher.terminalCommand.split(" ");
+            const command = prefix.concat(terminal).concat(commandArgs);
+            Logger.i("ApplicationsProvider", `Executing (prefix + terminal): ${command.join(" ")}`);
+            Quickshell.execDetached(command);
+          } else {
+            const command = prefix.concat(commandArgs);
+            Logger.i("ApplicationsProvider", `Executing (prefix): ${command.join(" ")}`);
+            Quickshell.execDetached(command);
+          }
+        } else if (Settings.data.appLauncher.useApp2Unit && ProgramCheckerService.app2unitAvailable && appId) {
+          // app2unit: must use raw command
+          Logger.i("ApplicationsProvider", `Using app2unit for: ${appId}`);
+          if (app.runInTerminal) {
+            Quickshell.execDetached(["app2unit", "--", appId + ".desktop"]);
+          } else {
+            const commandArgs = Array.isArray(app.command) ? app.command.slice() : (app.command && app.command.length !== undefined) ? Array.from(app.command) : [];
+            Logger.i("ApplicationsProvider", `Executing (app2unit): app2unit -- ${commandArgs.join(" ")}`);
+            Quickshell.execDetached(["app2unit", "--"].concat(commandArgs));
+          }
+        } else if (typeof app.execute === "function") {
+          // Preferred path: let Quickshell's built-in DesktopEntry.execute() handle everything
+          // correctly (Exec field codes, terminal flag, working directory, etc.)
+          Logger.i("ApplicationsProvider", `Executing via app.execute() for: ${appName}`);
+          app.execute();
+        } else {
+          // Last resort: build command manually and spawn via compositor
+          const commandArgs = Array.isArray(app.command) ? app.command.slice() : (app.command && app.command.length !== undefined) ? Array.from(app.command) : [];
+          Logger.i("ApplicationsProvider", `Falling back to CompositorService.spawn for: ${appName}, command: [${commandArgs.join(", ")}]`);
+          if (commandArgs.length > 0) {
+            CompositorService.spawn(commandArgs);
+          } else {
+            Logger.w("ApplicationsProvider", `Could not launch: ${appName} — no valid launch method and empty command`);
+          }
+        }
+
+        // Close after launching. closeImmediately() defers actual destruction via
+        // Qt.callLater in the parent, so the launch is already dispatched by then.
         launcher.closeImmediately();
-
-        // Defer execution to next event loop iteration to ensure panel is fully closed
-        Qt.callLater(() => {
-                       Logger.d("ApplicationsProvider", `Launching: ${app.name} (App ID: ${app.id || "unknown"})`);
-
-                       const execString = (app.exec !== undefined && app.exec !== null) ? String(app.exec) : "";
-                       const commandArgs = Array.isArray(app.command) ? app.command : (app.command && app.command.length !== undefined) ? Array.from(app.command) : [];
-                       let hasQuotedArgs = execString.includes("\"") || execString.includes("'");
-                       let hasSpaceArgs = false;
-                       if (!hasQuotedArgs) {
-                         hasQuotedArgs = commandArgs.some(arg => {
-                                                            const text = String(arg);
-                                                            return text.includes("\"") || text.includes("'");
-                                                          });
-                       }
-                       if (!hasSpaceArgs) {
-                         hasSpaceArgs = commandArgs.some(arg => String(arg).includes(" "));
-                       }
-                       if (app.execute && (hasQuotedArgs || hasSpaceArgs)) {
-                         Logger.d("ApplicationsProvider", `Detected quoted/space arguments in Exec for ${app.name}, using app.execute()`);
-                         app.execute();
-                         return;
-                       }
-
-                       if (Settings.data.appLauncher.customLaunchPrefixEnabled && Settings.data.appLauncher.customLaunchPrefix) {
-                         // Use custom launch prefix
-                         const prefix = Settings.data.appLauncher.customLaunchPrefix.split(" ");
-                         Logger.d("ApplicationsProvider", `Using custom launch prefix: ${Settings.data.appLauncher.customLaunchPrefix}`);
-
-                         if (app.runInTerminal) {
-                           const terminal = Settings.data.appLauncher.terminalCommand.split(" ");
-                           const command = prefix.concat(terminal.concat(app.command));
-                           Logger.d("ApplicationsProvider", `Executing command (with prefix and terminal): ${command.join(" ")}`);
-                           Quickshell.execDetached(command);
-                         } else {
-                           const command = prefix.concat(app.command);
-                           Logger.d("ApplicationsProvider", `Executing command (with prefix): ${command.join(" ")}`);
-                           Quickshell.execDetached(command);
-                         }
-                       } else if (Settings.data.appLauncher.useApp2Unit && ProgramCheckerService.app2unitAvailable && app.id) {
-                         Logger.d("ApplicationsProvider", `Using app2unit for: ${app.id}`);
-                         if (app.runInTerminal)
-                         Quickshell.execDetached(["app2unit", "--", app.id + ".desktop"]);
-                         else
-                         Quickshell.execDetached(["app2unit", "--"].concat(app.command));
-                       } else {
-                         // Fallback logic when app2unit is not used
-                         if (app.runInTerminal) {
-                           Logger.d("ApplicationsProvider", "Executing terminal app manually: " + app.name);
-                           const terminal = Settings.data.appLauncher.terminalCommand.split(" ");
-                           const command = terminal.concat(app.command);
-                           Logger.d("ApplicationsProvider", "Executing command (manual terminal): " + command.join(" "));
-                           CompositorService.spawn(command);
-                         } else if (app.command && app.command.length > 0) {
-                           Logger.d("ApplicationsProvider", "Executing command: " + app.command.join(" "));
-                           CompositorService.spawn(app.command);
-                         } else if (app.execute) {
-                           Logger.d("ApplicationsProvider", "Calling app.execute() for: " + app.name);
-                           app.execute();
-                         } else {
-                           Logger.w("ApplicationsProvider", `Could not launch: ${app.name}. No valid launch method.`);
-                         }
-                       }
-                     });
       }
     };
   }
