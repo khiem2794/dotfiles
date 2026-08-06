@@ -1,10 +1,10 @@
-{ config, pkgs, ... }: { 
+{ config, pkgs, lib, ... }: { 
   home.username = "khiem2794";
   home.homeDirectory = "/home/khiem2794";
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
-    fastfetch
+    fastfetch imv mpv
     zellij lazygit brave yazi flameshot vscode
     playerctl
     nerd-fonts.jetbrains-mono
@@ -26,6 +26,14 @@
     };
   };
   
+  programs.starship = {
+    enable = true;
+  };
+
+  home.file.".config/fastfetch".source = ./config/fastfetch;
   home.file.".config/hypr".source = ./config/hypr;
   home.file.".config/quickshell".source = ./config/quickshell;
+  home.file.".config/kitty".source = ./config/kitty;
+  home.file.".config/flameshot".source = ./config/flameshot;
+  home.file.".config/zellij".source = ./config/zellij;
 }

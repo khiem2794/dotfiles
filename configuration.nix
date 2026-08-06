@@ -17,6 +17,13 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  zramSwap = {
+    enable = true;
+    priority = 100;
+    algorithm = "lz4";
+    memoryPercent = 50;
+  };
+
   users.users.khiem2794 = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
