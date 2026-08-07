@@ -28,7 +28,7 @@
 						home-manager = {
 							useGlobalPkgs = true;
 							useUserPackages = true;
-							users.khiem2794 = import ./home-t14.nix;
+							users.khiem2794 = import ./hosts/t14/home.nix;
 							backupFileExtension = "backup";
 						};
 					}
@@ -37,7 +37,7 @@
 
 			homeConfigurations.work = home-manager.lib.homeManagerConfiguration {
 				inherit pkgs;
-				modules = [ ./home-work.nix ];
+				modules = [ ./hosts/work/home.nix ];
 			};
 		};
 }

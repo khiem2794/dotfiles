@@ -1,9 +1,13 @@
+-- Host-specific variables and environment, provided by each host's home.nix.
+dofile(os.getenv("HOME") .. "/.config/hypr/env.lua")
+local hostVars = dofile(os.getenv("HOME") .. "/.config/hypr/var.lua") or {}
+
 ---- VARS ----
 local quickshell = require("qs-noctalia")
 local terminal = "kitty"
 local fileManager = "kitty -e yazi"
 local screenshot = "flameshot gui"
-local browser = "brave"
+local browser = hostVars.browser or "firefox"
 local vscode = "code"
 local books = "kitty -e bookokrat -d ~/Documents/Books"
 local resizeUnit = 25
@@ -18,7 +22,7 @@ local toggleNotepad = quickshell.toggleNotepad
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function()
 	hl.exec_cmd(bar)
---	hl.exec_cmd("fcitx5 -d")
+	hl.exec_cmd("fcitx5 -d")
 	hl.exec_cmd("hyprpaper")
 	hl.exec_cmd("flameshot")
 end)

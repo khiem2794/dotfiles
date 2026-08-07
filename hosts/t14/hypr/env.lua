@@ -1,0 +1,1 @@
+-- t14 (home) overrides: none. This file is sourced unconditionally by hyprland.lua.
