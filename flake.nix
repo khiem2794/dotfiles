@@ -8,9 +8,14 @@
 			url = "github:nix-community/home-manager/release-26.05";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+		nixgl = {
+			url = "github:nix-community/nixGL";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
-	outputs = { self, nixpkgs, home-manager, ... }:
+	outputs = { self, nixpkgs, home-manager, nixgl, ... }:
 		let
 			hosts = import ./config/hosts.nix;
 
@@ -20,6 +25,7 @@
 						system = host.arch;
 						config.allowUnfree = true;
 					};
+					extraSpecialArgs = { inherit nixgl; };
 					modules = [
 						./hosts/${host.dir}/home.nix
 					];

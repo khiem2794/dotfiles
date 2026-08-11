@@ -1,5 +1,5 @@
-{ config, pkgs, ... }: {
-	imports = [ ];
+{ config, pkgs, nixgl, ... }: {
+	imports = [ ../../config/flameshot.nix ];
 
 	home.username = "khiemdn2";
 	home.homeDirectory = "/home/khiemdn2";
@@ -8,22 +8,17 @@
 	targets.genericLinux.enable = true;
 	programs.home-manager.enable = true;
 
+	targets.genericLinux.nixGL = {
+		packages = nixgl.packages;
+		defaultWrapper = "mesa";
+	};
+
 	home.packages = with pkgs; [
 		eza
-		flameshot
+		(config.lib.nixGL.wrap zed-editor)
 	];
 
-	services.flameshot = {
-		enable = true;
-		settings = {
-			General = {
-				savePath = "${config.home.homeDirectory}/Pictures/Screenshots";
-				showHelp = false;
-				useGrimAdapter = true;
-				saveAsFileExtension = "png";
-			};
-		};
-	};
+	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
 
 	home.file.".config/hypr" = {
 		source = ../../config/hypr;

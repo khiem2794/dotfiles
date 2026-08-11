@@ -1,11 +1,13 @@
-{ config, pkgs, lib, ... }: { 
+{ config, pkgs, lib, ... }: {
+  imports = [ ../../config/flameshot.nix ];
+
   home.username = "khiem2794";
   home.homeDirectory = "/home/khiem2794";
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
     fastfetch imv mpv
-    zellij lazygit brave yazi flameshot vscode
+    zellij lazygit brave yazi vscode
     playerctl
     nerd-fonts.jetbrains-mono
     material-symbols
@@ -30,18 +32,6 @@
     enable = true;
   };
 
-	services.flameshot = {
-		enable = true;
-		settings = {
-			General = {
-				savePath = "${config.home.homeDirectory}/Pictures/Screenshots";
-				showHelp = false;
-				useGrimAdapter = true;
-				saveAsFileExtension = "png";
-			};
-		};
-	};
-  
   home.file.".config/hypr" = {
     source = ../../config/hypr;
     recursive = true;
