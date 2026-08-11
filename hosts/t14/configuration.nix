@@ -1,10 +1,9 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ 
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
@@ -14,9 +13,7 @@
 
   networking.hostName = "t14";
   networking.networkmanager.enable = true;
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = false;
@@ -36,8 +33,6 @@
       tree
     ];
   };
-
-  # services.xserver.enable = true;
 
   services.getty.autologinUser = "khiem2794";
   services.upower.enable = true;
@@ -75,4 +70,3 @@
     options = "--delete-older-than 14d";
   };
 }
-

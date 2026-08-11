@@ -12,32 +12,40 @@
 
 	outputs = { self, nixpkgs, home-manager, ... }:
 		let
-			system = "x86_64-linux";
-			pkgs = import nixpkgs {
-				inherit system;
-				config.allowUnfree = true;
-			};
+			hosts = import ./config/hosts.nix;
+
+			mkHomeConfiguration = host:
+				home-manager.lib.homeManagerConfiguration {
+					pkgs = import nixpkgs {
+						system = host.arch;
+						config.allowUnfree = true;
+					};
+					modules = [
+						./hosts/${host.dir}/home.nix
+					];
+				};
+
+			mkNixOSConfiguration = host:
+				nixpkgs.lib.nixosSystem {
+					system = host.arch;
+					modules = [
+						./hosts/${host.dir}/configuration.nix
+						home-manager.nixosModules.home-manager
+						{
+							home-manager = {
+								useGlobalPkgs = true;
+								useUserPackages = true;
+								users."${host.user}" = import ./hosts/${host.dir}/home.nix;
+								backupFileExtension = "backup";
+							};
+						}
+					];
+				};
 		in {
-			nixosConfigurations.t14 = nixpkgs.lib.nixosSystem {
-				inherit system;
-				modules = [
-					./configuration.nix
+			nixosConfigurations."${hosts.t14.hostname}" =
+				mkNixOSConfiguration hosts.t14;
 
-					home-manager.nixosModules.home-manager
-					{
-						home-manager = {
-							useGlobalPkgs = true;
-							useUserPackages = true;
-							users.khiem2794 = import ./hosts/t14/home.nix;
-							backupFileExtension = "backup";
-						};
-					}
-				];
-			};
-
-			homeConfigurations.work = home-manager.lib.homeManagerConfiguration {
-				inherit pkgs;
-				modules = [ ./hosts/work/home.nix ];
-			};
+			homeConfigurations."${hosts.work.hostname}" =
+				mkHomeConfiguration hosts.work;
 		};
 }

@@ -50,7 +50,6 @@
   home.file.".config/hypr/env.lua".source = ./hypr/env.lua;
   home.file.".config/quickshell".source = ../../config/quickshell;
   home.file.".config/kitty".source = ../../config/kitty;
-  home.file.".config/flameshot".source = ../../config/flameshot;
   home.file.".config/zellij".source = ../../config/zellij;
   home.file.".config/fastfetch".source = ../../config/fastfetch;
 }

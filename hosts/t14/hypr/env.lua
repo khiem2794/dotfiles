@@ -1,1 +1,2 @@
--- t14 (home) overrides: none. This file is sourced unconditionally by hyprland.lua.
+-- t14 (home) env overrides: none. Returns an empty table; consumed by hyprland.lua.
+return {}

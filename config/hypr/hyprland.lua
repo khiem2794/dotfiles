@@ -1,9 +1,23 @@
 -- Host-specific variables and environment, provided by each host's home.nix.
-dofile(os.getenv("HOME") .. "/.config/hypr/env.lua")
-local hostVars = dofile(os.getenv("HOME") .. "/.config/hypr/var.lua") or {}
+local configDir = os.getenv("HOME") .. "/.config/hypr"
+
+local function try_dofile(path)
+	local ok, result = pcall(dofile, path)
+	if ok then
+		return result
+	end
+	return nil
+end
+
+local envVars = try_dofile(configDir .. "/env.lua") or {}
+for name, value in pairs(envVars) do
+	hl.env(name, tostring(value))
+end
+
+local hostVars = try_dofile(configDir .. "/var.lua") or {}
 
 ---- VARS ----
-local quickshell = require("qs-noctalia")
+local quickshell = require(hostVars.qs_shell or "qs-noctalia")
 local terminal = "kitty"
 local fileManager = "kitty -e yazi"
 local screenshot = "flameshot gui"
@@ -17,7 +31,6 @@ local toggleNotifications = quickshell.toggleNotifications
 local toggleLauncher = quickshell.toggleLauncher
 local togglePowermenu = quickshell.togglePowermenu
 local toggleNotepad = quickshell.toggleNotepad
-
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function()
@@ -311,5 +324,3 @@ hl.window_rule({
 	center = true,
 	size = { "(monitor_w*0.5)", "(monitor_h*0.5)" },
 })
-
-
