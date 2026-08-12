@@ -44,7 +44,7 @@ end)
 hl.monitor({
 	output = "",
 	mode = "1920x1080@60",
-	position = "0x0",
+	position = "auto-right",
 	scale = 1,
 })
 
@@ -236,7 +236,7 @@ hl.bind(mainMod .. " + equal", hl.dsp.window.resize({ x = resizeUnit, y = 0, rel
 
 hl.bind(mainMod .. " + bracketleft", hl.dsp.layout("consume_or_expel prev"))
 hl.bind(mainMod .. " + bracketright", hl.dsp.layout("consume_or_expel next"))
-hl.bind(mainMod .. " + DELETE", hl.dsp.exit())
+hl.bind(mainMod .. " + SHIFT + DELETE", hl.dsp.exit())
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind(

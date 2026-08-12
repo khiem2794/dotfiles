@@ -1,11 +1,16 @@
 { config, pkgs, lib, ... }: {
-  imports = [ ../../config/flameshot.nix ];
+  imports = [
+    ../../config/flameshot.nix
+    ../../config/git.nix
+    ../../config/lazygit.nix
+  ];
 
   home.username = "khiem2794";
   home.homeDirectory = "/home/khiem2794";
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
+    kitty ripgrep delta
     fastfetch imv mpv
     zellij lazygit brave yazi vscode
     playerctl

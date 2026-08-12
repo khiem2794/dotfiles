@@ -17,7 +17,7 @@
 
 	outputs = { self, nixpkgs, home-manager, nixgl, ... }:
 		let
-			hosts = import ./config/hosts.nix;
+			hosts = import ./config/_hosts.nix;
 
 			mkHomeConfiguration = host:
 				home-manager.lib.homeManagerConfiguration {
@@ -25,7 +25,9 @@
 						system = host.arch;
 						config.allowUnfree = true;
 					};
-					extraSpecialArgs = { inherit nixgl; };
+					extraSpecialArgs = {
+						inherit host nixgl;
+					};
 					modules = [
 						./hosts/${host.dir}/home.nix
 					];
@@ -41,6 +43,7 @@
 							home-manager = {
 								useGlobalPkgs = true;
 								useUserPackages = true;
+								extraSpecialArgs = { inherit host; };
 								users."${host.user}" = import ./hosts/${host.dir}/home.nix;
 								backupFileExtension = "backup";
 							};

@@ -1,5 +1,9 @@
 { config, pkgs, nixgl, ... }: {
-	imports = [ ../../config/flameshot.nix ];
+	imports = [
+		../../config/flameshot.nix
+		../../config/git.nix
+		../../config/lazygit.nix
+	];
 
 	home.username = "khiemdn2";
 	home.homeDirectory = "/home/khiemdn2";
@@ -14,7 +18,7 @@
 	};
 
 	home.packages = with pkgs; [
-		eza
+		kitty ripgrep delta eza
 		(config.lib.nixGL.wrap zed-editor)
 	];
 
