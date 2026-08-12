@@ -10,4 +10,5 @@ return {
 	http_proxy = "http://proxy.hcm.fpt.vn:80",
 	https_proxy = "http://proxy.hcm.fpt.vn:80",
 	no_proxy = "localhost,127.0.0.1,.fpt.net,.isc.net,.fti.net,ticketapi.fpt.vn,ticketapi-stag.fpt.vn,ticketopsapi.fpt.vn",
+	PATH = os.getenv("PATH") .. ":" .. os.getenv("HOME") .. "/.nix-profile/bin",
 }

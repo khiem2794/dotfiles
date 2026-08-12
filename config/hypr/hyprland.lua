@@ -9,12 +9,11 @@ local function try_dofile(path)
 	return nil
 end
 
+local hostVars = try_dofile(configDir .. "/var.lua") or {}
 local envVars = try_dofile(configDir .. "/env.lua") or {}
 for name, value in pairs(envVars) do
 	hl.env(name, tostring(value))
 end
-
-local hostVars = try_dofile(configDir .. "/var.lua") or {}
 
 ---- VARS ----
 local quickshell = require(hostVars.qs_shell or "qs-noctalia")
