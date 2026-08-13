@@ -21,7 +21,6 @@
 		ripgrep delta eza
 		(config.lib.nixGL.wrap zed-editor)
 		(config.lib.nixGL.wrap kitty)
-		(config.lib.nixGL.wrap foot)
 		(config.lib.nixGL.wrap obsidian)
 	];
 
