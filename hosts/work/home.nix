@@ -1,4 +1,4 @@
-{ config, pkgs, nixgl, ... }: {
+{ config, pkgs, nixgl, host, ... }: {
 	imports = [
 		../../config/flameshot.nix
 		../../config/git.nix
@@ -26,14 +26,23 @@
 
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
 
-	home.file.".config/hypr" = {
-		source = ../../config/hypr;
-		recursive = true;
-	};
-	home.file.".config/hypr/var.lua".source = ./hypr/var.lua;
-	home.file.".config/hypr/env.lua".source = ./hypr/env.lua;
 	home.file.".config/quickshell".source = ../../config/quickshell;
 	home.file.".config/kitty".source = ../../config/kitty;
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
+
+	home.file.".config/hypr/hyprland.lua".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/hyprland.lua";
+	home.file.".config/hypr/hyprpaper.conf".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/hyprpaper.conf";
+	home.file.".config/hypr/qs-dms.lua".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/qs-dms.lua";
+	home.file.".config/hypr/qs-noctalia.lua".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/qs-noctalia.lua";
+	home.file.".config/hypr/assets".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/assets";
+	home.file.".config/hypr/var.lua".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/hosts/${host.dir}/hypr/var.lua";
+	home.file.".config/hypr/env.lua".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/hosts/${host.dir}/hypr/env.lua";
 }

@@ -24,6 +24,7 @@
     qt6.qt5compat
     qt6.qtmultimedia
     qt6.qtdeclarative
+    qt6.qtpositioning
   ];
 
   programs.bash = {

@@ -319,7 +319,16 @@ hl.window_rule({
 })
 hl.window_rule({
 	match = { class = ".*(imv|mpv|vlc|Nautilus|flameshot)$" },
-	float = true,
-	center = true,
+	float = true, center = true,
 	size = { "(monitor_w*0.5)", "(monitor_h*0.5)" },
+})
+hl.window_rule({
+	match = { title = "" },
+	float = true, center = true,
+	size = { "(monitor_w*0.5)", "(monitor_h*0.5)" },
+})
+hl.window_rule({
+	match = { class = "DesktopEditors", title = "" },
+	float = true, center = true,
+	size = { "(monitor_w*0.2)", "(monitor_h*0.15)" },
 })
