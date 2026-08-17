@@ -18,7 +18,7 @@
 	};
 
 	home.packages = with pkgs; [
-		ripgrep delta eza
+		neovim ripgrep delta eza tree-sitter
 		(config.lib.nixGL.wrap zed-editor)
 		(config.lib.nixGL.wrap kitty)
 		(config.lib.nixGL.wrap obsidian)
@@ -30,6 +30,7 @@
 	home.file.".config/kitty".source = ../../config/kitty;
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
+  	home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink /home/${host.user}/Repos/dotfiles/config/nvim;
 
 	home.file.".config/hypr/hyprland.lua".source =
 		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/hyprland.lua";
