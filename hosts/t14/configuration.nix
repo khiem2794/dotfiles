@@ -51,7 +51,7 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim wget git
+    vim wget git unzip
     networkmanager
     brightnessctl
     libnotify

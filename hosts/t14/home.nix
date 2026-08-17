@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, host, ... }: {
   imports = [
     ../../config/flameshot.nix
     ../../config/git.nix
@@ -10,6 +10,7 @@
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
+    neovim tree-sitter fd gnumake gcc
     kitty ripgrep delta
     fastfetch imv mpv
     zellij lazygit brave yazi vscode
@@ -48,4 +49,5 @@
   home.file.".config/kitty".source = ../../config/kitty;
   home.file.".config/zellij".source = ../../config/zellij;
   home.file.".config/fastfetch".source = ../../config/fastfetch;
+  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink /home/${host.user}/Repos/dotfiles/config/nvim;
 }
