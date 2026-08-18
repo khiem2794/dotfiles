@@ -24,6 +24,9 @@ Item {
   property var workspaceCache: ({})
   property var windowCache: ({})
 
+  // Hyprland 0.55+ with Lua config rejects legacy dispatch strings
+  readonly property bool luaConfigActive: Hyprland.usingLua === true
+
   // Debounce timer for updates
   Timer {
     id: updateTimer
@@ -447,13 +450,21 @@ Item {
   }
 
   // Public functions
+  function luaWorkspaceValue(value) {
+    const text = String(value ?? "");
+    if (/^[-+]?\d+$/.test(text))
+      return text;
+    return `"${text.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}"`;
+  }
+
   function switchToWorkspace(workspace) {
     try {
-      if (workspace.name) {
-        Hyprland.dispatch(`workspace ${workspace.name}`);
+      const target = workspace.name || workspace.idx;
+      if (luaConfigActive) {
+        Hyprland.dispatch(`hl.dsp.focus({ workspace = ${luaWorkspaceValue(target)} })`);
         return;
       }
-      Hyprland.dispatch(`workspace ${workspace.idx}`);
+      Hyprland.dispatch(`workspace ${target}`);
     } catch (e) {
       Logger.e("HyprlandService", "Failed to switch workspace:", e);
     }

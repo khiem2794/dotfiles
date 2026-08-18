@@ -26,7 +26,8 @@
 
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
 
-	home.file.".config/quickshell".source = ../../config/quickshell;
+	home.file.".config/quickshell".source =
+		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/quickshell";
 	home.file.".config/kitty".source = ../../config/kitty;
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
