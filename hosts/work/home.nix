@@ -1,4 +1,7 @@
-{ config, pkgs, nixgl, host, ... }: {
+{ config, pkgs, nixgl, host, ... }:
+let
+	dotfilesPath = "/home/${host.user}/${host.dotfiles}";
+in {
 	imports = [
 		../../config/flameshot.nix
 		../../config/git.nix
@@ -27,24 +30,24 @@
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
 
 	home.file.".config/quickshell".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/quickshell";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/quickshell";
 	home.file.".config/kitty".source = ../../config/kitty;
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
-  	home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink /home/${host.user}/Repos/dotfiles/config/nvim;
+	  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";
 
 	home.file.".config/hypr/hyprland.lua".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/hyprland.lua";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
 	home.file.".config/hypr/hyprpaper.conf".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/hyprpaper.conf";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";
 	home.file.".config/hypr/qs-dms.lua".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/qs-dms.lua";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-dms.lua";
 	home.file.".config/hypr/qs-noctalia.lua".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/qs-noctalia.lua";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-noctalia.lua";
 	home.file.".config/hypr/assets".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/config/hypr/assets";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/assets";
 	home.file.".config/hypr/var.lua".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/hosts/${host.dir}/hypr/var.lua";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/var.lua";
 	home.file.".config/hypr/env.lua".source =
-		config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/Repos/dotfiles/hosts/${host.dir}/hypr/env.lua";
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/env.lua";
 }

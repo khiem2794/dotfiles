@@ -1,4 +1,7 @@
-{ config, pkgs, lib, host, ... }: {
+{ config, pkgs, lib, host, ... }:
+let
+  dotfilesPath = "/home/${host.user}/${host.dotfiles}";
+in {
   imports = [
     ../../config/flameshot.nix
     ../../config/git.nix
@@ -49,5 +52,5 @@
   home.file.".config/kitty".source = ../../config/kitty;
   home.file.".config/zellij".source = ../../config/zellij;
   home.file.".config/fastfetch".source = ../../config/fastfetch;
-  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink /home/${host.user}/Repos/dotfiles/config/nvim;
+  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/${host.dotfiles}/config/nvim";
 }

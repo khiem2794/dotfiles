@@ -5,6 +5,7 @@ in
     hostname = "t14";
     dir = "t14";
     arch = "x86_64-linux";
+    dotfiles = "Repos/dotfiles";
     user = "";
     git = {
       name = "";
@@ -16,6 +17,7 @@ in
     hostname = "work";
     dir = "work";
     arch = "x86_64-linux";
+    dotfiles = "Repos/dotfiles";
     user = "";
     git = {
       name = "";
