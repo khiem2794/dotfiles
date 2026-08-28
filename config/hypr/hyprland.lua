@@ -176,6 +176,7 @@ local mainMod = "SUPER"
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + C", hl.dsp.window.center())
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(terminal .. ' --class float_mode'))
 -- hl.bind(
 -- 	mainMod .. " + BACKSPACE",
 -- 	hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")
@@ -184,6 +185,7 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(vscode))
 hl.bind(mainMod .. " + W", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + W", hl.dsp.window.center())
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
@@ -231,7 +233,9 @@ hl.bind(mainMod .. " + SHIFT + right", hl.dsp.layout("swapcol r"))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.layout("colresize +conf"))
 
 hl.bind(mainMod .. " + minus", hl.dsp.window.resize({ x = -resizeUnit, y = 0, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + SHIFT + minus", hl.dsp.window.resize({ x = 0, y = -resizeUnit, relative = true }), { repeating = true })
 hl.bind(mainMod .. " + equal", hl.dsp.window.resize({ x = resizeUnit, y = 0, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + SHIFT + equal", hl.dsp.window.resize({ x = 0, y = resizeUnit, relative = true }), { repeating = true })
 
 hl.bind(mainMod .. " + bracketleft", hl.dsp.layout("consume_or_expel prev"))
 hl.bind(mainMod .. " + bracketright", hl.dsp.layout("consume_or_expel next"))
@@ -331,4 +335,9 @@ hl.window_rule({
 	match = { class = "DesktopEditors", title = "" },
 	float = true, center = true,
 	size = { "(monitor_w*0.2)", "(monitor_h*0.15)" },
+})
+hl.window_rule({
+	match = { class = "float_mode" },
+	float = true, center = true,
+	size = { "(monitor_w*0.5)", "(monitor_h*0.5)" },
 })
