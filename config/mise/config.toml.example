@@ -1,0 +1,25 @@
+# Reference only — nothing links or reads this file.
+# The global config is generated from config/mise.nix (programs.mise.globalConfig)
+# and lands at ~/.config/mise/config.toml as a read-only nix store symlink.
+# Because it is read-only, `mise use --global` will fail; edit config/mise.nix
+# and rebuild instead.
+
+# ---- per-project: commit this as `mise.toml` in a repo root ----
+
+[tools]
+node = "22"
+python = "3.11"
+
+[env]
+# auto-create and activate .venv when you cd into the project
+_.python.venv = { path = ".venv", create = true }
+
+[tasks.dev]
+run = "npm run dev"
+
+# ---- idiomatic version files ----
+# Opt-in per tool via settings.idiomatic_version_file_enable_tools
+# (already set to ["node" "python"] in config/mise.nix):
+#   .nvmrc / .node-version -> node
+#   .python-version        -> python
+# Always honoured regardless of that setting: mise.toml, .mise.toml, .tool-versions

@@ -6,6 +6,7 @@ in {
     ../../config/flameshot.nix
     ../../config/git.nix
     ../../config/lazygit.nix
+    ../../config/mise.nix
   ];
 
   home.username = "khiem2794";
