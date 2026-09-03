@@ -9,8 +9,8 @@ in {
 		../../config/mise.nix
 	];
 
-	home.username = "khiemdn2";
-	home.homeDirectory = "/home/khiemdn2";
+	home.username = "${host.user}";
+	home.homeDirectory = "/home/${host.user}";
 	home.stateVersion = "26.05";
 
 	targets.genericLinux.enable = true;
@@ -22,6 +22,7 @@ in {
 	};
 
 	home.packages = with pkgs; [
+		uv
 		neovim ripgrep delta eza tree-sitter
 		(config.lib.nixGL.wrap zed-editor)
 		(config.lib.nixGL.wrap kitty)

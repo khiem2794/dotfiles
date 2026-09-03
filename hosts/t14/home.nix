@@ -9,11 +9,12 @@ in {
     ../../config/mise.nix
   ];
 
-  home.username = "khiem2794";
-  home.homeDirectory = "/home/khiem2794";
+  home.username = "${host.user}";
+  home.homeDirectory = "/home/${host.user}";
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
+    uv
     neovim tree-sitter fd gnumake gcc
     kitty ripgrep delta
     fastfetch imv mpv
