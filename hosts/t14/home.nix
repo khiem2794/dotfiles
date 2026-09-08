@@ -1,4 +1,4 @@
-{ config, pkgs, lib, host, ... }:
+{ config, pkgs, lib, inputs, host, ... }:
 let
   dotfilesPath = "/home/${host.user}/${host.dotfiles}";
 in {
@@ -20,6 +20,7 @@ in {
     fastfetch imv mpv
     zellij lazygit brave yazi vscode
     playerctl
+
     nerd-fonts.jetbrains-mono
     material-symbols
     hyprpaper
@@ -31,6 +32,8 @@ in {
     qt6.qtmultimedia
     qt6.qtdeclarative
     qt6.qtpositioning
+
+	inputs.herdr-nix.packages.${pkgs.system}.default
   ];
 
   programs.bash = {
@@ -39,7 +42,7 @@ in {
       ll = "ls -la";
     };
   };
-  
+
   programs.starship = {
     enable = true;
   };

@@ -48,8 +48,6 @@
     xwayland.enable = true;
   };
 
-  # FHS loader shim so mise's precompiled node/python binaries run on NixOS.
-  # mise warns on source-builds from 2026.8.0 and defaults to precompiled in 2027.8.0.
   programs.nix-ld = {
     enable = true;
     libraries = with pkgs; [

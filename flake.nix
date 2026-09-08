@@ -13,6 +13,11 @@
 			url = "github:nix-community/nixGL";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+        herdr-nix = {
+            url = "github:herdrdev/herdr-nix";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
 	};
 
 	outputs = { self, nixpkgs, home-manager, nixgl, ... }:

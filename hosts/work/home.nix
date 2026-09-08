@@ -1,4 +1,4 @@
-{ config, pkgs, nixgl, host, ... }:
+{ config, pkgs, nixgl, inputs, host, ... }:
 let
 	dotfilesPath = "/home/${host.user}/${host.dotfiles}";
 in {
@@ -27,6 +27,7 @@ in {
 		(config.lib.nixGL.wrap zed-editor)
 		(config.lib.nixGL.wrap kitty)
 		(config.lib.nixGL.wrap obsidian)
+		inputs.herdr-nix.packages.${pkgs.system}.default
 	];
 
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
