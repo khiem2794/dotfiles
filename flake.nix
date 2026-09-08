@@ -20,7 +20,7 @@
         };
 	};
 
-	outputs = { self, nixpkgs, home-manager, nixgl, ... }:
+	outputs = { self, nixpkgs, home-manager, nixgl, herdr-nix, ... }:
 		let
 			hosts = import ./config/_hosts.nix;
 
@@ -31,7 +31,7 @@
 						config.allowUnfree = true;
 					};
 					extraSpecialArgs = {
-						inherit host nixgl;
+						inherit host nixgl herdr-nix;
 					};
 					modules = [
 						./hosts/${host.dir}/home.nix
@@ -48,7 +48,7 @@
 							home-manager = {
 								useGlobalPkgs = true;
 								useUserPackages = true;
-								extraSpecialArgs = { inherit host; };
+								extraSpecialArgs = { inherit host herdr-nix; };
 								users."${host.user}" = import ./hosts/${host.dir}/home.nix;
 								backupFileExtension = "backup";
 							};
