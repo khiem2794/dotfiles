@@ -3,6 +3,7 @@
 
 	inputs = {
 		nixpkgs.url = "nixpkgs/nixos-26.05";
+		nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
 		home-manager = {
 			url = "github:nix-community/home-manager/release-26.05";
@@ -20,9 +21,14 @@
         };
 	};
 
-	outputs = { self, nixpkgs, home-manager, nixgl, herdr-nix, ... }:
+	outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixgl, herdr-nix, ... }:
 		let
 			hosts = import ./config/_hosts.nix;
+
+			pkgsUnstable = system: import nixpkgs-unstable {
+				system = system;
+				config.allowUnfree = true;
+			};
 
 			mkHomeConfiguration = host:
 				home-manager.lib.homeManagerConfiguration {
@@ -32,6 +38,7 @@
 					};
 					extraSpecialArgs = {
 						inherit host nixgl herdr-nix;
+						pkgsUnstable = pkgsUnstable host.arch;
 					};
 					modules = [
 						./hosts/${host.dir}/home.nix
@@ -48,7 +55,10 @@
 							home-manager = {
 								useGlobalPkgs = true;
 								useUserPackages = true;
-								extraSpecialArgs = { inherit host herdr-nix; };
+								extraSpecialArgs = {
+									inherit host herdr-nix;
+									pkgsUnstable = pkgsUnstable host.arch;
+								};
 								users."${host.user}" = import ./hosts/${host.dir}/home.nix;
 								backupFileExtension = "backup";
 							};

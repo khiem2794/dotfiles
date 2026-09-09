@@ -1,4 +1,4 @@
-{ config, pkgs, lib, herdr-nix, host, ... }:
+{ config, pkgs, pkgsUnstable, lib, herdr-nix, host, ... }:
 let
   dotfilesPath = "/home/${host.user}/${host.dotfiles}";
 in {
@@ -33,7 +33,11 @@ in {
     qt6.qtdeclarative
     qt6.qtpositioning
 
-	herdr-nix.packages.${pkgs.system}.default
+  	herdr-nix.packages.${pkgs.system}.default
+    pkgsUnstable.claude-code
+    pkgsUnstable.opencode
+    pkgsUnstable.codex
+    pkgsUnstable.pi-coding-agent
   ];
 
   programs.bash = {

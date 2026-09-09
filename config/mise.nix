@@ -11,6 +11,8 @@
       };
 
       settings = {
+        all_compile = false;
+
         # Idiomatic version files are opt-in per tool, and off by default.
         # node   -> .nvmrc, .node-version
         # python -> .python-version
