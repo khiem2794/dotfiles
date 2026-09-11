@@ -1,4 +1,4 @@
-{ config, pkgs, nixgl, herdr-nix, host, ... }:
+{ config, pkgs, pkgsUnstable, nixgl, herdr-nix, host, ... }:
 let
 	dotfilesPath = "/home/${host.user}/${host.dotfiles}";
 in {
@@ -22,19 +22,25 @@ in {
 	};
 
 	home.packages = with pkgs; [
-		uv
+		uv tig
 		neovim ripgrep delta eza tree-sitter
 		(config.lib.nixGL.wrap zed-editor)
 		(config.lib.nixGL.wrap kitty)
 		(config.lib.nixGL.wrap obsidian)
 		herdr-nix.packages.${pkgs.system}.default
+ 
+		pkgsUnstable.claude-code
+    pkgsUnstable.opencode
+    pkgsUnstable.codex
+    pkgsUnstable.pi-coding-agent
 	];
 
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;
 
 	home.file.".config/quickshell".source =
 		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/quickshell";
-	home.file.".config/kitty".source = ../../config/kitty;
+	home.file.".config/kitty".source =
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/kitty";
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
 	  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";

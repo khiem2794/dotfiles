@@ -7,6 +7,7 @@
     globalConfig = {
       tools = {
         node = "lts";
+        pnpm = "latest";
         python = "3.12";
       };
 

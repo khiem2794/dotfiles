@@ -58,7 +58,8 @@ in {
   home.file.".config/hypr/var.lua".source = ./hypr/var.lua;
   home.file.".config/hypr/env.lua".source = ./hypr/env.lua;
   home.file.".config/quickshell".source = ../../config/quickshell;
-  home.file.".config/kitty".source = ../../config/kitty;
+  home.file.".config/kitty".source =
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/kitty";
   home.file.".config/zellij".source = ../../config/zellij;
   home.file.".config/fastfetch".source = ../../config/fastfetch;
   home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/${host.dotfiles}/config/nvim";

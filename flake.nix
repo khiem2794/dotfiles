@@ -15,10 +15,10 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
-        herdr-nix = {
-            url = "github:herdrdev/herdr-nix";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
+    herdr-nix = {
+			url = "github:herdrdev/herdr-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 	};
 
 	outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixgl, herdr-nix, ... }:
