@@ -48,6 +48,8 @@
     xwayland.enable = true;
   };
 
+  programs.dconf.enable = true;
+
   programs.nix-ld = {
     enable = true;
     libraries = with pkgs; [

@@ -16,7 +16,7 @@ in {
   home.packages = with pkgs; [
     uv
     neovim tree-sitter fd gnumake gcc
-    kitty ripgrep delta
+    kitty ripgrep delta jq
     fastfetch imv mpv
     zellij lazygit brave yazi vscode
     playerctl
