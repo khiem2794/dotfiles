@@ -2,6 +2,7 @@
     programs.lazygit = {
         enable = true;
         settings = {
+            promptToReturnFromSubprocess = false;
             git = {
                 pagers = [
                     {
@@ -15,6 +16,14 @@
                 localBranchSortOrder = "alphabetical";
                 remoteBranchSortOrder = "alphabetical";
             };
+            customCommands = [
+                {
+                    key = "x";
+                    command = "tig --all";
+                    context = "global";
+                    output = "terminal";
+                }
+            ];
         };
     };
 }

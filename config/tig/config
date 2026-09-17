@@ -1,0 +1,28 @@
+# --- General UI & Layout Settings ---
+set vertical-split = yes         # Split views vertically side-by-side
+set tab-size = 4                 # Set tab width
+set line-graphics = utf-8        # Use clean unicode lines for the commit graph
+set show-changes = yes           # Show staging/unstaging status in main view
+set refresh-mode = periodic      # Automatically refresh when files change
+set refresh-interval = 10        # Refresh interval in seconds
+set main-options = --all
+
+# --- Custom Keybindings ---
+bind generic g move-first-line   # Press 'g' to go to the top
+bind generic G move-last-line    # Press 'G' to go to the bottom
+bind generic x quit
+
+# Git workflow shortcuts
+bind main    C !git checkout %(branch) # Checkout highlighted branch with Shift+C
+bind generic P !git push origin        # Push current branch with Shift+P
+bind generic F !git fetch --all        # Fetch all remotes with Shift+F
+
+# --- Color Scheme (Dark Theme) ---
+color cursor          white blue bold
+color title-focus     white blue bold
+color title-blur      black white
+color main-tracked    yellow default
+color main-remote     magenta default
+color main-tag        cyan default
+color stat-head       cyan default
+

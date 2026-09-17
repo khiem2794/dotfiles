@@ -44,6 +44,8 @@ in {
 	home.file.".config/zellij".source = ../../config/zellij;
 	home.file.".config/fastfetch".source = ../../config/fastfetch;
 	  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";
+	home.file.".config/tig".source =
+		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/tig";
 
 	home.file.".config/hypr/hyprland.lua".source =
 		config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
