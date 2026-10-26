@@ -66,6 +66,9 @@
 					];
 				};
 		in {
+			nixosConfigurations."${hosts.tbx.hostname}" =
+				mkNixOSConfiguration hosts.tbx;
+
 			nixosConfigurations."${hosts.t14.hostname}" =
 				mkNixOSConfiguration hosts.t14;
 

@@ -30,9 +30,9 @@ in {
 		herdr-nix.packages.${pkgs.system}.default
  
 		pkgsUnstable.claude-code
-    pkgsUnstable.opencode
-    pkgsUnstable.codex
-    pkgsUnstable.pi-coding-agent
+		pkgsUnstable.opencode
+		pkgsUnstable.codex
+		pkgsUnstable.pi-coding-agent
 	];
 
 	services.flameshot.package = config.lib.nixGL.wrap pkgs.flameshot;

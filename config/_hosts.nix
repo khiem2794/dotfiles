@@ -1,27 +1,15 @@
 let
 in
 {
-  t14 = {
-    hostname = "t14";
-    dir = "t14";
+  [host_name_for_nix_var] = {
+    user = "[pc_username]";
+    hostname = "[pc_hostname]";
     arch = "x86_64-linux";
-    dotfiles = "Repos/dotfiles";
-    user = "";
+    dir = "[folder_name_in_hosts]";
+    dotfiles = "[dotfiles_location_in_pc]";
     git = {
-      name = "";
-      email = "";
-    };
-  };
-
-  work = {
-    hostname = "work";
-    dir = "work";
-    arch = "x86_64-linux";
-    dotfiles = "Repos/dotfiles";
-    user = "";
-    git = {
-      name = "";
-      email = "";
+      name = "[username_for_git]";
+      email = "[email_for_git]";
     };
   };
 }

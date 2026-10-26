@@ -17,6 +17,8 @@ end
 
 ---- VARS ----
 local quickshell = require(hostVars.qs_shell or "qs-noctalia")
+local screen_mode = hostVars.screen_mode or "1920x1080@60"
+local screen_scale = hostVars.screen_scale or 1
 local terminal = "kitty"
 local fileManager = "kitty -e yazi"
 local screenshot = "flameshot gui"
@@ -42,9 +44,9 @@ end)
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
 	output = "",
-	mode = "1920x1080@60",
+	mode = screen_mode,
 	position = "auto-right",
-	scale = 1,
+	scale = screen_scale,
 })
 
 hl.gesture({
