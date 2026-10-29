@@ -2,62 +2,62 @@
 let
   dotfilesPath = "/home/${host.user}/${host.dotfiles}";
 in {
-	imports = [
-		../../config/flameshot.nix
-		../../config/git.nix
-		../../config/lazygit.nix
-		../../config/mise.nix
-	];
+  imports = [
+    ../../config/flameshot.nix
+    ../../config/git.nix
+    ../../config/lazygit.nix
+    ../../config/mise.nix
+  ];
 
-	home.username = "${host.user}";
-	home.homeDirectory = "/home/${host.user}";
-	home.stateVersion = "26.05";
+  home.username = "${host.user}";
+  home.homeDirectory = "/home/${host.user}";
+  home.stateVersion = "26.05";
 
-	home.packages = with pkgs; [
-		uv tig playerctl
-		neovim tree-sitter fd gnumake gcc
-		kitty ripgrep delta jq
-		fastfetch imv mpv
-		lazygit yazi vscode
+  home.packages = with pkgs; [
+    uv tig playerctl
+    neovim tree-sitter fd gnumake gcc
+    kitty ripgrep delta jq
+    fastfetch imv mpv
+    lazygit yazi vscode
 
-		nerd-fonts.jetbrains-mono
-		material-symbols
-		hyprpaper
-		imagemagick
-		quickshell
-		qt6.qtsvg
-		qt6.qtimageformats
-		qt6.qt5compat
-		qt6.qtmultimedia
-		qt6.qtdeclarative
-		qt6.qtpositioning
+    nerd-fonts.jetbrains-mono
+    material-symbols
+    hyprpaper
+    imagemagick
+    quickshell
+    qt6.qtsvg
+    qt6.qtimageformats
+    qt6.qt5compat
+    qt6.qtmultimedia
+    qt6.qtdeclarative
+    qt6.qtpositioning
 
-		herdr-nix.packages.${pkgs.system}.default
-		pkgsUnstable.brave
-		pkgsUnstable.claude-code
-	];
+    herdr-nix.packages.${pkgs.system}.default
+    pkgsUnstable.brave
+    pkgsUnstable.claude-code
+  ];
 
-	programs.bash = {
-		enable = true;
-		shellAliases = {
-			ll = "ls -la";
-		};
-	};
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      ll = "ls -la";
+    };
+  };
 
-	programs.starship = {
-		enable = true;
-	};
+  programs.starship = {
+    enable = true;
+  };
 
-	home.file.".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/quickshell";
-	home.file.".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/kitty";
-	home.file.".config/fastfetch".source = ../../config/fastfetch;
-	home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";
-	home.file.".config/tig".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/tig";
+  home.file.".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/quickshell";
+  home.file.".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/kitty";
+  home.file.".config/fastfetch".source = ../../config/fastfetch;
+  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";
+  home.file.".config/tig".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/tig";
 
-	home.file.".config/hypr/hyprland.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
-	home.file.".config/hypr/hyprpaper.conf".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";
-	home.file.".config/hypr/qs-noctalia.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-noctalia.lua";
-	home.file.".config/hypr/assets".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/assets";
-	home.file.".config/hypr/var.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/var.lua";
-	home.file.".config/hypr/env.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/env.lua";
+  home.file.".config/hypr/hyprland.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
+  home.file.".config/hypr/hyprpaper.conf".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";
+  home.file.".config/hypr/qs-noctalia.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-noctalia.lua";
+  home.file.".config/hypr/assets".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/assets";
+  home.file.".config/hypr/var.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/var.lua";
+  home.file.".config/hypr/env.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/env.lua";
 }
