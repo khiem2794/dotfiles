@@ -36,14 +36,14 @@
     variant = "";
   };
 
-  users.users."khiem2794" = {
+  users.users."khiem" = {
     isNormalUser = true;
     description = "khiem";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
 
-  services.getty.autologinUser = "khiem2794";
+  services.getty.autologinUser = "khiem";
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
