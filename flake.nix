@@ -23,7 +23,7 @@
 
 	outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixgl, herdr-nix, ... }:
 		let
-			hosts = import ./config/_hosts.nix;
+			host = import ./config/_host.nix;
 
 			pkgsUnstable = system: import nixpkgs-unstable {
 				system = system;
@@ -65,14 +65,9 @@
 						}
 					];
 				};
-		in {
-			nixosConfigurations."${hosts.tbx.hostname}" =
-				mkNixOSConfiguration hosts.tbx;
-
-			nixosConfigurations."${hosts.t14.hostname}" =
-				mkNixOSConfiguration hosts.t14;
-
-			homeConfigurations."${hosts.work.hostname}" =
-				mkHomeConfiguration hosts.work;
+		in if host.type == "home" then {
+			homeConfigurations."${host.hostname}" = mkHomeConfiguration host;
+		} else {
+			nixosConfigurations."${host.hostname}" = mkNixOSConfiguration host;
 		};
 }

@@ -1,124 +1,50 @@
-<h1 align=center>Arch Linux Dotfiles</h1>
+<h1 align=center>NixOS Hyprland Dotfiles</h1>
 
 <div align="center">
-<a href="#setting-up-starter">Starter</a> - <a href="#setting-up-essential">Essential</a> - <a href="#resolving-issues">Issues</a>
+<a href="#layout">Layout</a> - <a href="#setup">Setup</a> - <a href="#new-host">New host</a>
 </div>
-
-
-<h2>Themes</h2>
-
-- **Dark**
-
-<img src="./hypr/assets/screenshot_dark.png" alt="img">
-
-- **Light**
-
-<img src="./hypr/assets/screenshot_light.png" alt="img">
-
 
 ---
 
-<h2 id="setting-up-starter">1. Starting packages</h2>
+<h2 id="layout">1. Layout</h2>
 
-  ```bash
-    # Installing essential packages
-    sudo pacman -S wget unzip polkit-gnome pacman-contrib git neovim
-    sudo pacman -S udiskie
-    sudo pacman -S brightnessctl 
-    sudo pacman -S pavucontrol pamixer
-    sudo pacman -S network-manager-applet nm-connection-editor
-    sudo pacman -S bluez bluez-utils blueman
-
-    # Installing yay
-    mkdir Repos && cd Repos
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si
-
-    # Installing hyprland & fonts, themes
-    yay -S  bibata-cursor-theme-bin ttf-maple
-    sudo pacman -S hyprland hyprlock hyprpaper kitty ttf-jetbrains-mono-nerd xdg-desktop-portal-hyprland
+  ```
+    flake.nix                 # builds one config from config/_host.nix
+    config/_host.example.nix  # template for the local host file
+    config/_host.nix          # local host file (git-ignored)
+    config/                   # shared configs: hypr, quickshell, kitty, nvim, git, lazygit, mise, ...
+    hosts/<dir>/
+      configuration.nix       # NixOS system (nixos hosts only)
+      hardware-configuration.nix
+      home.nix                # home-manager: packages and dotfile links
+      hypr/var.lua, env.lua   # per-host Hyprland variables
   ```
 
-<h2 id="setting-up-essential">2. Setting up essential packages & softwares</h2>
+  Hosts:
+  - `tbx`, `t14`: NixOS + home-manager module
+  - `work`: standalone home-manager on a non-NixOS distro (GUI apps wrapped with nixGL)
 
-
-  ```bash
-    sudo pacman -S lazygit
-    
-    sudo pacman -S fastfetch imagemagick
-    
-    sudo pacman -S thunar gvfs tumbler ffmpegthumbnailer
-    
-    yay -S visual-studio-code-bin
-    code --install-extension jdinhlife.gruvbox
-    
-    sudo pacman -S firefox #https://github.com/MrOtherGuy/firefox-csshacks/blob/master/chrome/autohide_bookmarks_and_main_toolbars.css
-
-    sudo pacman -S waybar
-
-    yay -S rofi-lbonn-wayland-git
-
-    sudo pacman -S starship
-    echo "export STARSHIP_CONFIG=~/.config/starship/starship.toml" >> ~/.bashrc
-    echo "eval \"\$(starship init bash)\"" >> ~/.bashrc
-    rm ~/.config/starship.toml
-
-    sudo pacman -S tmux
-    
-    sudo pacman -S slurp swappy cliphist
-    yay -S grimblast-git
-
-    sudo pacman -S nwg-look
-    
-    sudo pacman -S timeshift
-    sudo -E timeshift-launcher
-    sudo nvim /usr/share/applications/timeshift-gtk.desktop #fixing launcher
-    
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    
-    yay -S  zathura-git zathura-pdf-mupdf-git
-    
-    sudo pacman -S imv mpv
-  ```
-
-<details>
-  <summary><b>Setting up Warp VPN</b></summary>
+<h2 id="setup">2. Setup</h2>
 
   ```bash
-    yay -S cloudflare-warp-bin 
-    sudo systemctl enable warp-svc
-    sudo systemctl start warp-svc
-    warp-cli register
-    warp-cli connect
+    git clone <repo> ~/Repos/dotfiles && cd ~/Repos/dotfiles
+
+    # Create the local host config, then fill it in
+    # type = "home" -> homeConfigurations, otherwise nixosConfigurations
+    cp config/_host.example.nix config/_host.nix
+
+    # config/_host.nix is untracked, so use a path: flake reference, not .#
+    sudo nixos-rebuild switch --flake path:.#<hostname>  # type = "nixos"
+    home-manager switch --flake path:.#<hostname>        # type = "home"
+
+    # First run of home-manager, before it is installed
+    nix run home-manager/release-26.05 -- switch --flake path:.#<hostname>
   ```
 
-</details>
+  Configs linked with `mkOutOfStoreSymlink` (nvim, kitty, hypr, ...) point at the repo, so edits apply without a rebuild. `dotfiles` in `_host.nix` must match the clone location relative to `$HOME`.
 
+<h2 id="new-host">3. Adding a new host</h2>
 
-<h2 id="resolving-issues">3. Resolve issues might happen</h2>
-
-<details>
-  <summary><b>NVIDIA gpu</b></summary>
-
-  - Checking out <https://wiki.hyprland.org/Nvidia/>.
-  - Modify "MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)" in /etc/mkinitcpio.conf.
-  - Add "nvidia_drm.modeset=1" in GRUB_CMDLINE_LINUX_DEFAULT and run grub-mkconfig.
-  - Add "source = ~/.config/hypr/nvidia.conf" in hyprland.conf
-  ```bash
-    yay -S linux-headers nvidia-dkms qt5-wayland qt5ct libva libva-nvidia-driver-git
-    
-  ```
-
-</details>
-
-<details>
-  <summary><b>Cursor theme not consistent</b></summary>
-
-  Checking <https://wiki.archlinux.org/title/Cursor_themes#Configuration> and apply system-wide change.
-  ```bash
-    mkdir ~/.local/share/icons
-    ln --symbolic /usr/share/icons/Bibata-Modern-Ice/ ~/.local/share/icons/default
-  ```
-
-</details>
+  - Copy an existing `hosts/<dir>/` that matches the type (`tbx` for NixOS, `work` for home-manager).
+  - NixOS: replace `hardware-configuration.nix` with the one from `/etc/nixos/`, and set `networking.hostName` and the user in `configuration.nix`.
+  - Set `dir` in `config/_host.nix` to the new folder name.
