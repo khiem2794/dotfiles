@@ -22,7 +22,6 @@ in {
 
     nerd-fonts.jetbrains-mono
     material-symbols
-    hyprpaper
     imagemagick
     quickshell
     qt6.qtsvg
@@ -42,6 +41,9 @@ in {
     shellAliases = {
       ll = "ls -la";
     };
+    initExtra = ''
+      export PATH="$HOME/.local/bin:$PATH"
+    '';
   };
 
   programs.starship = {

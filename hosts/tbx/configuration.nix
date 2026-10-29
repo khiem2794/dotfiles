@@ -8,11 +8,10 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader.systemd-boot.configurationLimit = 2;
 
   time.timeZone = "Asia/Ho_Chi_Minh";
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "tbx";
   networking.networkmanager.enable = true;
@@ -30,17 +29,16 @@
     LC_TIME = "vi_VN";
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   users.users."khiem" = {
     isNormalUser = true;
     description = "khiem";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
+  };
+
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
   };
 
   services.getty.autologinUser = "khiem";
@@ -71,6 +69,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  environment.localBinInPath = true;
   environment.systemPackages = with pkgs; [
     vim wget git unzip
     networkmanager
@@ -83,7 +82,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 14d";
+    options = "--delete-older-than 7d";
   };
 
   system.stateVersion = "26.05";
