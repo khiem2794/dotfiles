@@ -33,7 +33,7 @@ in {
     qt6.qtdeclarative
     qt6.qtpositioning
 
-    herdr-nix.packages.${pkgs.system}.default
+    herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgsUnstable.claude-code
     pkgsUnstable.opencode
     pkgsUnstable.codex

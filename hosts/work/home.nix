@@ -27,7 +27,7 @@ in {
     (config.lib.nixGL.wrap zed-editor)
     (config.lib.nixGL.wrap kitty)
     (config.lib.nixGL.wrap obsidian)
-    herdr-nix.packages.${pkgs.system}.default
+    herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     pkgsUnstable.claude-code
     pkgsUnstable.opencode

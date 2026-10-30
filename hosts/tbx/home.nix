@@ -31,8 +31,9 @@ in {
     qt6.qtdeclarative
     qt6.qtpositioning
 
-    herdr-nix.packages.${pkgs.system}.default
-    pkgsUnstable.brave
+    herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgsUnstable.brave-origin
+    pkgsUnstable.firefox
     pkgsUnstable.claude-code
   ];
 
