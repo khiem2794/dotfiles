@@ -55,6 +55,7 @@ in {
   home.file.".config/fastfetch".source = ../../config/fastfetch;
   home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/nvim";
   home.file.".config/tig".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/tig";
+  home.file.".config/herdr/config.toml".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/herdr/config.toml";
 
   home.file.".config/hypr/hyprland.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
   home.file.".config/hypr/hyprpaper.conf".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";

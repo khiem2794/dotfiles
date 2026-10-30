@@ -14,7 +14,7 @@ in {
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
-    uv
+    uv tig
     neovim tree-sitter fd gnumake gcc
     kitty ripgrep delta jq
     fastfetch imv mpv
@@ -63,4 +63,8 @@ in {
   home.file.".config/zellij".source = ../../config/zellij;
   home.file.".config/fastfetch".source = ../../config/fastfetch;
   home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/${host.user}/${host.dotfiles}/config/nvim";
+  home.file.".config/tig".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/tig";
+  home.file.".config/herdr/config.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/herdr/config.toml";
 }
