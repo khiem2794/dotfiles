@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, host, ... }:
 
 {
   imports = [
@@ -11,7 +11,7 @@
 
   time.timeZone = "Asia/Ho_Chi_Minh";
 
-  networking.hostName = "t14";
+  networking.hostName = host.hostname;
   networking.networkmanager.enable = true;
 
   hardware.bluetooth = {
@@ -26,7 +26,7 @@
     memoryPercent = 50;
   };
 
-  users.users.khiem2794 = {
+  users.users.${host.user} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
     packages = with pkgs; [
@@ -34,7 +34,7 @@
     ];
   };
 
-  services.getty.autologinUser = "khiem2794";
+  services.getty.autologinUser = host.user;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 

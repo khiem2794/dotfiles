@@ -59,7 +59,6 @@ in {
   home.file.".config/herdr/config.toml".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/herdr/config.toml";
 
   home.file.".config/hypr/hyprland.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
-  home.file.".config/hypr/hyprpaper.conf".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";
   home.file.".config/hypr/qs-noctalia.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-noctalia.lua";
   home.file.".config/hypr/assets".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/assets";
   home.file.".config/hypr/var.lua".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hosts/${host.dir}/hypr/var.lua";

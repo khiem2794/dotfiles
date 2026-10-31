@@ -51,8 +51,6 @@ in {
 
   home.file.".config/hypr/hyprland.lua".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprland.lua";
-  home.file.".config/hypr/hyprpaper.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/hyprpaper.conf";
   home.file.".config/hypr/qs-dms.lua".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/hypr/qs-dms.lua";
   home.file.".config/hypr/qs-noctalia.lua".source =

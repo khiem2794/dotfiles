@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, host, ... }:
 
 {
   imports =
@@ -13,7 +13,7 @@
 
   time.timeZone = "Asia/Ho_Chi_Minh";
 
-  networking.hostName = "tbx";
+  networking.hostName = host.hostname;
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -29,9 +29,9 @@
     LC_TIME = "vi_VN";
   };
 
-  users.users."khiem" = {
+  users.users.${host.user} = {
     isNormalUser = true;
-    description = "khiem";
+    description = host.user;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
@@ -41,7 +41,7 @@
     variant = "";
   };
 
-  services.getty.autologinUser = "khiem";
+  services.getty.autologinUser = host.user;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 

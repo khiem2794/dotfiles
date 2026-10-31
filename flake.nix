@@ -48,6 +48,7 @@
       mkNixOSConfiguration = host:
         nixpkgs.lib.nixosSystem {
           system = host.arch;
+          specialArgs = { inherit host; };
           modules = [
             ./hosts/${host.dir}/configuration.nix
             home-manager.nixosModules.home-manager
