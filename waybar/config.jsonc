@@ -2,19 +2,20 @@
     "layer": "top",
     "position": "top",
     "mod": "dock",
-    "height": 16,
+    "height": 15,
     "exclusive": true,
     "passthrough": false,
     "gtk-layer-shell": true,
     "reload_style_on_change": true,
+    
     "modules-left": [
-        "custom/padd",
+        "custom/l_end", "custom/arch", "custom/r_end",
         "custom/l_end",
         "hyprland/workspaces",
         "hyprland/window",
-        "custom/r_end",
-        "custom/padd"
+        "custom/r_end"
     ],
+
     "modules-center": [
         "custom/padd",
         "custom/l_end",
@@ -22,6 +23,7 @@
         "custom/r_end",
         "custom/padd"
     ],
+    
     "modules-right": [
         "custom/padd",
         "custom/l_end",
@@ -44,8 +46,15 @@
         "custom/r_end",
         "custom/padd"
     ],
+
+    "custom/arch": {
+        "format": " ",
+        "on-click": "toggle-theme.sh",
+        "tooltip": false,
+        "on-click-right": "code ~/.config/hypr/script/toggle-theme.sh"
+    },
+    
     "hyprland/workspaces": {
-        // "disable-scroll": true,
         "rotate": 0,
         "all-outputs": true,
         "active-only": false,
@@ -56,7 +65,7 @@
         "persistent-workspaces": {}
     },
     "hyprland/window": {
-        "format": "  {}",
+        "format": " | {}",
         "rotate": 0,
         "separate-outputs": true,
         "rewrite": {
@@ -71,19 +80,19 @@
         "max-length": 1000
     },
     "clock": {
-        "format": "{:%R, %d %B %Y}",
+        "format": "{:%R, %d %B %Y} ",
         "rotate": 0,
-        "format-alt": "{:%I:%M %p}",
+        "format-alt": "{:%I:%M %p} ",
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
-            "mode": "year",
+            "mode": "month",
             "mode-mon-col": 3,
             "on-scroll": 1,
             "format": {
-                "months": "<span color='#ffead3'><b>{}</b></span>",
-                "days": "<span color='#ecc6d9'><b>{}</b></span>",
-                "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
-                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+                "months": "<span><b>{}</b></span>",
+                "days": "<span><b>{}</b></span>",
+                "weeks": "<span><b>W{}</b></span>",
+                "weekdays": "<span><b>{}</b></span>",
                 "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
             }
         },
@@ -149,24 +158,23 @@
     },
     "network": {
         "tooltip": true,
-        "format-wifi": "  ",
+        "format-wifi": " ",
         "rotate": 0,
         "format-ethernet": "󰈀  ",
         "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
         "format-linked": "󰈀 {ifname} (No IP) ",
         "format-disconnected": "󰖪  ",
         "tooltip-format-disconnected": "Disconnected",
-        "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span> ",
+        "format-alt": "<span> {bandwidthDownBytes}</span> <span> {bandwidthUpBytes}</span> ",
         "interval": 5
     },
     "pulseaudio": {
         "format": "{icon} {volume} ",
         "rotate": 0,
-        "format-muted": "婢 ",
+        "format-muted": " _ ",
         "on-click": "pavucontrol -t 3",
-        "on-click-middle": "volumecontrol.sh -o m",
-        "on-scroll-up": "volumecontrol.sh -o i",
-        "on-scroll-down": "volumecontrol.sh -o d",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ -1%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ +1%",
         "tooltip-format": "{icon} {desc} // {volume}%",
         "scroll-step": 5,
         "format-icons": {
@@ -186,12 +194,9 @@
     "pulseaudio#microphone": {
         "format": "{format_source}",
         "rotate": 0,
-        "format-source": "",
+        "format-source": "",
         "format-source-muted": "",
         "on-click": "pavucontrol -t 4",
-        "on-click-middle": "volumecontrol.sh -i m",
-        "on-scroll-up": "volumecontrol.sh -i i",
-        "on-scroll-down": "volumecontrol.sh -i d",
         "tooltip-format": "{format_source} {source_desc} // {source_volume}%",
         "scroll-step": 5
     },
@@ -229,8 +234,7 @@
         "format": "  {}",
         "rotate": 0,
         "exec": "echo ; echo  logout",
-        "on-click": "logoutlaunch.sh 2",
-        "on-click-right": "logoutlaunch.sh 1",
+        "on-click": "rofi-powermenu.sh",
         "interval": 86400, // once every day
         "tooltip": true
     },
@@ -275,7 +279,7 @@
         "tooltip": false
     },
     "custom/padd": {
-        "format": "  ",
+        "format": "",
         "interval": "once",
         "tooltip": false
     }

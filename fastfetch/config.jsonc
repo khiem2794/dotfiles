@@ -2,23 +2,11 @@
     "logo": {
         "source": "$(find \"${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/pngs/\" -name \"*.png\" | sort -R | head -1)",
         "height": 10,
-        "padding": {
-            "top": 5
-        }
+        "padding": { "top": 3, "left": 5 },
     },
-    "display": {
-        "separator": " : "
-    },
+    "display": { "separator": " : " },
     "modules": [
         "break",
-        // {
-        //     "type": "custom",
-        //     "format": "\u001b[36m    コンピューター"
-        // },
-        {
-            "type": "custom",
-            "format": "┌──────────────────────────────────────────┐"
-        },
         {
             "type": "os",
             "key": "   OS",
@@ -31,17 +19,17 @@
         },
         {
             "type": "packages",
-            "key": "   Packages",
+            "key": "   Packages",
             "keyColor": "green"
         },
         {
             "type": "display",
-            "key": "   Display",
+            "key": "   Display",
             "keyColor": "green"
         },
         {
             "type": "wm",
-            "key": "   WM",
+            "key": "   WM",
             "keyColor": "yellow"
         },
         {
@@ -50,17 +38,13 @@
             "keyColor": "yellow"
         },
         {
-            "type": "custom",
-            "format": "└──────────────────────────────────────────┘"
-        },
-        "break",
-        {
-            "type": "title",
-            "key": "  "
+            "type": "uptime",
+            "key": "  󰥔 UpTime",
+            "keyColor": "yellow"
         },
         {
             "type": "custom",
-            "format": "┌──────────────────────────────────────────┐"
+            "format": "      ────────────────────────────────      "
         },
         {
             "type": "cpu",
@@ -81,19 +65,20 @@
         },
         {
             "type": "memory",
-            "key": "  ﬙ Memory",
+            "key": "  󰍛 Memory",
             "keyColor": "magenta"
         },
         {
-            "type": "custom",
-            "format": "└──────────────────────────────────────────┘"
+            "type": "disk",
+            "format": "{1} / {2} ({3})",
+            "key": "   Disk",
+            "keyColor": "red"
         },
         "break",
         {
             "type": "colors",
-            "paddingLeft": 2,
+            "paddingLeft": 15,
             "symbol": "circle"
-        },
-        "break"
+        }
     ]
 }
