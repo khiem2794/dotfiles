@@ -1,0 +1,24 @@
+onboarding = false
+
+
+[keys]
+previous_tab = ["alt+left"]
+next_tab = ["alt+right"]
+previous_workspace = ["alt+up"]
+next_workspace = ["alt+down"]
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+description = "open file viewer in split"
+
+[[keys.command]]
+key = "prefix+shift+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer-tab"
+description = "open file viewer in tab"
+
+[theme]
+name = "catppuccin"
+auto_switch = false

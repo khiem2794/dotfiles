@@ -1,0 +1,84 @@
+{
+    "logo": {
+        "source": "$(find \"${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/pngs/\" -name \"*.png\" | sort -R | head -1)",
+        "height": 10,
+        "padding": { "top": 3, "left": 5 },
+    },
+    "display": { "separator": " : " },
+    "modules": [
+        "break",
+        {
+            "type": "os",
+            "key": "   OS",
+            "keyColor": "red"
+        },
+        {
+            "type": "kernel",
+            "key": "   Kernel",
+            "keyColor": "red"
+        },
+        {
+            "type": "packages",
+            "key": "   Packages",
+            "keyColor": "green"
+        },
+        {
+            "type": "display",
+            "key": "   Display",
+            "keyColor": "green"
+        },
+        {
+            "type": "wm",
+            "key": "   WM",
+            "keyColor": "yellow"
+        },
+        {
+            "type": "terminal",
+            "key": "   Terminal",
+            "keyColor": "yellow"
+        },
+        {
+            "type": "uptime",
+            "key": "  󰥔 UpTime",
+            "keyColor": "yellow"
+        },
+        {
+            "type": "custom",
+            "format": "      ────────────────────────────────      "
+        },
+        {
+            "type": "cpu",
+            "format": "{1}",
+            "key": "   CPU",
+            "keyColor": "blue"
+        },
+        {
+            "type": "gpu",
+            "key": "   GPU",
+            "keyColor": "blue"
+        },
+        {
+            "type": "gpu",
+            "format": "{3}",
+            "key": "   GPU Driver",
+            "keyColor": "magenta"
+        },
+        {
+            "type": "memory",
+            "key": "  󰍛 Memory",
+            "keyColor": "magenta"
+        },
+        {
+            "type": "disk",
+            "format": "{1} / {2} ({3})",
+            "key": "   Disk",
+            "keyColor": "red"
+        },
+        "break",
+        {
+            "type": "colors",
+            "paddingLeft": 15,
+            "symbol": "circle"
+        }
+    ]
+}
